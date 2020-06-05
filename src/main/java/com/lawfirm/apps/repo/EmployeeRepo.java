@@ -1,0 +1,282 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.lawfirm.apps.repo;
+
+import com.lawfirm.apps.config.Constants;
+import com.lawfirm.apps.model.Employee;
+import com.lawfirm.apps.repo.interfaces.EmployeeRepoIface;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+/**
+ *
+ * @author newbiecihuy
+ */
+@Repository("employeeRepo")
+public class EmployeeRepo implements EmployeeRepoIface {
+
+    @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
+    private EntityManager entityManager;
+    private final Logger logger = LogManager.getLogger(this.getClass());
+
+    @Override
+    public Employee create(Employee entity) {
+        try {
+            entityManager.persist(entity);
+            if (entity != null) {
+//                CreateLog.createJson(entity, "bpr_baiturridho");
+                return entity;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Employee update(Employee entity) {
+        try {
+            entityManager.merge(entity);
+            if (entity != null) {
+//                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Employee approved(Employee entity) {
+        try {
+            entityManager.merge(entity);
+            if (entity != null) {
+//                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Employee delete(Employee entity) {
+        try {
+            entity.setIsActive(false);
+            entity.setIsDelete(true);
+            entityManager.merge(entity);
+            if (entity != null) {
+//	                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            }
+        } catch (Exception ex) {
+//	            LogSystem.error(getClass(), e);
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void remove(Employee entity) {
+        try {
+            entityManager.remove(entity);
+        } catch (Exception ex) {
+//	            LogSystem.error(getClass(), e);
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Employee findById(Long paramLong) {
+        try {
+            return (Employee) entityManager.find(Employee.class, paramLong);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+//    @Override
+//    public Employee findByEmpId(Long paramLong) {
+//        try {
+//            return (Employee) entityManager.find(Employee.class, paramLong);
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
+
+    @Override
+    public Employee findByEmployee(String paramString) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.nik = :nik OR "
+                    + " LOWER(e.name) = :name OR "
+                    + " e.npwp = :npwp OR "
+                    + " LOWER(e.email) = :email OR "
+                    + " e.employeeId = :employeeId ")
+                    .setParameter("nik", paramString)
+                    .setParameter("name", paramString.toLowerCase())
+                    .setParameter("npwp", paramString)
+                    .setParameter("email", paramString.toLowerCase())
+                    .setParameter("employeeId", paramString.toLowerCase())
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Employee> listEmployee() {
+        try {
+            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Employee> listEmployeePaging(int max, int start) {
+        try {
+            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
+                    .setMaxResults(max)
+                    .setFirstResult(start)
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Employee> listActive(Boolean isActive) {
+        try {
+            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.isActive = :isActive ")
+                    .setParameter("isActive", isActive)
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List< Employee> findByApproved(String paramString) {
+        try {
+            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.approvedBy = :approvedBy ")
+                    .setParameter("approvedBy", paramString)
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Integer count() {
+        Query queryMax = entityManager.createQuery("SELECT COUNT(e) FROM Employee e");
+        return Integer.parseInt(queryMax.getSingleResult().toString());
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        // TODO Auto-generated method stub
+        return entityManager;
+    }
+
+}
