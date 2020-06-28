@@ -7,9 +7,12 @@ package com.lawfirm.apps.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,14 +62,20 @@ public class ClientData implements Serializable {
     private Date tgInput;
     @Column(name = "is_active", length = 1, nullable = true)
     private String isActive;
-    
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "client")
-    private Collection<Engagement> engagementCollection;
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "client")
+//    private Collection<Engagement> engagementCollection;
+    private List<Engagement> engagementCollection = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
         tgInput = new Date();
         isActive = "1";
+    }
+
+    public void addEngagement(Engagement engagement) {
+        engagement.setClient(this);
+        engagementCollection.add(engagement);
     }
 
     public ClientData() {
@@ -89,7 +98,6 @@ public class ClientData implements Serializable {
     public void setClientId(Long clientId) {
         this.clientId = clientId;
     }
-
 
     public String getClientName() {
         return clientName;
@@ -147,11 +155,11 @@ public class ClientData implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public Collection<Engagement> getEngagementCollection() {
+    public List<Engagement> getEngagementCollection() {
         return engagementCollection;
     }
 
-    public void setEngagementCollection(Collection<Engagement> engagementCollection) {
+    public void setEngagementCollection(List<Engagement> engagementCollection) {
         this.engagementCollection = engagementCollection;
     }
 

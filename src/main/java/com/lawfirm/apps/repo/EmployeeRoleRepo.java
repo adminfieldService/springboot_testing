@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.EmployeeRole;
 import com.lawfirm.apps.repo.interfaces.EmployeeRoleRepoIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -185,6 +186,25 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
     public EntityManager getEntityManager() {
         // TODO Auto-generated method stub
         return entityManager;
+    }
+
+    @Override
+    public EmployeeRole findByName(String RoleName) {
+        try {
+            EmployeeRole listAcquire = (EmployeeRole) entityManager.createQuery("SELECT e FROM EmployeeRole e "
+                    + " WHERE e.roleName = :roleName ")
+                    .setParameter("roleName", RoleName)
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
 }

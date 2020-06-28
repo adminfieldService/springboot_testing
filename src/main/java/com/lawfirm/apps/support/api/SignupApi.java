@@ -5,6 +5,7 @@
  */
 package com.lawfirm.apps.support.api;
 
+import java.util.Set;
 import lombok.Data;
 import lombok.ToString;
 
@@ -14,14 +15,9 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class AprovedApi {
+public class SignupApi {
 
-    Long id_employee_admin;
-    Long id_employee_finance;
-//    Long[] employee_id = new Long[10];
-    Long id_employee;
-    String employee_id;
-    String role_name;
-    Double salary = 0d;
-    Double loan_amount = 0d;
+    protected String email;
+    protected String userName;
+    protected Set<String> roleName;
 }

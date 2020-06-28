@@ -7,7 +7,9 @@ package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.Employee;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * @author newbiecihuy
  */
 @Repository
-public interface EmployeeRepoIface {
+public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> {
 
     Employee create(Employee entity);
 
@@ -29,17 +31,27 @@ public interface EmployeeRepoIface {
 
     Employee findById(Long paramLong);
 
+    Employee chekUserName(String paramString);
+
     Employee findByEmployee(String paramString);
+
+    Employee findByEmployeeId(String paramString, Long Id);
 
     List<Employee> listEmployee();
 
-    List<Employee> listEmployeePaging(int max, int start);
+    List<Employee> listEmployeePaging(String param, int max, int start);
 
     List<Employee> listActive(Boolean isActive);
 
-    List<Employee> findByApproved(String paramString);
+    List<Employee> findByApproved(Long paramLong);
 
     Integer count();
 
     EntityManager getEntityManager();
+
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
+
+    Optional<Employee> findByUsername(String username);
 }

@@ -11,14 +11,42 @@ package com.lawfirm.apps.utils;
  */
 public class CustomErrorType {
 
-    private String message;
+//    private String message;
+    private String response_code;
+    private String response;
+    private String info;
 
-    public CustomErrorType(String message) {
-        this.message = message;
+    public String getResponse_code() {
+        return response_code;
     }
 
-    public String getMessage() {
-        return message;
+    public void setResponse_code(String response_code) {
+        this.response_code = response_code;
     }
 
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public CustomErrorType(String response_code, String response, String info) {
+        this.response_code = response_code;
+        this.response = response;
+        this.info = info;
+    }
+
+//    public CustomErrorType(String response) {
+//        this.response = response;
+//    }
+//
+//    public String getMessage() {
+//        return message;
+//    }
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.lawfirm.apps")//com.spin.bpr.repo
+@EnableJpaRepositories(basePackages = "com.lawfirm")
 public class LawFirmApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

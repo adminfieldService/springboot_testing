@@ -21,6 +21,7 @@ public class DataEmployee {
 //    protected EmployeeApi employeeApi;    
 //    protected AccountApi accountApi;
     Long id_employee;
+    protected Long id_employee_admin;
     protected String employeeId;
     protected String name;
     protected String nik;

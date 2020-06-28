@@ -158,15 +158,35 @@ public class AccountRepo implements AccountRepoIface {
                     + " LOWER(a.employee.nik) = :nik OR "
                     + " LOWER(a.employee.npwp) = :npwp OR "
                     + " a.employee.idEmployee = :idEmployee OR "
-                    + " LOWER(a.employee.employeeId) = :employeeId OR "
-                    + " LOWER(a.employee.approvedBy) = :approvedBy ")
+                    + " LOWER(a.employee.employeeId) = :employeeId ")
                     .setParameter("name", param.toLowerCase())
                     .setParameter("nik", param.toLowerCase())
                     .setParameter("npwp", param.toLowerCase())
                     .setParameter("idEmployee", Long.parseLong(param))
                     .setParameter("employeeId", param.toLowerCase())
-                    .setParameter("approvedBy", param.toLowerCase())
                     .getResultList();
+            return acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public Account findAccount(String param) {
+        try {
+            Account acquire = (Account) entityManager.createQuery("SELECT a FROM Account a WHERE "
+                    + " a.accountNumber = :accountNumber OR "
+                    + " a.accountNumberFinance = :accountNumberFinance ")
+                    .setParameter("accountNumber", param)
+                    .setParameter("accountNumberFinance", param)
+                    .getSingleResult();
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());

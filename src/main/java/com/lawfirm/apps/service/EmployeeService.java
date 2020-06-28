@@ -9,9 +9,17 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.repo.interfaces.EmployeeRepoIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
+import com.lawfirm.apps.support.api.MyUserDetails;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,14 +77,20 @@ public class EmployeeService implements EmployeeServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Employee findByEmployeeId(String paramString, Long Id) {
+        return employeeRepo.findByEmployeeId(paramString, Id);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Employee> listEmployee() {
         return employeeRepo.listEmployee();
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Employee> listEmployeePaging(int max, int start) {
-        return employeeRepo.listEmployeePaging(max, start);
+    public List<Employee> listEmployeePaging(String paramString, int max, int start) {
+        return employeeRepo.listEmployeePaging(paramString, max, start);
     }
 
     @Override
@@ -87,8 +101,8 @@ public class EmployeeService implements EmployeeServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Employee> findByApproved(String paramString) {
-        return employeeRepo.findByApproved(paramString);
+    public List<Employee> findByApproved(Long paramLong) {
+        return employeeRepo.findByApproved(paramLong);
     }
 
     @Override
@@ -103,4 +117,35 @@ public class EmployeeService implements EmployeeServiceIface {
         return employeeRepo.getEntityManager();
     }
 
+//    @Override
+//    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+//    public MyUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+//        Employee userInfo = employeeRepo.findByUserName(userName);
+//        GrantedAuthority authority = new SimpleGrantedAuthority(userInfo.getRoleName());
+//        System.out.println("loadUserByUsername : " + authority);
+//        return new User(userInfo.getUserName(), userInfo.getPassword(), Arrays.asList(authority));
+//    }
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Employee chekUserName(String paramString) {
+        return employeeRepo.chekUserName(paramString);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Boolean existsByUsername(String username) {
+        return employeeRepo.existsByUsername(username);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Boolean existsByEmail(String email) {
+        return employeeRepo.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Optional<Employee> findByUsername(String username) {
+        return employeeRepo.findByUsername(username);
+    }
 }

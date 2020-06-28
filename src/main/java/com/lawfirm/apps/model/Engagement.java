@@ -81,7 +81,7 @@ public class Engagement implements Serializable {
     @Column(name = "status")
     protected String status;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     protected ClientData client;
 
@@ -97,7 +97,6 @@ public class Engagement implements Serializable {
 //    protected LoanType loanType;
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
 //    protected Collection<LoanType> loanTypeCollection;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
 
@@ -203,7 +202,6 @@ public class Engagement implements Serializable {
 //    public void setLoanTypeCollection(Collection<LoanType> loanTypeCollection) {
 //        this.loanTypeCollection = loanTypeCollection;
 //    }
-
     public Date getApproved_date() {
         return approved_date;
     }
@@ -291,7 +289,6 @@ public class Engagement implements Serializable {
     public void setLoanCollection(Collection<Loan> loanCollection) {
         this.loanCollection = loanCollection;
     }
-    
 
     @Override
     public int hashCode() {

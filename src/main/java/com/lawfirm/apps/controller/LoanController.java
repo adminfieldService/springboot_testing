@@ -27,7 +27,7 @@ import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
 import com.lawfirm.apps.support.api.LoanApi;
 import com.lawfirm.apps.utils.CustomErrorType;
-import com.lawfirm.apps.utils.Response;
+import com.lawfirm.apps.response.Response;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,14 +58,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping({"/loan"})
 public class LoanController {
-    
+
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
     Date now;
     String date_now;
     String notif = null;
     String jsonString = null;
-    
+
     String json = null;
     final Response rs = new Response();
     @Autowired
@@ -98,17 +98,17 @@ public class LoanController {
     ReimbursementServiceIface reimbursementService;
     @Autowired
     TeamMemberServiceIface teamMemberService;
-    
+
     public LoanController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
-    
+
     @RequestMapping(value = "/createLoan", method = RequestMethod.POST, produces = {"application/json"})
     public Response createLoan(@RequestBody final LoanApi object) {
         try {
             Date todayDate = new Date();
-            
+
             log.info("isi object " + object.toString());
             Boolean process = true;
             Loan dataLoan = new Loan();
@@ -126,7 +126,13 @@ public class LoanController {
 //                Loan dataLoan = new Loan();
 //                LoanType typeLoan = new LoanType();
 //                Financial dataFinance = new Financial();
-                Employee dataEMploye = employeeService.findById(object.getId_employee());
+                Employee dataEMploye = null;
+                if (object.getId_employee() != null) {
+                    dataEMploye = employeeService.findById(object.getId_employee());
+                }
+                if (object.getEmployeeId() != null) {
+                    dataEMploye = employeeService.findByEmployee(object.getEmployeeId());
+                }
                 log.info("isi dataEMploye " + dataEMploye.toString());
                 if (dataEMploye == null) {
                     rs.setResponse_code("05");
@@ -147,13 +153,13 @@ public class LoanController {
                     process = false;
                 }
                 if (process) {
-                    
+
                     dataLoan.setEmployee(dataEMploye);
                     String isi_tgl_repayment = null;
                     Date tgl_repayment = null;
                     if (object.getRepayment_date() != null) {
                         isi_tgl_repayment = dateFormat.format(object.getRepayment_date());
-                        
+
                         tgl_repayment = dateFormat.parse(isi_tgl_repayment);
                     }
                     dataLoan.setRepayment_date(tgl_repayment);
@@ -171,14 +177,18 @@ public class LoanController {
                             rs.setResponse_code("01");
                             rs.setInfo("Success");
                             rs.setResponse("Create Loan Apps Success");
+                            return rs;
                         }
                     }
                 } else {
+                    rs.setResponse_code("05");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Create Loan Apps Failed");
                     return rs;
                 }
-                
+
             }
-            
+
             if ("B".equalsIgnoreCase(typeLoan.getTypeLoan())) {
                 if (object.getCase_id() == null) {
                     rs.setResponse_code("05");
@@ -203,12 +213,12 @@ public class LoanController {
                     rs.setResponse("Can't Access Loan Apps Type Type B");
                     process = false;
                 }
-                if (!dataEMploye.getRoleName().equalsIgnoreCase("lawyer")) {
-                    rs.setResponse_code("05");
-                    rs.setInfo("Failed");
-                    rs.setResponse("Can't Access Loan Apps Type B");
-                    process = false;
-                }
+//                if (!dataEMploye.getRoleName().equalsIgnoreCase("lawyer")) {
+//                    rs.setResponse_code("05");
+//                    rs.setInfo("Failed");
+//                    rs.setResponse("Can't Access Loan Apps Type B");
+//                    process = false;
+//                }
                 if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) == 0) {
                     rs.setResponse_code("05");
                     rs.setInfo("Failed");
@@ -222,7 +232,7 @@ public class LoanController {
                     process = false;
                 }
                 if (process) {
-                    
+
                     CaseDetails dataCase = caseDetailsService.findById(object.getCase_id());
                     dataLoan.setEmployee(dataEMploye);
                     String isi_tgl_repayment = null;
@@ -253,7 +263,7 @@ public class LoanController {
 //                    rs.setResponse("Create Loan Apps Type B Failed");
                     return rs;
                 }
-                
+
             }
             return rs;
         } catch (ParseException ex) {
@@ -263,7 +273,7 @@ public class LoanController {
             rs.setResponse(ex.getMessage());
             return rs;
         }
-        
+
     }
 
 //    @RequestMapping(value = "/approveByAdmin", method = RequestMethod.POST, produces = {"application/json"})
@@ -272,7 +282,7 @@ public class LoanController {
 //  public Response approveByAdmin(@RequestBody final LoanApi object) {
 
         Boolean process = true;
-//        Loan dataLoan = new Loan();
+//      Loan dataLoan = new Loan();
         LoanType typeLoan = new LoanType();
         Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
         Financial dataFinance = new Financial();
@@ -282,12 +292,12 @@ public class LoanController {
             rs.setResponse("Employee Id Not found");
             process = false;
         }
-        if (dataEMploye.getRoleName().contentEquals("admin")) {
-            rs.setResponse_code("05");
-            rs.setInfo("Failed");
-            rs.setResponse("Cannot Access This feature");
-            process = false;
-        }
+//        if (dataEMploye.getRoleName().contentEquals("admin")) {
+//            rs.setResponse_code("05");
+//            rs.setInfo("Failed");
+//            rs.setResponse("Cannot Access This feature");
+//            process = false;
+//        }
         Loan dataLoan = loanService.findById(object.getLoan_id());
         if (dataLoan == null) {
             rs.setResponse_code("05");
@@ -334,12 +344,12 @@ public class LoanController {
             rs.setResponse("Employee Id Not found");
             process = false;
         }
-        if (dataEMploye.getRoleName().contentEquals("finance")) {
-            rs.setResponse_code("05");
-            rs.setInfo("Failed");
-            rs.setResponse("Cannot Access This feature");
-            process = false;
-        }
+//        if (dataEMploye.getRoleName().contentEquals("finance")) {
+//            rs.setResponse_code("05");
+//            rs.setInfo("Failed");
+//            rs.setResponse("Cannot Access This feature");
+//            process = false;
+//        }
         dataLoan = loanService.findById(object.getLoan_id());
         if (dataLoan == null) {
             rs.setResponse_code("05");
@@ -379,7 +389,7 @@ public class LoanController {
         }
         return rs;
     }
-    
+
     @PermitAll
     @PutMapping(value = "/deleteLoan/{loan_id}", produces = {"application/json"})
     public Response deleteLoan(@RequestBody final LoanApi object, @PathVariable("loan_id") Long loan_id) {
@@ -390,22 +400,22 @@ public class LoanController {
             rs.setInfo("Failed");
             rs.setResponse("Employee Id Not found");
         }
-        if (dataEMploye.getRoleName().contentEquals("admin")) {
-            rs.setResponse_code("05");
-            rs.setInfo("Failed");
-            rs.setResponse("Cannot Access This feature");
-        }
+//        if (dataEMploye.getRoleName().contentEquals("admin")) {
+//            rs.setResponse_code("05");
+//            rs.setInfo("Failed");
+//            rs.setResponse("Cannot Access This feature");
+//        }
         if (entity != null) {
             entity.setIsDelete(true);
             entity.setIsActive("0");
-            
+
             rs.setResponse_code("01");
             rs.setInfo("Succes");
             rs.setResponse("Loan Deleted");
         }
         return rs;
     }
-    
+
     @PermitAll
     @RequestMapping(value = "/viewLoan", method = RequestMethod.GET, produces = {"application/json"})
     public ResponseEntity<String> viewLoan() {
@@ -418,7 +428,7 @@ public class LoanController {
             } else {
                 entityList = this.loanService.listLoanPaging(max, start);
             }
-            
+
             JSONArray array = new JSONArray();
             for (int i = 0; i < entityList.size(); i++) {
                 JSONObject jsonobj = new JSONObject();
@@ -489,8 +499,10 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(new CustomErrorType("Data Not Found "),
-                HttpStatus.NOT_FOUND);
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
     }
 }

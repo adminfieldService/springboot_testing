@@ -6,8 +6,11 @@
 package com.lawfirm.apps.service.interfaces;
 
 import com.lawfirm.apps.model.Employee;
+import com.lawfirm.apps.support.api.MyUserDetails;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,17 +32,28 @@ public interface EmployeeServiceIface {
 
     Employee findById(Long paramLong);
 
+    Employee chekUserName(String paramString);
+
     Employee findByEmployee(String paramString);
+
+    Employee findByEmployeeId(String paramString, Long Id);
 
     List<Employee> listEmployee();
 
-    List<Employee> listEmployeePaging(int max, int start);
+    List<Employee> listEmployeePaging(String paramString, int max, int start);
 
     List<Employee> listActive(Boolean isActive);
 
-    List<Employee> findByApproved(String paramString);
+    List<Employee> findByApproved(Long paramLong);
 
     Integer count();
 
     EntityManager getEntityManager();
+
+//    MyUserDetails loadUserByUsername(String userName);
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
+
+    Optional<Employee> findByUsername(String username);
 }

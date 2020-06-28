@@ -38,6 +38,7 @@ public class EmployeeApi {
     protected Date input_date;
     protected Date aprroved_date;
     protected String linkCv;
+    protected String employee_id;
 //    private MultipartFile doc_cv;
 
    

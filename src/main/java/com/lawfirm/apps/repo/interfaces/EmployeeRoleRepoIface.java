@@ -7,6 +7,7 @@ package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.EmployeeRole;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,7 @@ public interface EmployeeRoleRepoIface {
 
     EmployeeRole findById(Long paramLong);
 
-    List<EmployeeRole>  findByRoleName(String paramString);
+    List<EmployeeRole> findByRoleName(String paramString);
 
     List<EmployeeRole> listRole();
 
@@ -38,4 +39,8 @@ public interface EmployeeRoleRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
+
+//    EmployeeRole findByIName(Long paramLong);
+//    Optional<EmployeeRole> findByName(String RoleName);
+     EmployeeRole findByName(String RoleName);
 }

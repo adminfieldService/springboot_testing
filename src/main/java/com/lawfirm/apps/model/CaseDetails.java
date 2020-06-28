@@ -31,9 +31,9 @@ import javax.persistence.TemporalType;
  * @author newbiecihuy
  */
 @Entity
-@Table(name = "tbl_case_details")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING, length = 80)
+//@Table(name = "tbl_case_details")
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING, length = 80)
 @DiscriminatorValue("CaseDetails")
 @NamedQueries({
     @javax.persistence.NamedQuery(name = "CaseDetails.findAll", query = "SELECT d FROM CaseDetails d")})

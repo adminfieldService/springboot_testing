@@ -9,11 +9,17 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.repo.interfaces.EmployeeRepoIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -99,6 +105,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
         try {
             entity.setIsActive(false);
             entity.setIsDelete(true);
+            entity.setStatus("d");
             entityManager.merge(entity);
             if (entity != null) {
 //	                CreateLog.createJson(entity, "fieldservice");
@@ -147,20 +154,20 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         }
     }
-//    @Override
-//    public Employee findByEmpId(Long paramLong) {
-//        try {
-//            return (Employee) entityManager.find(Employee.class, paramLong);
-//        } catch (Exception ex) {
-//            logger.error(ex.getMessage());
-//            System.out.println("ERROR: " + ex.getMessage());
-//            return null;
-//        } finally {
-//            if ((entityManager != null) && (entityManager.isOpen())) {
-//                entityManager.close();
-//            }
-//        }
-//    }
+
+    public Employee findByEmpId(Long paramLong) {
+        try {
+            return (Employee) entityManager.find(Employee.class, paramLong);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 
     @Override
     public Employee findByEmployee(String paramString) {
@@ -168,14 +175,41 @@ public class EmployeeRepo implements EmployeeRepoIface {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
                     + " e.nik = :nik OR "
                     + " LOWER(e.name) = :name OR "
+                    + " LOWER(e.userName) = :userName OR "
                     + " e.npwp = :npwp OR "
                     + " LOWER(e.email) = :email OR "
-                    + " e.employeeId = :employeeId ")
+                    + " e.employeeId = :employeeId OR"
+                    + " e.idEmployee = :idEmployee OR"
+                    + " e.mobilePhone = :mobilePhone ")
                     .setParameter("nik", paramString)
                     .setParameter("name", paramString.toLowerCase())
+                    .setParameter("userName", paramString.toLowerCase())
                     .setParameter("npwp", paramString)
                     .setParameter("email", paramString.toLowerCase())
                     .setParameter("employeeId", paramString.toLowerCase())
+                    .setParameter("idEmployee", Long.parseLong(paramString))
+                    .setParameter("mobilePhone", paramString)
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Employee findByEmployeeId(String paramString, Long Id) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.employeeId = :employeeId AND "
+                    + " e.idEmployee = :idEmployee ")
+                    .setParameter("employeeId", paramString.toLowerCase())
+                    .setParameter("idEmployee", Id)
                     .getSingleResult();
             return listAcquire;
         } catch (Exception ex) {
@@ -209,12 +243,35 @@ public class EmployeeRepo implements EmployeeRepoIface {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Employee> listEmployeePaging(int max, int start) {
+    public List<Employee> listEmployeePaging(String paramString, int max, int start) {
         try {
-            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
-                    .setMaxResults(max)
-                    .setFirstResult(start)
-                    .getResultList();
+            List<Employee> listAcquire = null;
+            if (paramString == null) {
+                listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            } else {
+                listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                        + " e.nik = :nik OR "
+                        + " LOWER(e.name) = :name OR "
+                        + " e.npwp = :npwp OR "
+                        + " LOWER(e.email) = :email OR "
+                        + " e.employeeId = :employeeId OR"
+                        + " e.idEmployee = :idEmployee OR"
+                        + " e.mobilePhone = :mobilePhone OR"
+                        + " LOWER(e.status) = :status ")
+                        .setParameter("nik", paramString)
+                        .setParameter("name", paramString.toLowerCase())
+                        .setParameter("npwp", paramString)
+                        .setParameter("email", paramString.toLowerCase())
+                        .setParameter("employeeId", paramString.toLowerCase())
+                        .setParameter("idEmployee", Long.parseLong(paramString))
+                        .setParameter("status", paramString.toLowerCase())
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -249,11 +306,11 @@ public class EmployeeRepo implements EmployeeRepoIface {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List< Employee> findByApproved(String paramString) {
+    public List< Employee> findByApproved(Long paramString) {
         try {
             List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.approvedBy = :approvedBy ")
-                    .setParameter("approvedBy", paramString)
+                    + " e.parentId.idEmployee = :idEmployee ")
+                    .setParameter("idEmployee", paramString)
                     .getResultList();
             return listAcquire;
         } catch (Exception ex) {
@@ -277,6 +334,99 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public EntityManager getEntityManager() {
         // TODO Auto-generated method stub
         return entityManager;
+    }
+
+    @Override
+    public Employee chekUserName(String paramString) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.userName = :userName AND "
+                    + " e.isActive = :isActive AND "
+                    + " e.isLogin  = :isLogin ")
+                    .setParameter("userName", paramString.toLowerCase())
+                    .setParameter("isActive", true)
+                    .setParameter("isLogin", false)
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " LOWER(e.userName) = :userName")
+                    .setParameter("userName", username.toLowerCase())
+                    .getSingleResult();
+            if (listAcquire != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return false;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " LOWER(e.email) = :email")
+                    .setParameter("email", email.toLowerCase())
+                    .getSingleResult();
+            if (listAcquire != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return false;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+//    https://stackoverflow.com/questions/40082175/dao-with-null-object-pattern
+    @Override
+    public Optional<Employee> findByUsername(String username) {
+        try {
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.userName = :userName AND "
+                    + " e.isActive = :isActive AND "
+                    + " e.isLogin  = :isLogin ")
+                    .setParameter("userName", username.toLowerCase())
+                    .setParameter("isActive", true)
+                    .setParameter("isLogin", false)
+                    .getSingleResult();
+            return Optional.ofNullable(listAcquire);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
 }

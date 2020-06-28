@@ -38,4 +38,6 @@ public interface EmployeeRoleServiceIface {
     Integer count();
 
     EntityManager getEntityManager();
+    
+    EmployeeRole findByName(String RoleName);
 }

@@ -5,7 +5,10 @@
  */
 package com.lawfirm.apps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -14,7 +17,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
@@ -25,6 +30,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -33,6 +40,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -69,8 +80,9 @@ public class Employee implements Serializable {
     private String userName;
     @Column(name = "role_name")
     private String roleName;
+//    private Set<EmployeeRole> roleName = new HashSet<>();
     @Column(name = "user_pass")
-    private String userPass;
+    private String password;
     @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_register", nullable = true)
@@ -88,19 +100,23 @@ public class Employee implements Serializable {
     private Boolean isActive;
     @Column(name = "is_delete")
     private Boolean isDelete;
-    @Column(name = "approved_by")
-    private String approvedBy;
+    @Column(name = "is_login")
+    private Boolean isLogin;
+//    @Column(name = "approved_by")
+//    private String approvedBy;
     @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
-    @Column(name = "aprroved_date", nullable = true)
+    @Column(name = "approved_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date aprroved_date;
+    private Date approved_date;
     @Column(name = "link_cv")
     private String linkCv;
     @Column(name = "sign_ttd")
     private String signTtd;
     @Column(name = "mobile_phone")
     private String mobilePhone;
+    @Column(name = "status", length = 1)
+    private String status;
     @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
@@ -122,12 +138,26 @@ public class Employee implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")
     private Collection<Professional> professionalCollection;
 
+//    private List<GrantedAuthority> authorities;
+    @JsonIgnore
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "parentId", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)//FetchType.LAZY
+    @JsonManagedReference("parentId")
+
+    protected List<Employee> child_colect;
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)//FetchType.LAZY
+    @JsonBackReference("parentId")
+    @JoinColumn(name = "approved_by")
+    protected Employee parentId;
+
     @PrePersist
     public void onCreate() {
         this.isActive = false;
         this.isDelete = false;
+        this.isLogin = false;
         tgInput = new Date();
         dateRegister = new Date();
+        this.status = "p";
     }
 
     public Employee() {
@@ -300,6 +330,29 @@ public class Employee implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+//    public Set<EmployeeRole> getRoleName() {
+//        return roleName;
+//    }
+//
+//    public void setRoleName(Set<EmployeeRole> roleName) {
+//        this.roleName = roleName;
+//    }
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -322,21 +375,22 @@ public class Employee implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getUserPass() {
-        return userPass;
-    }
-
-    public void setUserPass(String userPass) {
-//        this.userPass = userPass;
-        this.userPass = (encrypt(getUserName() + userPass));//@^#$%password
+    public void setPassword(String password) {
+        this.password = password.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public Date getDateRegister() {
@@ -363,12 +417,20 @@ public class Employee implements Serializable {
         this.loanAmount = loanAmount;
     }
 
-    public Boolean getIsActive() {
+    public Boolean IsActive() {
         return isActive;
     }
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Boolean getIsLogin() {
+        return isLogin;
+    }
+
+    public void setIsLogin(Boolean isLogin) {
+        this.isLogin = isLogin;
     }
 
     public Boolean getIsDelete() {
@@ -379,34 +441,49 @@ public class Employee implements Serializable {
         this.isDelete = isDelete;
     }
 
-    public String getApprovedBy() {
-        return approvedBy;
+//    public String getApprovedBy() {
+//        return approvedBy;
+//    }
+//
+//    public void setApprovedBy(String approvedBy) {
+//        this.approvedBy = approvedBy.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+//                .replaceAll("<script>(.*?)</script>", "")
+//                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+//                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+//                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+//                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+//                .replaceAll("vbscript", "")
+//                .replaceAll("encode", "")
+//                .replaceAll("decode", "")
+//                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+//                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+//                .replaceAll("</script>", "")
+//                .replaceAll("<script(.*?)>", "")
+//                .replaceAll("eval\\((.*?)\\)", "")
+//                .replaceAll("expression\\((.*?)\\)", "");
+//    }
+    public List<Employee> getChild_colect() {
+        return child_colect;
     }
 
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
-                .replaceAll("<script>(.*?)</script>", "")
-                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
-                .replaceAll("vbscript", "")
-                .replaceAll("encode", "")
-                .replaceAll("decode", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
-                .replaceAll("</script>", "")
-                .replaceAll("<script(.*?)>", "")
-                .replaceAll("eval\\((.*?)\\)", "")
-                .replaceAll("expression\\((.*?)\\)", "");
+    public void setChild_colect(List<Employee> child_colect) {
+        this.child_colect = child_colect;
     }
 
-    public Date getAprroved_date() {
-        return aprroved_date;
+    public Employee getParentId() {
+        return parentId;
     }
 
-    public void setAprroved_date(Date aprroved_date) {
-        this.aprroved_date = aprroved_date;
+    public void setParentId(Employee parentId) {
+        this.parentId = parentId;
+    }
+
+    public Date getApproved_date() {
+        return approved_date;
+    }
+
+    public void setApproved_date(Date approved_date) {
+        this.approved_date = approved_date;
     }
 
     public String getLinkCv() {
@@ -543,8 +620,8 @@ public class Employee implements Serializable {
         return null;
     }
 
-    @Override
-    public String toString() {
-        return "com.lawfirm.apps.model.Employee[idEmployee=" + this.idEmployee + " ]";
+    public String getPassword() {
+        return password;
     }
+
 }

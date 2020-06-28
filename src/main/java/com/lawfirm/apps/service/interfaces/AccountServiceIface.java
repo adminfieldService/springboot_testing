@@ -29,6 +29,8 @@ public interface AccountServiceIface {
 
     Account findById(Long paramLong);
 
+    Account findAccount(String param);
+
     List<Account> findByEmployee(String param);
 
     List<Account> listAccount();

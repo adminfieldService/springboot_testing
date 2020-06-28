@@ -63,6 +63,12 @@ public class AccountService implements AccountServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Account findAccount(String param) {
+        return accountRepo.findAccount(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Account> findByEmployee(String param) {
         return accountRepo.findByEmployee(param);
     }

@@ -32,5 +32,8 @@ public class EngagementApi {
     protected String id_employee_admin;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     protected Date approved_date;
+    protected String employee_id[] = null;
+    protected String employee_name[] = null;
+    protected Double fee_share[] = null;
 
 }

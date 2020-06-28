@@ -10,6 +10,7 @@ import com.lawfirm.apps.model.EmployeeRole;
 import com.lawfirm.apps.repo.interfaces.EmployeeRoleRepoIface;
 import com.lawfirm.apps.service.interfaces.EmployeeRoleServiceIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,13 +83,19 @@ public class EmployeeRoleService implements EmployeeRoleServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Integer count() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return employeeRoleRepoIface.count();
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public EntityManager getEntityManager() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return employeeRoleRepoIface.getEntityManager();
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public EmployeeRole findByName(String RoleName) {
+        return employeeRoleRepoIface.findByName(RoleName);
     }
 
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lawfirm.apps.utils;
+package com.lawfirm.apps.response;
 
 import java.lang.reflect.Field;
 
