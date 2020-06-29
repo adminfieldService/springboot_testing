@@ -55,7 +55,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -122,7 +121,7 @@ public class EmployeeController { //LawfirmController
 
     @PostMapping(path = "/createEmployee", consumes = {"multipart/form-data"})
     @ResponseBody
-    @PreAuthorize("hasRole('admin') or hasRole('sysadmin')")
+//    @PreAuthorize("hasRole('admin') or hasRole('sysadmin')")
     public Response createEmployee(@RequestPart("jsonfield") final DataEmployee object, @RequestPart("doc_cv") MultipartFile file) {//@RequestParam(value = "doc_cv", required = false) MultipartFile file,
         try {
 
@@ -385,7 +384,7 @@ public class EmployeeController { //LawfirmController
 
     @PutMapping(value = "/updateEmployee/{id_employee}", consumes = {"multipart/form-data"})
     @ResponseBody
-    @PreAuthorize("hasRole('lawyer') or hasRole('admin')or hasRole('dmp')")
+//    @PreAuthorize("hasRole('lawyer') or hasRole('admin')or hasRole('dpm')")
     public Response updateEmployee(@RequestPart("jsonfield") final DataEmployee object, @RequestPart("doc_cv") MultipartFile file, @PathVariable("id_employee") Long id_employee) throws IOException {
         try {
             Employee updateEmployee = employeeService.findById(id_employee);
@@ -490,9 +489,6 @@ public class EmployeeController { //LawfirmController
                 if (process) {
                     List<Account> accoutList = accountService.findByEmployee(id_employee.toString());
                     System.out.println("accoutList" + accoutList.toString());
-//                    Account accP = new Account();
-//                    Account accl = new Account();
-//
 
                     if (updateEmployee.getName() == null) {
                         if (object.getName() != null) {
@@ -596,7 +592,7 @@ public class EmployeeController { //LawfirmController
                             }
                             upd_acc_loan.setTypeAccount("loan");
                             upd_acc_loan = this.accountService.update(upd_acc_loan);
-//                            updateEmployee.addAccount(upd_acc_loan);
+//                          updateEmployee.addAccount(upd_acc_loan);
                         }
                     }
                     updateEmployee = employeeService.update(updateEmployee);
@@ -622,6 +618,7 @@ public class EmployeeController { //LawfirmController
         return rs;
     }
 
+    @RequestMapping(value = "/saveUploadedFile", method = RequestMethod.POST)
     public Response saveUploadedFile(MultipartFile file, Employee object, int s) throws IOException {
         try {
 //            String link_cv = null;s
@@ -701,6 +698,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @PutMapping(value = "/updateAccount/{id_employee}", produces = {"application/json"})
+//     @PreAuthorize("hasRole('lawfirm') or hasRole('admin')or hasRole('dpm')or hasRole('admin')")
     public Response updateAccount(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee) {
         Boolean process = true;
         Employee updateEmployee = employeeService.findById(id_employee);
@@ -768,7 +766,9 @@ public class EmployeeController { //LawfirmController
         return rs;
     }
 
-    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
+//    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
+//     @RequestMapping(value = {"/approvedByAdmin"})
+    @RequestMapping(value = "/approvedByAdmin", method = RequestMethod.POST)
     public Response approvedByAdmin(@RequestBody final AprovedApi object) {
 //        if (!object.getRole_name().equalsIgnoreCase("admin")) {
 //            rs.setResponse_code("05");
@@ -778,6 +778,7 @@ public class EmployeeController { //LawfirmController
 
 //        log.info("approvedByAdmin : " + object);
 //        log.info("getId_employee : " + object.getId_employee());
+        Employee dataAdmin = employeeService.findById(object.getId_employee_admin());
         Employee dataEmployee = employeeService.findById(object.getId_employee());
 
         if (dataEmployee == null) {
@@ -843,7 +844,7 @@ public class EmployeeController { //LawfirmController
                 if (upd_account != null) {
                     rs.setResponse_code("01");
                     rs.setInfo("Succes");
-                    rs.setResponse("Employee approved By : " + "namaAdmin");//dataAdmin.getName());
+                    rs.setResponse("Employee approved By : " + dataAdmin.getName());//dataAdmin.getName());
                 } else {
                     rs.setResponse_code("05");
                     rs.setInfo("Warning");
@@ -856,9 +857,9 @@ public class EmployeeController { //LawfirmController
     }
 
 //    @PermitAll
-//    @PutMapping(value = "/approved/{id_employee}", produces = {"application/json"})
+    @PutMapping(value = "/approved/{id_employee}", produces = {"application/json"})
 //    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    @PreAuthorize("hasRole('admin')")
+//    @PreAuthorize("hasRole('admin')")
     public Response approved(@RequestBody final AprovedApi object, @PathVariable("id_employee") Long id_employee) {
         this.now = new Date();
         this.date_now = timeFormat.format(now);
@@ -943,7 +944,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @DeleteMapping(value = "/deleteEmployee/{id_employee}", produces = {"application/json"})//@PutMapping
-    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
+//    @PreAuthorize("hasRole('admin')")
     public Response deleteEmployee(@PathVariable("id_employee") Long idEmployee) {
         Employee entity = employeeService.findById(idEmployee);
 
@@ -968,7 +969,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @RequestMapping(value = "/viewEmployeeByAdmin", method = RequestMethod.GET, produces = {"application/json"})
-    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
+//    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
     public ResponseEntity<String> viewEmployeeByAdmin(ServletRequest request) {
         try {
             Map<String, String[]> paramMap = request.getParameterMap();
@@ -1019,6 +1020,11 @@ public class EmployeeController { //LawfirmController
                 } else {
                     jsonobj.put("nik", entity.getNik());
                 }
+                if (entity.getMobilePhone() == null) {
+                    jsonobj.put("cellphone", "");
+                } else {
+                    jsonobj.put("cellphone", entity.getMobilePhone());
+                }
                 if (entity.getNpwp() == null) {
                     jsonobj.put("npwp", "");
                 } else {
@@ -1048,6 +1054,16 @@ public class EmployeeController { //LawfirmController
                     jsonobj.put("status_employee", "");
                 } else {
                     jsonobj.put("status_employee", entity.getStatus());
+                }
+                if (entity.getGender().equalsIgnoreCase("m") || entity.getGender().equalsIgnoreCase("male")) {
+                    jsonobj.put("gender", "m");
+                } else {
+                    jsonobj.put("gender", "f");
+                }
+                if (entity.getParentId() == null) {
+                    jsonobj.put("aprroved by", "");
+                } else {
+                    jsonobj.put("aprroved by", entity.getParentId().getName());
                 }
                 if (entity.getIdEmployee() != null) {
                     List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());
@@ -1149,7 +1165,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @RequestMapping(value = "/viewEmployeeByFinance", method = RequestMethod.GET, produces = {"application/json"})
-    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')  or hasRole('finance')")
+//    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')  or hasRole('finance')")
     public ResponseEntity<String> viewEmployeeByFinance(ServletRequest request) {
         try {
             Map<String, String[]> paramMap = request.getParameterMap();
@@ -1200,6 +1216,11 @@ public class EmployeeController { //LawfirmController
                 } else {
                     jsonobj.put("nik", entity.getNik());
                 }
+                if (entity.getMobilePhone() == null) {
+                    jsonobj.put("cellphone", "");
+                } else {
+                    jsonobj.put("cellphone", entity.getMobilePhone());
+                }
                 if (entity.getNpwp() == null) {
                     jsonobj.put("npwp", "");
                 } else {
@@ -1242,6 +1263,16 @@ public class EmployeeController { //LawfirmController
                 } else {
                     jsonobj.put("is_delete", true);
 //                    jsonobj.put("status_employee", "d");
+                }
+                if (entity.getGender().equalsIgnoreCase("m") || entity.getGender().equalsIgnoreCase("male")) {
+                    jsonobj.put("gender", "m");
+                } else {
+                    jsonobj.put("gender", "f");
+                }
+                if (entity.getParentId() == null) {
+                    jsonobj.put("aprroved by", "");
+                } else {
+                    jsonobj.put("aprroved by", entity.getParentId().getName());
                 }
                 if (entity.getIdEmployee() != null) {
                     List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());

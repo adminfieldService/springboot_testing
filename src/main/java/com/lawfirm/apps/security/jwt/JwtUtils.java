@@ -5,16 +5,14 @@
  */
 package com.lawfirm.apps.security.jwt;
 
-import com.lawfirm.apps.support.api.ERole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.security.core.GrantedAuthority;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -76,26 +74,36 @@ public class JwtUtils {
         return false;
     }
 
-    public static boolean checkRole(Collection<? extends GrantedAuthority> authorities, ERole userRole) {
-
-        for (GrantedAuthority authority : authorities) {
-            if (authority.getAuthority().contains(ERole.ROLE_SysAdmin.toString())) {
-                return true;
-            }
-            if (authority.getAuthority().contains(ERole.ROLE_ADMIN.toString())) {
-                return true;
-            }
-            if (authority.getAuthority().contains(ERole.ROLE_DMP.toString())) {
-                return true;
-            }
-            if (authority.getAuthority().contains(ERole.ROLE_FINANCE.toString())) {
-                return true;
-            }
-            if (authority.getAuthority().contains(ERole.ROLE_LAWYER.toString())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+//    public static boolean checkRole(Collection<? extends GrantedAuthority> authorities, ERole userRole) {
+//
+//        for (GrantedAuthority authority : authorities) {
+//            if (authority.getAuthority().contains(ERole.ROLE_SysAdmin.toString())) {
+//                return true;
+//            }
+//            if (authority.getAuthority().contains(ERole.ROLE_ADMIN.toString())) {
+//                return true;
+//            }
+//            if (authority.getAuthority().contains(ERole.ROLE_DMP.toString())) {
+//                return true;
+//            }
+//            if (authority.getAuthority().contains(ERole.ROLE_FINANCE.toString())) {
+//                return true;
+//            }
+//            if (authority.getAuthority().contains(ERole.ROLE_LAWYER.toString())) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
+//    public static String getSubject(HttpServletRequest httpServletRequest, String jwtTokenCookieName, String signingKey) {
+//        String token = CookieUtil.getValue(httpServletRequest, jwtTokenCookieName);
+//        if (token == null) {
+//            return null;
+//        }
+//        return Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token).getBody().getSubject();
+//    }
+//    public static void invalidateRelatedTokens(HttpServletRequest httpServletRequest) {
+//        RedisUtil.INSTANCE.srem(REDIS_SET_ACTIVE_SUBJECTS, (String) httpServletRequest.getAttribute("username"));
+//    }
 }

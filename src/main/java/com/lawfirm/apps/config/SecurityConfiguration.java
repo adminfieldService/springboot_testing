@@ -11,6 +11,7 @@ import com.lawfirm.apps.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -68,9 +69,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .authorizeRequests()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/saveUploadedFile/**").access("hasRole('admin') or hasRole('sysadmin')or hasRole('lawyer')")
+                .antMatchers(HttpMethod.POST,"/approvedByAdmin/**").access("hasRole('admin') or hasRole('sysadmin')")
+                .antMatchers(HttpMethod.POST, "/createEmployee/**").access("hasRole('admin') or hasRole('sysadmin')")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/viewEmployeeByAdmin/**").access("hasRole('admin') or hasRole('sysadmin')")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/viewEmployeeByFinance/**").access("hasRole('finance') or hasRole('sysadmin')")//.permitAll()
+                .antMatchers(HttpMethod.PUT, "/updateEmployee/**").access("hasRole('lawyer') or hasRole('admin')or hasRole('dpm')")//.permitAll()
+                .antMatchers(HttpMethod.PUT, "/updateAccount/**").access("hasRole('lawfirm') or hasRole('admin')or hasRole('dpm')or hasRole('finance')")//.permitAll()   
+                .antMatchers(HttpMethod.PUT, "/approved/**").access("hasRole('sysadmin') or hasRole('admin')")//.permitAll()   
+                .antMatchers(HttpMethod.DELETE, "/deleteEmployee/**").access("hasRole('admin')")//.permitAll()   
+                .antMatchers("/loan/**").permitAll()
+                .antMatchers("/engagement/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .maximumSessions(1);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -227,7 +227,9 @@ public class EmployeeRepo implements EmployeeRepoIface {
     @SuppressWarnings("unchecked")
     public List<Employee> listEmployee() {
         try {
-            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
+            List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " e.roleName <> :roleName ")
+                    .setParameter("roleName", "sysadmin")
                     .getResultList();
             return listAcquire;
         } catch (Exception ex) {
@@ -260,7 +262,8 @@ public class EmployeeRepo implements EmployeeRepoIface {
                         + " e.employeeId = :employeeId OR"
                         + " e.idEmployee = :idEmployee OR"
                         + " e.mobilePhone = :mobilePhone OR"
-                        + " LOWER(e.status) = :status ")
+                        + " LOWER(e.status) = :status AND "
+                        + " e. roleName <> :roleName ")
                         .setParameter("nik", paramString)
                         .setParameter("name", paramString.toLowerCase())
                         .setParameter("npwp", paramString)
@@ -268,6 +271,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
                         .setParameter("employeeId", paramString.toLowerCase())
                         .setParameter("idEmployee", Long.parseLong(paramString))
                         .setParameter("status", paramString.toLowerCase())
+                        .setParameter("roleName", "sysadmin")
                         .setMaxResults(max)
                         .setFirstResult(start)
                         .getResultList();
@@ -289,8 +293,10 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public List<Employee> listActive(Boolean isActive) {
         try {
             List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.isActive = :isActive ")
+                    + " e.isActive = :isActive AND "
+                    + " e. roleName <> :roleName ")
                     .setParameter("isActive", isActive)
+                    .setParameter("roleName", "sysadmin")
                     .getResultList();
             return listAcquire;
         } catch (Exception ex) {

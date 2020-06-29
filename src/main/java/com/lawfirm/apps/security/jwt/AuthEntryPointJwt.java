@@ -34,19 +34,19 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 //		logger.error("Unauthorized error: {}", authException.getMessage());
 //                response.setContentType("application/json");
 //		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
-        final Map<String, Object> mapBodyException = new HashMap<>();
+        final Map<String, Object> obj = new HashMap<>();
 
-        mapBodyException.put("error", "Error from AuthenticationEntryPoint");
-        mapBodyException.put("message", "Message from AuthenticationEntryPoint");
-        mapBodyException.put("exception", "My stack trace exception");
-        mapBodyException.put("path", request.getServletPath());
-        mapBodyException.put("timestamp", (new Date()).getTime());
+        obj.put("error", "05");
+        obj.put("message", authException.getMessage());
+        obj.put("exception", "My stack trace exception");
+        obj.put("path", request.getServletPath());
+        obj.put("timestamp", (new Date()).getTime());
 
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), mapBodyException);
+        mapper.writeValue(response.getOutputStream(), obj);
 
     }
 

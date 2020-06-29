@@ -13,7 +13,7 @@ public enum ERole {
     ROLE_SysAdmin("sysadmin"),
     ROLE_FINANCE("finance"),
     ROLE_ADMIN("admin"),
-    ROLE_DMP("dmp"),
+    ROLE_DMP("dpm"),
     ROLE_LAWYER("lawyer");
 
     private String roleAssigned;

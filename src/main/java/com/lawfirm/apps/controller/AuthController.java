@@ -11,6 +11,7 @@ import com.lawfirm.apps.security.jwt.JwtUtils;
 import com.lawfirm.apps.service.EmployeeRoleService;
 import com.lawfirm.apps.service.EmployeeService;
 import com.lawfirm.apps.response.Response;
+import com.lawfirm.apps.security.webutils.CookieUtil;
 import com.lawfirm.apps.service.UserServiceImpl;
 import com.lawfirm.apps.support.api.AuthenticationRequest;
 import com.lawfirm.apps.support.api.MyUserDetails;
@@ -19,6 +20,8 @@ import com.lawfirm.apps.utils.CustomErrorType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @Slf4j
 public class AuthController {
 
@@ -64,10 +67,25 @@ public class AuthController {
 
     final Response rs = new Response();
 
+    @RequestMapping("/")
+    public String home() {
+//        return "redirect:/login";
+        return login();
+    }
+
+    @RequestMapping("/login")
+    public String login() {
+//        return "createAuthenticationToken";
+        return "redirect:/signin";
+    }
+
+//    @RequestMapping("/logout")
+//    public String logout() {
+//        return "createAuthenticationToken";
+//    }
     @PostMapping("/signin")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         HttpHeaders responseHeaders = new HttpHeaders();
-
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
         );
@@ -83,6 +101,7 @@ public class AuthController {
 //        int id = (int) (long) userDetails.getId();
         response.setId(userDetails.getId());
         response.setUsername(userDetails.getUsername());
+        response.setActive(userDetails.isEnabled());
         List<String> roles = new ArrayList<>();
         userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
         response.setRoles(roles);
@@ -120,7 +139,7 @@ public class AuthController {
         Employee entity = new Employee();
         if (empRepository.existsByUsername(signUpRequest.getUserName())) {
             rs.setResponse_code("05");
-            rs.setInfo("You have entered an invalid email address :" + signUpRequest.getUserName());
+            rs.setInfo("You  username :" + signUpRequest.getUserName() + " already Exist");
             rs.setResponse("Create Employee Failed");
             return ResponseEntity
                     .badRequest()
@@ -129,7 +148,7 @@ public class AuthController {
 
         if (empRepository.existsByEmail(signUpRequest.getEmail())) {
             rs.setResponse_code("05");
-            rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail());
+            rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail() + " already Exist");
             rs.setResponse("Create Employee Failed");
             return ResponseEntity
                     .badRequest()
@@ -157,4 +176,11 @@ public class AuthController {
         }
 
     }
+
+//    @RequestMapping("/logout")
+//    public String logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+//        JwtUtils.invalidateRelatedTokens(httpServletRequest);
+//        CookieUtil.clear(httpServletResponse, jwtTokenCookieName);
+//        return "redirect:/";
+//    }
 }

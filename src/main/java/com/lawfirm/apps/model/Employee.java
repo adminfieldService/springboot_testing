@@ -152,12 +152,12 @@ public class Employee implements Serializable {
 
     @PrePersist
     public void onCreate() {
-        this.isActive = false;
+        this.isActive = true;
         this.isDelete = false;
         this.isLogin = false;
         tgInput = new Date();
         dateRegister = new Date();
-        this.status = "p";
+        this.status = "a";
     }
 
     public Employee() {

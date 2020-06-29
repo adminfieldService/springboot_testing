@@ -18,7 +18,9 @@ public class AuthenticationResponse implements Serializable {
 
     private final String jwt;
     private int id;
-    private String username;
+    private String username;    
+     private String employeeId;
+    private boolean active;
     private List<String> roles;
 
     public AuthenticationResponse(String jwt) {
@@ -45,6 +47,23 @@ public class AuthenticationResponse implements Serializable {
         this.username = username;
     }
 
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+    
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public List<String> getRoles() {
         return roles;
     }
@@ -52,4 +71,5 @@ public class AuthenticationResponse implements Serializable {
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
+
 }
