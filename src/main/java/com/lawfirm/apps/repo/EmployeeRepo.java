@@ -416,14 +416,16 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public Optional<Employee> findByUsername(String username) {
         try {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.userName = :userName AND "
-                    + " e.isActive = :isActive AND "
-                    + " e.isLogin  = :isLogin ")
+                    + " e.userName = :userName")
                     .setParameter("userName", username.toLowerCase())
-                    .setParameter("isActive", true)
-                    .setParameter("isLogin", false)
                     .getSingleResult();
-            return Optional.ofNullable(listAcquire);
+            if (listAcquire.getIsLogin() == true) {
+                return Optional.empty();
+            } else if (listAcquire.IsActive() == false) {
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(listAcquire);
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -434,5 +436,33 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         }
     }
+//    public Optional<Employee> findByUsername(String username) {
+//        try {
+//            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+//                    + " e.userName = :userName AND "
+//                    + " e.isActive = :isActive AND "
+//                    + " e.isLogin  = :isLogin ")
+//                    .setParameter("userName", username.toLowerCase())
+//                    .setParameter("isActive", true)
+//                    .setParameter("isLogin", false)
+//                    .getSingleResult();
+//            if (listAcquire.getIsLogin() == true) {
+//
+//                return Optional.empty();
+//            } else if (listAcquire.IsActive() == false) {
+//                return Optional.empty();
+//            } else {
+//                return Optional.ofNullable(listAcquire);
+//            }
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
 
 }

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author newbiecihuy
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/auth")
 @Slf4j
@@ -84,30 +87,42 @@ public class AuthController {
 //        return "createAuthenticationToken";
 //    }
     @PostMapping("/signin")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
-        );
-
-        //if authentication was succesful else throw an exception
+    public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        try {
+            HttpHeaders responseHeaders = new HttpHeaders();
+            Authentication authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
+            );
+            AuthenticationResponse response = null;
+            //if authentication was succesful else throw an exception
 //        log.info("authenticate : " + authenticate);
-        final MyUserDetails userDetails = (MyUserDetails) userRepository
-                .loadUserByUsername(authenticationRequest.getUsername());
-//        log.info("userDetails : " + userDetails);
-        final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
-//        log.info("jwt : " + jwt);
-        AuthenticationResponse response = new AuthenticationResponse(jwt);
-//        int id = (int) (long) userDetails.getId();
-        response.setId(userDetails.getId());
-        response.setUsername(userDetails.getUsername());
-        response.setActive(userDetails.isEnabled());
-        List<String> roles = new ArrayList<>();
-        userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
-        response.setRoles(roles);
+            final MyUserDetails userDetails = (MyUserDetails) userRepository
+                    .loadUserByUsername(authenticationRequest.getUsername());
+//            log.info("userDetails : " + userDetails);
+            if (userDetails == null) {
+                response.setUsername(null);
+                return new ResponseEntity(response, responseHeaders, HttpStatus.FORBIDDEN);
+            }
+            final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
+//          log.info("jwt : " + jwt);
+            response = new AuthenticationResponse(jwt);
+//          int id = (int) (long) userDetails.getId();
+            response.setId(userDetails.getId());
+            response.setUsername(userDetails.getUsername());
+            response.setActive(userDetails.isEnabled());
+            List<String> roles = new ArrayList<>();
+            userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
+            response.setRoles(roles);
+            return new ResponseEntity(response, responseHeaders, HttpStatus.OK);
 
-        return new ResponseEntity<>(response, responseHeaders, HttpStatus.OK);
-
+        } catch (AuthenticationException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
     }
 
 //    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginApi loginRequest) {

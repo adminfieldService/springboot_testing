@@ -7,6 +7,7 @@ package com.lawfirm.apps.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lawfirm.apps.model.Employee;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -29,18 +30,21 @@ public class UserDetailsImpl implements UserDetails {
 
     private String email;
 
+    private String role;
+
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
+    public UserDetailsImpl(Long id, String username, String email, String password, String role,
             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.role = role;
     }
 
 //    public static UserDetailsImpl build(Employee user) {
@@ -55,10 +59,17 @@ public class UserDetailsImpl implements UserDetails {
 //                user.getUserPass(),
 //                authorities);
 //    }
-
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return authorities;
+//    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        List<GrantedAuthority> list = new ArrayList<>();
+
+        list.add(new SimpleGrantedAuthority(role));
+
+        return list;
     }
 
     public Long getId() {

@@ -32,6 +32,7 @@ import javax.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author newbiecihuy
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
 @RequestMapping({"/engagement"})
 public class EngagementController {
