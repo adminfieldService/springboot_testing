@@ -202,14 +202,32 @@ public class EmployeeRepo implements EmployeeRepoIface {
         }
     }
 
+//    @Override
+//    public Employee findByEmployeeId(String paramString, Long Id) {
+//        try {
+//            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+//                    + " e.employeeId = :employeeId AND "
+//                    + " e.idEmployee = :idEmployee ")
+//                    .setParameter("employeeId", paramString.toLowerCase())
+//                    .setParameter("idEmployee", Id)
+//                    .getSingleResult();
+//            return listAcquire;
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
     @Override
-    public Employee findByEmployeeId(String paramString, Long Id) {
+    public Employee findByEmployeeId(String paramString) {
         try {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.employeeId = :employeeId AND "
-                    + " e.idEmployee = :idEmployee ")
+                    + " e.employeeId = :employeeId")
                     .setParameter("employeeId", paramString.toLowerCase())
-                    .setParameter("idEmployee", Id)
                     .getSingleResult();
             return listAcquire;
         } catch (Exception ex) {

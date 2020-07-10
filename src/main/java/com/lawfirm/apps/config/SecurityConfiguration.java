@@ -74,28 +74,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    //
-//    added 20272020
-//    @Override
-//    public void configure(final WebSecurity web) {
-//        web.ignoring().antMatchers(HttpMethod.OPTIONS);
-//    }
-//
-//    @Bean
-//    public FilterRegistrationBean processCorsFilter() {
-//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        final CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("'");
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", config);
-//
-//        final FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-//        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-//        return bean;
-//    }
-    //
     @Override
     protected void configure(HttpSecurity http) throws Exception {//.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
 
@@ -104,26 +82,58 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/saveUploadedFile/**").hasAnyRole("admin", "sysadmin", "lawyer")
-                .antMatchers(HttpMethod.POST, "/approvedByAdmin/**").hasAnyRole("admin", "sysadmin")
-                .antMatchers(HttpMethod.POST, "/createEmployee/**").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.GET, "/viewEmployeeByAdmin/**").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.GET, "/viewEmployeeByFinance/**").hasAnyRole("finance", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/updateEmployee/**").hasAnyRole("lawyer", "admin", "dpm")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/updateAccount/**").hasAnyRole("lawyer", "admin", "dpm", "finance")//.permitAll()   
-                .antMatchers(HttpMethod.PUT, "/approved/**").hasAnyRole("sysadmin", "admin")//.permitAll()   
-                .antMatchers(HttpMethod.DELETE, "/deleteEmployee/**").hasAnyRole("admin")//.permitAll()   
-                .antMatchers("/loan/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/managed-employee/**").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/find-by-id/**").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/employe-role/**").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/cv/managed-cv/**").hasAnyRole("admin", "sysadmin", "lawyer")
+                .antMatchers(HttpMethod.POST, "/approved/by-admin/**").hasAnyRole("admin", "sysadmin")
+                .antMatchers(HttpMethod.POST, "/approved/by-admin/**").hasAnyRole("admin", "sysadmin")
+                .antMatchers(HttpMethod.GET, "/view/list-by-admin/**").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/view/list-by-finance/**").hasAnyRole("finance", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.PUT, "/managed-employee/**").hasAnyRole("lawyer", "admin", "dpm")//.permitAll()
+                .antMatchers(HttpMethod.PUT, "/updateAccount/**").hasAnyRole("lawyer", "admin", "dpm", "finance")//.permitAll()    
+                .antMatchers(HttpMethod.DELETE, "/managed-employee/**").hasRole("admin")//.permitAll()   
+                .antMatchers("/loan/**").hasRole("lawyer")//.permitAll()
                 .antMatchers("/engagement/**").permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                .exceptionHandling().accessDeniedPage("/403")
                 .and()
                 .sessionManagement()
                 .maximumSessions(1);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {//.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
+//
+//        http.cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable()
+//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .antMatchers("/auth/**").permitAll()
+//                .antMatchers("/employee/**").hasAnyRole("admin", "sysadmin", "lawyer")
+//                //                .antMatchers("/approvedByAdmin").hasAnyRole("admin", "sysadmin")
+//                //                .antMatchers("/createEmployee").hasAnyRole("admin", "sysadmin")//.permitAll()
+//                //                .antMatchers("/viewEmployeeByAdmin").hasAnyRole("admin", "sysadmin")//.permitAll()
+//                //                .antMatchers("/viewEmployeeByFinance").hasAnyRole("finance", "sysadmin")//.permitAll()
+//                //                .antMatchers("/updateEmployee").hasAnyRole("lawyer", "admin", "dpm")//.permitAll()
+//                //                .antMatchers("/updateAccount").hasAnyRole("lawyer", "admin", "dpm", "finance")//.permitAll()   
+//                //                .antMatchers("/approved").hasAnyRole("sysadmin", "admin")//.permitAll()   
+//                //                .antMatchers("/deleteEmployee").hasAnyRole("admin")//.permitAll()   
+//                .antMatchers("/loan/**").hasAnyRole("lawyer", "admin", "dpm", "finance")
+//                .antMatchers("/engagement/**").hasAnyRole("lawyer", "admin", "dpm", "finance")
+//                .anyRequest().fullyAuthenticated()//.authenticated()                
+//                .and()
+//                .sessionManagement()
+//                .maximumSessions(1);
+//
+//        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//    }
 //https://stackoverflow.com/questions/51719889/spring-boot-cors-issue
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

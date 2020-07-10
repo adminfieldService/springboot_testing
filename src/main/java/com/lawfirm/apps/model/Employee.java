@@ -90,8 +90,8 @@ public class Employee implements Serializable {
     private Date dateRegister;
     @Column(name = "salary")
     private Double salary;
-    @Column(name = "loan_amount")
-    private Double loanAmount;
+    @Column(name = "loan_amount")//loan_limit
+    private Double loanAmount;//loan_limit
     @Column(name = "out_standing_loan")
     private Double outStandingLoan;
     @Column(name = "gender")
@@ -113,7 +113,7 @@ public class Employee implements Serializable {
     private String linkCv;
     @Column(name = "sign_ttd")
     private String signTtd;
-    @Column(name = "mobile_phone")
+    @Column(name = "cell_phone")
     private String mobilePhone;
     @Column(name = "status", length = 1)
     private String status;
@@ -350,7 +350,21 @@ public class Employee implements Serializable {
     }
 
     public void setRoleName(String roleName) {
-        this.roleName = roleName;
+        this.roleName = roleName.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public String getUserName() {

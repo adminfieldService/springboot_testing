@@ -35,7 +35,9 @@ public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> 
 
     Employee findByEmployee(String paramString);
 
-    Employee findByEmployeeId(String paramString, Long Id);
+//    Employee findByEmployeeId(String paramString, Long Id);
+
+    Employee findByEmployeeId(String paramString);
 
     List<Employee> listEmployee();
 

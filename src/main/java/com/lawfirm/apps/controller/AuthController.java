@@ -11,20 +11,17 @@ import com.lawfirm.apps.security.jwt.JwtUtils;
 import com.lawfirm.apps.service.EmployeeRoleService;
 import com.lawfirm.apps.service.EmployeeService;
 import com.lawfirm.apps.response.Response;
-import com.lawfirm.apps.security.webutils.CookieUtil;
 import com.lawfirm.apps.service.UserServiceImpl;
 import com.lawfirm.apps.support.api.AuthenticationRequest;
 import com.lawfirm.apps.support.api.MyUserDetails;
 import com.lawfirm.apps.support.api.SignupApi;
+import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -100,8 +97,13 @@ public class AuthController {
                     .loadUserByUsername(authenticationRequest.getUsername());
 //            log.info("userDetails : " + userDetails);
             if (userDetails == null) {
+//                rs.setResponse_code("05");
+//                rs.setInfo("fail");
+//                rs.setResponse("Login Fail");
                 response.setUsername(null);
-                return new ResponseEntity(response, responseHeaders, HttpStatus.FORBIDDEN);
+//                CreateLog.createJson(rs, "signin");
+                 return new ResponseEntity(new CustomErrorType("05", "Error", " Login Failed For User"),
+                    HttpStatus.NOT_FOUND);
             }
             final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
 //          log.info("jwt : " + jwt);
@@ -117,7 +119,8 @@ public class AuthController {
 
         } catch (AuthenticationException ex) {
             // TODO Auto-generated catch block
-            System.out.println("ERROR: " + ex.getMessage());
+            System.out.println("ERROR: " + ex.toString());
+            CreateLog.createJson(ex.getMessage().toString(), "signin");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -151,45 +154,54 @@ public class AuthController {
 //    }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupApi signUpRequest) {
-        Employee entity = new Employee();
-        if (empRepository.existsByUsername(signUpRequest.getUserName())) {
-            rs.setResponse_code("05");
-            rs.setInfo("You  username :" + signUpRequest.getUserName() + " already Exist");
-            rs.setResponse("Create Employee Failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(rs);
-        }
+        try {
+            Employee entity = new Employee();
+            if (empRepository.existsByUsername(signUpRequest.getUserName())) {
+                rs.setResponse_code("05");
+                rs.setInfo("You  username :" + signUpRequest.getUserName() + " already Exist");
+                rs.setResponse("Create Employee Failed");
+                return ResponseEntity
+                        .badRequest()
+                        .body(rs);
+            }
 
-        if (empRepository.existsByEmail(signUpRequest.getEmail())) {
-            rs.setResponse_code("05");
-            rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail() + " already Exist");
-            rs.setResponse("Create Employee Failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(rs);
-        }
+            if (empRepository.existsByEmail(signUpRequest.getEmail())) {
+                rs.setResponse_code("05");
+                rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail() + " already Exist");
+                rs.setResponse("Create Employee Failed");
+                return ResponseEntity
+                        .badRequest()
+                        .body(rs);
+            }
 
-        // Create new user's account
-        entity.setUserName(signUpRequest.getUserName());
-        entity.setName(signUpRequest.getUserName());
-        entity.setEmail(signUpRequest.getEmail());
-        entity.setIsActive(Boolean.TRUE);
-        entity.setIsDelete(Boolean.FALSE);
-        entity.setIsLogin(Boolean.FALSE);
-        entity.setApproved_date(new Date());
-        entity.setPassword(encoder.encode(signUpRequest.getEmail()));
-        entity.setRoleName(signUpRequest.getUserName());
-        Employee dataEmp = this.empRepository.create(entity);
+            // Create new user's account
+            entity.setUserName(signUpRequest.getUserName());
+            entity.setName(signUpRequest.getUserName());
+            entity.setEmail(signUpRequest.getEmail());
+            entity.setIsActive(Boolean.TRUE);
+            entity.setIsDelete(Boolean.FALSE);
+            entity.setIsLogin(Boolean.FALSE);
+            entity.setApproved_date(new Date());
+            entity.setPassword(encoder.encode(signUpRequest.getEmail()));
+            entity.setRoleName(signUpRequest.getUserName());
+            Employee dataEmp = this.empRepository.create(entity);
 
-        if (dataEmp == null) {
-            return new ResponseEntity(new CustomErrorType("05", "Fail", "User registered Failed"),
+            if (dataEmp == null) {
+                return new ResponseEntity(new CustomErrorType("05", "Fail", "User registered Failed"),
+                        HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity(new CustomErrorType("00", "Success", "User registered successfully"),
+                        HttpStatus.NOT_FOUND);
+            }
+        } catch (AuthenticationException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "signup");
+            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity(new CustomErrorType("00", "Success", "User registered successfully"),
-                    HttpStatus.NOT_FOUND);
         }
-
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
     }
 
 //    @RequestMapping("/logout")

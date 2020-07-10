@@ -16,6 +16,9 @@ import lombok.ToString;
 @ToString
 public class AccountApi {
 
+    protected String npwp;
+    protected String nik;
+    protected String name;
     protected String bank_name_p;
     protected String account_number_p;
     protected String account_name_p;

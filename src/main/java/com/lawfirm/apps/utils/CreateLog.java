@@ -30,14 +30,14 @@ public class CreateLog {
     }
 
     public static String createJson(Object object, String namaFile) {
-        Samba samba = new Samba();
+//        Samba samba = new Samba();
         String json = null;
         DateTimeFormatter outputDateFormat = DateTimeFormatter.ofPattern("dd_MM_yyyy");
         DateTimeFormatter lineDateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         byte[] input_file = null;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime line = LocalDateTime.now();
-        String path = "/opt/bpr_kanti_log/";
+        String path = "/opt/lawfirm_log/";
         String isi_namaFile = namaFile + "_" + outputDateFormat.format(now) + ".log";
         String isifile = path + isi_namaFile;
         ObjectMapper mapper = new ObjectMapper();

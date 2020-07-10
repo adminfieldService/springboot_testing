@@ -75,10 +75,15 @@ public class EmployeeService implements EmployeeServiceIface {
         return employeeRepo.findByEmployee(paramString);
     }
 
+//    @Override
+//    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+//    public Employee findByEmployeeId(String paramString, Long Id) {
+//        return employeeRepo.findByEmployeeId(paramString, Id);
+//    }
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Employee findByEmployeeId(String paramString, Long Id) {
-        return employeeRepo.findByEmployeeId(paramString, Id);
+    public Employee findByEmployeeId(String paramString) {
+        return employeeRepo.findByEmployeeId(paramString);
     }
 
     @Override

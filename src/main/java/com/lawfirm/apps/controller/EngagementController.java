@@ -97,7 +97,7 @@ public class EngagementController {
     }
 
     @PermitAll
-    @RequestMapping(value = "/createEngagement", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/manage-engagement", method = RequestMethod.POST, produces = {"application/json"})
     public Response createEngagement(@RequestBody final EngagementApi object) {
         try {
             System.out.print("isi object" + object.toString());
@@ -247,7 +247,7 @@ public class EngagementController {
     }
 
     @PermitAll
-    @PutMapping(value = "/addTeamMember/{engagement_id}", produces = {"application/json"})
+    @PutMapping(value = "/add-member/{engagement_id}", produces = {"application/json"})
     public Response addTeamMember(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id) {
         String[] employeeId = null;
         String[] employeeName = null;

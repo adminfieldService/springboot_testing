@@ -27,18 +27,6 @@ public class JwtUtils {
     static final String JWT_SECRET = "lawfirmSecretKey";//lawfirmSecretKey
     static final Integer JWT_ExpirationMs = 86400000;//1440 minutes --> 24 H
 
-//    public String generateJwtToken(Authentication authentication) {
-//
-////        Employee userPrincipal = (Employee) authentication.getPrincipal();
-//        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-//
-//        return Jwts.builder()
-//                .setSubject((userPrincipal.getUsername()))
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + JWT_ExpirationMs))
-//                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-//                .compact();
-//    }
     public String generateJwtToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());

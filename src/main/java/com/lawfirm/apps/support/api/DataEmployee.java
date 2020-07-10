@@ -29,9 +29,9 @@ public class DataEmployee {
     protected String address;
     protected String npwp;
     protected String tax_status;
-    protected String mobile_phone;
-    protected String userName;
-    protected String roleName;
+    protected String cell_phone;
+    protected String user_name;
+    protected String role_name;
     protected String userPass;
     protected String passUser;
     protected Date dateRegister;

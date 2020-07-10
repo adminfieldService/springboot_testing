@@ -36,7 +36,8 @@ public interface EmployeeServiceIface {
 
     Employee findByEmployee(String paramString);
 
-    Employee findByEmployeeId(String paramString, Long Id);
+//    Employee findByEmployeeId(String paramString, Long Id);
+    Employee findByEmployeeId(String paramString);
 
     List<Employee> listEmployee();
 
