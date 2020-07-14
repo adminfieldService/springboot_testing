@@ -26,6 +26,7 @@ public class MyUserDetails implements UserDetails {
     private String password;
     private boolean active;
     private String employeeId;
+    private String roleName;
     private List<GrantedAuthority> authorities;
     //new fields for the info
 //    private String company;
@@ -37,6 +38,7 @@ public class MyUserDetails implements UserDetails {
         this.password = user.getPassword();
         this.active = user.IsActive();
         this.employeeId = user.getEmployeeId();
+        this.roleName = user.getRoleName();
 
         //new fields addition
 //        this.company = user.getCompany();
@@ -88,5 +90,30 @@ public class MyUserDetails implements UserDetails {
     public void setId(int id) {
         this.id = id;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
     
+
 }

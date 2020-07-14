@@ -87,8 +87,14 @@ public class AuthController {
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             HttpHeaders responseHeaders = new HttpHeaders();
+//            Employee cekEmp = empRepository.chekUserName(authenticationRequest.getUsername());
+//            
+//            Authentication authenticate = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), "lawfirm" + cekEmp.getEmail() + authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
+//            );
+//            log.info("getPassword : " + authenticationRequest.getPassword());
             Authentication authenticate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
             );
             AuthenticationResponse response = null;
             //if authentication was succesful else throw an exception
@@ -102,8 +108,8 @@ public class AuthController {
 //                rs.setResponse("Login Fail");
                 response.setUsername(null);
 //                CreateLog.createJson(rs, "signin");
-                 return new ResponseEntity(new CustomErrorType("05", "Error", " Login Failed For User"),
-                    HttpStatus.NOT_FOUND);
+                return new ResponseEntity(new CustomErrorType("05", "Error", " Login Failed For User"),
+                        HttpStatus.NOT_FOUND);
             }
             final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
 //          log.info("jwt : " + jwt);
@@ -120,7 +126,7 @@ public class AuthController {
         } catch (AuthenticationException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.toString());
-            CreateLog.createJson(ex.getMessage().toString(), "signin");
+            CreateLog.createJson(ex.toString(), "signin");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -128,34 +134,18 @@ public class AuthController {
 //                HttpStatus.NOT_FOUND);
     }
 
-//    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginApi loginRequest) {
-//
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        String jwt = jwtUtils.generateJwtToken(authentication);
-//
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
-//
-////        return ResponseEntity.ok(new JwtResponse(jwt,
-////                userDetails.getIdEmployee(),
-////                userDetails.getUserName(),
-////                userDetails.getEmail(),
-////                roles));
-//        return ResponseEntity.ok(new JwtResponse(jwt,
-//                userDetails.getId(),
-//                userDetails.getUsername(),
-//                userDetails.getEmail(),
-//                roles));
-//    }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupApi signUpRequest) {
         try {
             Employee entity = new Employee();
+            if (!signUpRequest.getUserName().equalsIgnoreCase("sysadmin")) {
+                rs.setResponse_code("05");
+                rs.setInfo("ca'nt acces this feature");
+                rs.setResponse("Create Employee Failed");
+                return ResponseEntity
+                        .badRequest()
+                        .body(rs);
+            }
             if (empRepository.existsByUsername(signUpRequest.getUserName())) {
                 rs.setResponse_code("05");
                 rs.setInfo("You  username :" + signUpRequest.getUserName() + " already Exist");
@@ -182,8 +172,9 @@ public class AuthController {
             entity.setIsDelete(Boolean.FALSE);
             entity.setIsLogin(Boolean.FALSE);
             entity.setApproved_date(new Date());
-            entity.setPassword(encoder.encode(signUpRequest.getEmail()));
-            entity.setRoleName(signUpRequest.getUserName());
+            entity.setPassword(encoder.encode(signUpRequest.getEmail() + signUpRequest.getEmail()));
+            entity.setRoleName("sysadmin");
+
             Employee dataEmp = this.empRepository.create(entity);
 
             if (dataEmp == null) {

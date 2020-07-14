@@ -32,11 +32,11 @@ public class DataEmployee {
     protected String cell_phone;
     protected String user_name;
     protected String role_name;
-    protected String userPass;
+    protected String user_pass;
     protected String passUser;
     protected Date dateRegister;
     protected Double salary;
-    protected Double loanAmount;
+    protected Double loan_limit;
     protected String gender;
     protected char isActive;
     protected Employee approvedBy;

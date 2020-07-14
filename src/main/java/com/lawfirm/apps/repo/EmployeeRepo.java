@@ -15,11 +15,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -177,11 +172,11 @@ public class EmployeeRepo implements EmployeeRepoIface {
                     + " LOWER(e.name) = :name OR "
                     + " LOWER(e.userName) = :userName OR "
                     + " e.npwp = :npwp OR "
-                    + " LOWER(e.email) = :email OR "
+                    + " e.email = :email OR "
                     + " e.employeeId = :employeeId OR"
                     + " e.idEmployee = :idEmployee OR"
                     + " e.mobilePhone = :mobilePhone ")
-                    .setParameter("nik", paramString)
+                    .setParameter("nik", paramString.toLowerCase())
                     .setParameter("name", paramString.toLowerCase())
                     .setParameter("userName", paramString.toLowerCase())
                     .setParameter("npwp", paramString)
@@ -190,7 +185,11 @@ public class EmployeeRepo implements EmployeeRepoIface {
                     .setParameter("idEmployee", Long.parseLong(paramString))
                     .setParameter("mobilePhone", paramString)
                     .getSingleResult();
-            return listAcquire;
+            if (listAcquire == null) {
+                return null;
+            } else {
+                return listAcquire;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -225,11 +224,17 @@ public class EmployeeRepo implements EmployeeRepoIface {
     @Override
     public Employee findByEmployeeId(String paramString) {
         try {
+            Employee data = null;
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
                     + " e.employeeId = :employeeId")
                     .setParameter("employeeId", paramString.toLowerCase())
                     .getSingleResult();
-            return listAcquire;
+//            return listAcquire;
+            if (listAcquire != null) {
+                return listAcquire;
+            } else {
+                return data;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -246,10 +251,15 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public List<Employee> listEmployee() {
         try {
             List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.roleName <> :roleName ")
+                    + " e.roleName <> :roleName ORDER BY e.tgInput Desc ")
                     .setParameter("roleName", "sysadmin")
                     .getResultList();
-            return listAcquire;
+//            return listAcquire;
+            if (listAcquire != null) {
+                return listAcquire;
+            } else {
+                return null;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -267,7 +277,9 @@ public class EmployeeRepo implements EmployeeRepoIface {
         try {
             List<Employee> listAcquire = null;
             if (paramString == null) {
-                listAcquire = entityManager.createQuery("SELECT e FROM Employee e ")
+                listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                        + " e.roleName <> :roleName ORDER BY e.tgInput Desc ")
+                        .setParameter("roleName", "sysadmin")
                         .setMaxResults(max)
                         .setFirstResult(start)
                         .getResultList();
@@ -281,7 +293,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
                         + " e.idEmployee = :idEmployee OR"
                         + " e.mobilePhone = :mobilePhone OR"
                         + " LOWER(e.status) = :status AND "
-                        + " e. roleName <> :roleName ")
+                        + " e.roleName <> :roleName ")
                         .setParameter("nik", paramString)
                         .setParameter("name", paramString.toLowerCase())
                         .setParameter("npwp", paramString)
@@ -312,7 +324,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
         try {
             List<Employee> listAcquire = entityManager.createQuery("SELECT e FROM Employee e WHERE "
                     + " e.isActive = :isActive AND "
-                    + " e. roleName <> :roleName ")
+                    + " e.roleName <> :roleName ")
                     .setParameter("isActive", isActive)
                     .setParameter("roleName", "sysadmin")
                     .getResultList();
@@ -364,10 +376,12 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public Employee chekUserName(String paramString) {
         try {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.userName = :userName AND "
+                    + " e.userName = :userName OR "
+                    + " e.email = :email AND "
                     + " e.isActive = :isActive AND "
                     + " e.isLogin  = :isLogin ")
                     .setParameter("userName", paramString.toLowerCase())
+                    .setParameter("email", paramString.toLowerCase())
                     .setParameter("isActive", true)
                     .setParameter("isLogin", false)
                     .getSingleResult();
@@ -427,6 +441,13 @@ public class EmployeeRepo implements EmployeeRepoIface {
                 entityManager.close();
             }
         }
+    }
+
+    @Override
+    public Integer generateEmpId(String param) {
+        Query queryMax = entityManager.createQuery("SELECT COUNT(e) FROM Employee e WHERE e.roleName = :param")
+                .setParameter("param", param.toLowerCase());
+        return Integer.parseInt(queryMax.getSingleResult().toString());
     }
 
 //    https://stackoverflow.com/questions/40082175/dao-with-null-object-pattern

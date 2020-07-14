@@ -27,9 +27,9 @@ public interface LoanRepoIface {
 
     Loan findById(Long paramLong);
 
-    Loan findByName(String namaVisit);
+    Loan findByLoanId(String param);
 
-    List<Loan> listLoan();
+    List<Loan> listLoan(int max, int start);
 
     List<Loan> listLoanPaging(int max, int start);
 
@@ -40,6 +40,8 @@ public interface LoanRepoIface {
     List<Loan> byName(Boolean isActive);
 
     Integer count();
+
+    Integer generateLoanId(String param1, String param2, String param3 );
 
     EntityManager getEntityManager();
 }

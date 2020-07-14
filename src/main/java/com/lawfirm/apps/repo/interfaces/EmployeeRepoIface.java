@@ -54,6 +54,10 @@ public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> 
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
+    
+    Integer generateEmpId(String param);
 
     Optional<Employee> findByUsername(String username);
+    
+    
 }

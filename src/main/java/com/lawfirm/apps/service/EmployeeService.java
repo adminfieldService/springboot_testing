@@ -150,7 +150,14 @@ public class EmployeeService implements EmployeeServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Integer generateEmpId(String param) {
+        return employeeRepo.generateEmpId(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Optional<Employee> findByUsername(String username) {
         return employeeRepo.findByUsername(username);
     }
+
 }

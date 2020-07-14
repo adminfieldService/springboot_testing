@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,18 +161,29 @@ public class Util {
     public static String setNumber(final String param) {
         String isiParam = null;
         if (param.length() == 1) {
-            isiParam = "000" + param;
-        }
-        if (param.length() == 2) {
             isiParam = "00" + param;
         }
-        if (param.length() == 3) {
+        if (param.length() == 2) {
             isiParam = "0" + param;
         }
-        if (param.length() == 4) {
+        if (param.length() == 3) {
             isiParam = param;
         }
-        return isiParam;
+//        if (param.length() == 4) {
+//            isiParam = param;
+//        }
+        return isiParam;//getEmployeeIdBy(isiParam);
+    }
+
+    public static String getEmployeeIdBy(final String param) {
+//        String res1 = param.substring(0, Integer.parseInt(param));
+        String finalResult = "";
+//        return finalResult;
+        StringTokenizer st = new StringTokenizer("param", "0");
+        while (st.hasMoreTokens()) {
+            finalResult = st.nextToken();
+        }
+        return finalResult;
     }
 
     /*

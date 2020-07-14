@@ -56,5 +56,7 @@ public interface EmployeeServiceIface {
 
     Boolean existsByEmail(String email);
 
+    Integer generateEmpId(String param);
+
     Optional<Employee> findByUsername(String username);
 }

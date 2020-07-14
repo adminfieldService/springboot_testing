@@ -127,15 +127,37 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
-    public Loan findByName(String namaVisit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Loan findByLoanId(String param) {
+        try {
+            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l WHERE "
+                    + " l.loanId = :loanId")
+                    .setParameter("loanId", param)
+                    .getSingleResult();
+            return entity;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
-    public List<Loan> listLoan() {
+    public List<Loan> listLoan(int max, int start) {
         try {
-            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l ")
-                    .getResultList();
+            List<Loan> listAcquire = null;
+            if (start == 0) {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l ORDER BY l.date_created Desc ")
+                        .getResultList();
+            } else {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l ORDER BY l.date_created Desc ")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -151,10 +173,16 @@ public class LoanRepo implements LoanRepoIface {
     @Override
     public List<Loan> listLoanPaging(int max, int start) {
         try {
-            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l ")
-                    .setMaxResults(max)
-                    .setFirstResult(start)
-                    .getResultList();
+            List<Loan> listAcquire = null;
+            if (start == 0) {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l ORDER BY l.date_created Desc ")
+                        .getResultList();
+            } else {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l ORDER BY l.date_created Desc ")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -171,20 +199,44 @@ public class LoanRepo implements LoanRepoIface {
     @SuppressWarnings("unchecked")
     public List<Loan> findByEmployee(int max, int start, String param) {
         try {
-            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l WHERE "
-                    + " LOWER(l.employee.name) = :name OR "
-                    + " l.employee.nik  = :nik OR "
-                    + " LOWER(l.employee.email) = :email OR "
-                    + " l.employee.npwp = :npwp OR "
-                    + " LOWER(l.userName) = :userName ")
-                    .setParameter("name", param.toLowerCase())
-                    .setParameter("nik", param.toLowerCase())
-                    .setParameter("email", param.toLowerCase())
-                    .setParameter("npwp", param.toLowerCase())
-                    .setParameter("userName", param.toLowerCase())
-                    .setMaxResults(max)
-                    .setFirstResult(start)
-                    .getResultList();
+            List<Loan> listAcquire = null;
+            if (start == 0) {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l WHERE "
+                        + " LOWER(l.employee.name) = :name OR "
+                        + " l.employee.nik  = :nik OR "
+                        + " LOWER(l.employee.email) = :email OR "
+                        + " l.employee.npwp = :npwp OR "
+                        + " l.employee.idEmployee = :idEmployee OR "
+                        + " l.employee.employeeId = :employeeId OR "
+                        + " LOWER(l.employee.userName) = :userName ")
+                        .setParameter("name", param.toLowerCase())
+                        .setParameter("nik", param.toLowerCase())
+                        .setParameter("email", param.toLowerCase())
+                        .setParameter("npwp", param.toLowerCase())
+                        .setParameter("idEmployee", Long.parseLong(param))
+                        .setParameter("employeeId", param.toUpperCase())
+                        .setParameter("userName", param.toLowerCase())
+                        .getResultList();
+            } else {
+                listAcquire = entityManager.createQuery("SELECT l FROM Loan l WHERE "
+                        + " LOWER(l.employee.name) = :name OR "
+                        + " l.employee.nik  = :nik OR "
+                        + " LOWER(l.employee.email) = :email OR "
+                        + " l.employee.npwp = :npwp OR "
+                        + " l.employee.idEmployee = :idEmployee OR "
+                        + " LOWER(l.employee.employeeId) = :employeeId OR "
+                        + " LOWER(l.employee.userName) = :userName ")
+                        .setParameter("name", param.toLowerCase())
+                        .setParameter("nik", param.toLowerCase())
+                        .setParameter("email", param.toLowerCase())
+                        .setParameter("npwp", param.toLowerCase())
+                        .setParameter("idEmployee", Long.parseLong(param))
+                        .setParameter("employeeId", param.toUpperCase())
+                        .setParameter("userName", param.toLowerCase())
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -195,6 +247,19 @@ public class LoanRepo implements LoanRepoIface {
                 entityManager.close();
             }
         }
+    }
+
+    @Override
+    public Integer generateLoanId(String param1, String param2, String param3) {//roleemploye/year/count
+        Query queryMax = entityManager.createQuery("SELECT COUNT(l) FROM Loan l WHERE "
+                + " l.loantype.typeLoan = :typeLoan "
+                + " AND l.employee.idEmployee = :idEmployee "
+                + " AND l.date_created = :date_created")
+                .setParameter("typeLoan", param1.toLowerCase())
+                .setParameter("idEmployee", param2.toLowerCase())
+                .setParameter("date_created", param3.toLowerCase());
+
+        return Integer.parseInt(queryMax.getSingleResult().toString());
     }
 
     @Override

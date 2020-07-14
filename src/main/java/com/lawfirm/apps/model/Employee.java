@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.lawfirm.apps.utils.Util;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -17,9 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
@@ -42,8 +41,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -117,6 +114,10 @@ public class Employee implements Serializable {
     private String mobilePhone;
     @Column(name = "status", length = 1)
     private String status;
+
+    @Column(name = "number", length = 4)
+    private Integer number;
+
     @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
@@ -159,6 +160,11 @@ public class Employee implements Serializable {
         dateRegister = new Date();
         this.status = "a";
     }
+
+//    @PrePersist
+//    public void increment() {
+//        number = number + 1;
+//    }
 
     public Employee() {
     }
@@ -614,6 +620,14 @@ public class Employee implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public static String encrypt(String input) {

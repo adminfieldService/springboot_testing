@@ -42,12 +42,15 @@ public class Loan implements Serializable {
     @Id
     @SequenceGenerator(name = "loan_seq", sequenceName = "loan_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "loan_seq")
-    @Column(name = "loan_id")
-    private Long loanId;
+    @Column(name = "id")
+    private Long Id;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
+
+    @Column(name = "loan_id", unique = true)
+    private String loanId;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_type_id", referencedColumnName = "loan_type_id")
@@ -126,11 +129,19 @@ public class Loan implements Serializable {
     public Loan() {
     }
 
-    public Long getLoanId() {
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
+    }
+
+    public String getLoanId() {
         return loanId;
     }
 
-    public void setLoanId(Long loanId) {
+    public void setLoanId(String loanId) {
         this.loanId = loanId;
     }
 
