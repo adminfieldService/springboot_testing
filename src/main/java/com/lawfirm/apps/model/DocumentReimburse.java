@@ -56,13 +56,13 @@ public class DocumentReimburse implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Basic(optional = false)
+  
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "aprroved_date", nullable = true)
     private Date aprroved_date;
 
-    @Basic(optional = false)
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "record_date", nullable = true)
@@ -72,7 +72,6 @@ public class DocumentReimburse implements Serializable {
     @JoinColumn(name = "reimburse_id", referencedColumnName = "reimburse_id")
     private Reimbursement reimbursement;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

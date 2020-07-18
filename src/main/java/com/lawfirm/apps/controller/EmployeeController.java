@@ -30,6 +30,7 @@ import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.support.api.AccountApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.Util;
+import com.xss.filter.annotation.XxsFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -465,6 +466,7 @@ public class EmployeeController { //LawfirmController
 //    @PreAuthorize("hasRole('admin') or hasRole('sysadmin')")//RequestPart
 //    public Response createEmployee(@RequestPart("jsonfield") final DataEmployee object, Authentication authenticationRequest) {//@RequestParam(value = "doc_cv", required = false) MultipartFile file,
     @PostMapping(path = "/managed-employee", produces = {"application/json"})
+    @XxsFilter
     public Response createEmployee(@RequestBody final DataEmployee object, Authentication authenticationRequest) {
         try {
 
@@ -525,6 +527,13 @@ public class EmployeeController { //LawfirmController
                 if (name.length() > 20) {
                     rs.setResponse_code("05");
                     rs.setInfo("Field Name maksimum 20 character");
+                    rs.setResponse("Create Employee Failed");
+                    CreateLog.createJson(rs, "create-employee");
+                    process = false;
+                }
+                if (object.getUser_name().isEmpty()) {
+                    rs.setResponse_code("05");
+                    rs.setInfo("Field USER Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
@@ -686,7 +695,7 @@ public class EmployeeController { //LawfirmController
                     Account accl = new Account();
 
                     newEmployee.setName(name);
-                    if (object.getUser_name() == null) {
+                    if (object.getUser_name().equals("") || object.getUser_name().isEmpty()) {
                         newEmployee.setUserName(email.toLowerCase().trim());
                     } else {
                         newEmployee.setUserName(object.getUser_name().toLowerCase().trim());
@@ -711,6 +720,13 @@ public class EmployeeController { //LawfirmController
                     newEmployee.setParentId(dataAdmin);
                     newEmployee.setRoleName(role_name);
                     newEmployee.setApproved_date(new Date());
+                    if (object.getRegister_date() == null) {
+                        newEmployee.setDateRegister(new Date());
+                    } else {
+                        String reg_date = dateFormat.format(object.getRegister_date());
+                        Date reg_val = dateFormat.parse(reg_date);
+                        newEmployee.setDateRegister(reg_val);
+                    }
                     Integer number = 0;
 
                     if (object.getLoan_limit() != null) {
@@ -822,9 +838,8 @@ public class EmployeeController { //LawfirmController
         return rs;
     }
 
-//    @PutMapping(value = "/managed-employee/{id_employee}", consumes = {"multipart/form-data"}, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Response updateEmployee(@RequestPart("jsonfield") final DataEmployee object, @RequestPart("doc_cv") MultipartFile file, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) throws IOException {
     @PutMapping(path = "/managed-employee/{id_employee}", produces = {"application/json"})
+    @XxsFilter
     public Response updateEmployee(@RequestBody
             final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
         try {
@@ -1086,8 +1101,8 @@ public class EmployeeController { //LawfirmController
     }
 
     @PutMapping(path = "/managed-employee/set-password/{id_employee}", produces = {"application/json"})
-    public Response changePassword(@RequestBody
-            final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
+    @XxsFilter
+    public Response changePassword(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
         try {
             Boolean process = true;
             Employee entity = employeeService.findById(id_employee);
@@ -1127,6 +1142,7 @@ public class EmployeeController { //LawfirmController
     }
 
     @RequestMapping(value = "/cv/managed-cv/{id_employee}", produces = {"application/json"}, method = RequestMethod.PUT)
+    @XxsFilter
     public Response saveUploadedFile(@RequestPart("doc_cv") MultipartFile file,
             @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) throws IOException {
         try {
@@ -1225,6 +1241,7 @@ public class EmployeeController { //LawfirmController
     @PermitAll
     @PutMapping(value = "/account/managed-account/{id_employee}", produces = {"application/json"})
 //     @PreAuthorize("hasRole('lawfirm') or hasRole('admin')or hasRole('dpm')or hasRole('admin')")
+    @XxsFilter
     public Response updateAccount(@RequestBody
             final DataEmployee object,
             @PathVariable("id_employee") Long id_employee
@@ -1310,6 +1327,7 @@ public class EmployeeController { //LawfirmController
     }
 
     @RequestMapping(value = "/acount/find-by-employee", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> findAccountByEmployee(@RequestBody
             final AccountApi object,
             @RequestParam("param") String param
@@ -1421,6 +1439,7 @@ public class EmployeeController { //LawfirmController
 //     @RequestMapping(value = {"/approvedByAdmin"})
 
     @RequestMapping(value = "/approved/by-admin", method = RequestMethod.POST)
+    @XxsFilter
     public Response approvedByAdmin(@RequestBody
             final AprovedApi object
     ) {
@@ -1511,6 +1530,7 @@ public class EmployeeController { //LawfirmController
 
 //    @PermitAll
     @PutMapping(value = "/approved/{id_employee}", produces = {"application/json"})
+    @XxsFilter
     public Response approved(@RequestBody
             final AprovedApi object,
             @PathVariable("id_employee") Long id_employee
@@ -1603,6 +1623,7 @@ public class EmployeeController { //LawfirmController
     @PermitAll
     @DeleteMapping(value = "/managed-employee/{id_employee}", produces = {"application/json"})//@PutMapping
 //    @PreAuthorize("hasRole('admin')")
+    @XxsFilter
     public Response deleteEmployee(@PathVariable("id_employee") Long idEmployee
     ) {
         Employee entity = employeeService.findById(idEmployee);
@@ -1631,6 +1652,7 @@ public class EmployeeController { //LawfirmController
     @PermitAll
     @RequestMapping(value = "/view/list-by-admin", method = RequestMethod.GET, produces = {"application/json"})
 //    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
+    @XxsFilter
     public ResponseEntity<String> viewEmployeeByAdmin(ServletRequest request
     ) {
         try {
@@ -1845,6 +1867,7 @@ public class EmployeeController { //LawfirmController
     @PermitAll
     @RequestMapping(value = "/view/list-by-finance", method = RequestMethod.GET, produces = {"application/json"})
 //    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')  or hasRole('finance')")
+    @XxsFilter
     public ResponseEntity<String> viewEmployeeByFinance(ServletRequest request
     ) {
         try {
@@ -2049,6 +2072,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @GetMapping(value = "/find-employee", produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> findByEmployee(@RequestParam("employee_id") String employee_id,
             @RequestParam("name") String name, Pageable pageable
     ) {
@@ -2098,12 +2122,14 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @GetMapping(value = "/employe-dash-board", produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> employeDashboard() {
         return new ResponseEntity(new CustomErrorType("05", "Error", ""),
                 HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/find-by-id", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> findById(@RequestBody
             final DataEmployee object
     ) {
@@ -2317,6 +2343,7 @@ public class EmployeeController { //LawfirmController
 
 //    @RequestMapping(value = "/employee/find-by-employee-id", method = RequestMethod.POST, produces = {"application/json"})
     @PutMapping(value = "/find-by-employee-id/{employeeId}", produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> findByEmployeeID(@RequestBody
             final DataEmployee object,
             @PathVariable("employeeId") String employeeId
@@ -2461,9 +2488,9 @@ public class EmployeeController { //LawfirmController
 
     }
 
-    @PermitAll
+//    @PermitAll
     @RequestMapping(value = "/employe-role/role-name", method = RequestMethod.GET, produces = {"application/json"})
-//    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')  or hasRole('finance')")
+    @XxsFilter
     public ResponseEntity<String> listRoleName(ServletRequest request
     ) {
         try {
@@ -2492,6 +2519,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
     @PutMapping(value = "/download-cv/{employeeId}", produces = {"application/json"})
+    @XxsFilter
     public ResponseEntity<String> downloadCv(ServletRequest request,
             @PathVariable("employeeId") String employeeId
     ) {

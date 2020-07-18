@@ -185,11 +185,9 @@ public class EmployeeRepo implements EmployeeRepoIface {
                     .setParameter("idEmployee", Long.parseLong(paramString))
                     .setParameter("mobilePhone", paramString)
                     .getSingleResult();
-            if (listAcquire == null) {
-                return null;
-            } else {
-                return listAcquire;
-            }
+
+            return listAcquire;
+
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -226,7 +224,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
         try {
             Employee data = null;
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.employeeId = :employeeId")
+                    + " LOWER(e.employeeId) = :employeeId")
                     .setParameter("employeeId", paramString.toLowerCase())
                     .getSingleResult();
 //            return listAcquire;
@@ -294,7 +292,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
                         + " e.mobilePhone = :mobilePhone OR"
                         + " LOWER(e.status) = :status AND "
                         + " e.roleName <> :roleName ")
-                        .setParameter("nik", paramString)
+                        .setParameter("nik", paramString.toLowerCase())
                         .setParameter("name", paramString.toLowerCase())
                         .setParameter("npwp", paramString)
                         .setParameter("email", paramString.toLowerCase())

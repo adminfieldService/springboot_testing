@@ -48,7 +48,6 @@ public class CaseDocument implements Serializable {
     @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
     private CaseDetails caseDetails;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

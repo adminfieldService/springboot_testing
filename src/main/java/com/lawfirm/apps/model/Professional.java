@@ -49,7 +49,6 @@ public class Professional implements Serializable {
     @Column(name = "status", length = 1, nullable = true)
     private String status;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "input_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

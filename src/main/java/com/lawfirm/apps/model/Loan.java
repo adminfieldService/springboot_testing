@@ -7,6 +7,7 @@ package com.lawfirm.apps.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class Loan implements Serializable {
     @Column(name = "loan_id", unique = true)
     private String loanId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_type_id", referencedColumnName = "loan_type_id")
     private LoanType loantype;
 
@@ -65,7 +66,7 @@ public class Loan implements Serializable {
     @Column(name = "outstanding")
     private Double outstanding;
 
-    @Basic(optional = false)
+//    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "disburse_date", nullable = true)
     @Temporal(TemporalType.DATE)
@@ -74,25 +75,25 @@ public class Loan implements Serializable {
     @Column(name = "is_active", length = 1)
     private String isActive;
 
-    @Basic(optional = false)
+//    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "repayment_date", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date repayment_date;
 
-    @Basic(optional = false)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+//    @Basic(optional = false)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "date_created", nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date_created;
 
-    @Basic(optional = false)
+//    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_approved", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_approved;
 
-    @Basic(optional = false)
+//    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_approved_by_finance", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -104,19 +105,26 @@ public class Loan implements Serializable {
     @Column(name = "aproved_by_finance")
     private String aprovedByFinance;
 
-    @Column(name = "status")
+    @Column(name = "status", length = 1)
     private String status;
 
     @Column(name = "is_delete")
     private Boolean isDelete;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
     protected Engagement engagement;
 
+//    @Basic(optional = false)
+    @Column(name = "tgl_input", nullable = true)
+    private String tgl_input;
+
+    @Column(name = "date_month", nullable = true)
+    private String date_month;
+
     @PrePersist
     public void onCreate() {
-        date_created = new Date();
+//        tgl_input = new Date();
         isActive = "1";
         isDelete = false;
     }
@@ -329,6 +337,23 @@ public class Loan implements Serializable {
         this.isDelete = isDelete;
     }
 
+    public String getTgl_input() {
+        return tgl_input;
+    }
+
+    public void setTgl_input(String tgl_input) {
+        this.tgl_input = tgl_input;
+    }
+
+    public String getDate_month() {
+        return date_month;
+    }
+
+    public void setDate_month(String date_month) {
+        this.date_month = date_month;
+    }
+
+      
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.Loan[loanId=" + this.loanId + " ]";

@@ -60,13 +60,11 @@ public class Engagement implements Serializable {
     @Column(name = "approved_by")
     protected String approvedBy;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "created_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date created_date;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "approved_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

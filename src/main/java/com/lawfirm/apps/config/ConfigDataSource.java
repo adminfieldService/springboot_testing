@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author newbiecihuy
  */
 @Configuration
+@ComponentScan("com.xss.filters")
 @EnableJpaRepositories(
         basePackages = Constants.PACKAGE_REPO_LF,//"com.spin.bpr.datasource.repo",
         entityManagerFactoryRef = "entityManagerLf",

@@ -55,13 +55,12 @@ public class CaseDetails extends Engagement implements Serializable {
     @Column(name = "panitera")
     private String panitera;
 
-    @Basic(optional = false)
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "event_date", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date event_date;
 
-    @Basic(optional = false)
     @Column(name = "event_time", length = 10, nullable = true)
     private String event_time;
 

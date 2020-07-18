@@ -29,19 +29,23 @@ public interface LoanServiceIface {
 
     Loan findByLoanId(String param);
 
-   List<Loan> listLoan(int max, int start);
+    List<Loan> listLoan(int max, int start);
 
     List<Loan> listLoanPaging(int max, int start);
 
-    List<Loan> findByEmployee(int max, int start, String param);
+    List<Loan> findByEmployee(String param);
 
     List<Loan> listActive();
 
     List<Loan> byName(Boolean isActive);
 
     Integer count();
+    
+    Loan findByIdLoan(Long paramLong);
 
-    Integer generateLoanId(String param1, String param2, String param3 );
+    Double loanEmp(String param1, String param2);
+
+    Integer generateLoanId(String param1, String param2, String param3);
 
     EntityManager getEntityManager();
 }

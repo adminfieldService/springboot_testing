@@ -61,7 +61,6 @@ public class Account implements Serializable {
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

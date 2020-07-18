@@ -61,13 +61,12 @@ public class Financial implements Serializable {
     private String status;
     @Column(name = "out_standing")
     private Double outStanding;
-    @Basic(optional = false)
+    
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "created_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_date;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "disburse_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

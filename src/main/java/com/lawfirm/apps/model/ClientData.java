@@ -55,7 +55,6 @@ public class ClientData implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

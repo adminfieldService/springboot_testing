@@ -33,4 +33,6 @@ public class LoanApi {
     protected Double out_standing;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     protected Date repayment_date;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    protected Date created_date;
 }

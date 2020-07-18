@@ -175,6 +175,20 @@ public class Util {
         return isiParam;//getEmployeeIdBy(isiParam);
     }
 
+    public static String setNumbering(final String param) {
+        String isiParam = null;
+        if (param.length() == 1) {
+            isiParam = "0" + param;
+        }
+        if (param.length() == 2) {
+             isiParam = param;
+        }
+//        if (param.length() == 4) {
+//            isiParam = param;
+//        }
+        return isiParam;//getEmployeeIdBy(isiParam);
+    }
+    
     public static String getEmployeeIdBy(final String param) {
 //        String res1 = param.substring(0, Integer.parseInt(param));
         String finalResult = "";

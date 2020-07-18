@@ -130,11 +130,13 @@ public class LoanTypeRepo implements LoanTypeRepoIface {
     public LoanType findByName(String param) {
         try {
             LoanType listAcquire = (LoanType) entityManager.createQuery("SELECT l FROM LoanType l WHERE "
-                    + " LOWER(l.typeLoan) is not null LIKE :typeLoan OR "
-                    + " LOWER(l.dsc) is not null LIKE :dsc ")
-                    .setParameter("typeLoan", "%" + param.toLowerCase())
-                    .setParameter("dsc", "%" + param.toLowerCase())
+                    + " LOWER(l.typeLoan) = :typeLoan OR "// + " LOWER(l.typeLoan) is not null LIKE :typeLoan OR "
+                    + " LOWER(l.dsc) = :dsc ")
+                    .setParameter("typeLoan", param.toLowerCase())
+                    .setParameter("dsc", param.toLowerCase())
                     .getSingleResult();
+            // .setParameter("typeLoan", "%" + param.toLowerCase())
+//                    .setParameter("dsc", "%" + param.toLowerCase())
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());

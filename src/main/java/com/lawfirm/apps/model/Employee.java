@@ -80,11 +80,12 @@ public class Employee implements Serializable {
 //    private Set<EmployeeRole> roleName = new HashSet<>();
     @Column(name = "user_pass")
     private String password;
-    @Basic(optional = false)
+    
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_register", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateRegister;
+    
     @Column(name = "salary")
     private Double salary;
     @Column(name = "loan_amount")//loan_limit
@@ -101,7 +102,6 @@ public class Employee implements Serializable {
     private Boolean isLogin;
 //    @Column(name = "approved_by")
 //    private String approvedBy;
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "approved_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -118,7 +118,6 @@ public class Employee implements Serializable {
     @Column(name = "number", length = 4)
     private Integer number;
 
-    @Basic(optional = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -130,7 +129,7 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Collection<Member> memberCollection;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")//cascade = CascadeType.MERGE
     private Collection<Loan> loanCollection;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
