@@ -64,6 +64,12 @@ public class EngagementService implements EngagementServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public CaseDetails createCaseID(Integer number) {
+        return engagementRepo.createCaseID(number);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Engagement> listEngagement() {
         return engagementRepo.listEngagement();
     }

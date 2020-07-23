@@ -7,7 +7,6 @@ package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.Member;
 import java.util.List;
-import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,17 +26,9 @@ public interface MemberRepoIface {
 
     Member findById(Long paramLong);
 
-    Member findByName(String namaVisit);
+    List<Member> findByIdTeam(Long paramLong);
 
-    List<Member> listMember();
+    List<Member> findByCaseId(String param);
 
-    List<Member> listMemberPaging(int max, int start);
-
-    List<Member> listActive(Boolean isActive);
-
-    List<Member> findByEmployee(int max, int start, String param);
-
-    Integer count();
-
-    EntityManager getEntityManager();
+    List<Member> findByEmpId(String param);//@Repository
 }

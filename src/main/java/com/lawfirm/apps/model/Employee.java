@@ -80,12 +80,12 @@ public class Employee implements Serializable {
 //    private Set<EmployeeRole> roleName = new HashSet<>();
     @Column(name = "user_pass")
     private String password;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_register", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateRegister;
-    
+
     @Column(name = "salary")
     private Double salary;
     @Column(name = "loan_amount")//loan_limit
@@ -115,9 +115,8 @@ public class Employee implements Serializable {
     @Column(name = "status", length = 1)
     private String status;
 
-    @Column(name = "number", length = 4)
-    private Integer number;
-
+//    @Column(name = "number", length = 4)
+//    private Integer number;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -126,11 +125,20 @@ public class Employee implements Serializable {
 //    private Collection<Account> accountCollection;
     private List<Account> accountCollection = new ArrayList<>();
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private Collection<Member> memberCollection;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.MERGE)
+//    private Collection<Account> accountCollection;
+    private List<Member> memberCollection = new ArrayList<>();
 
+//    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+//    private Collection<Member> memberCollection;
+//    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
+//    private TeamMember teamMember;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")//cascade = CascadeType.MERGE
     private Collection<Loan> loanCollection;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")//cascade = CascadeType.MERGE
+    private Collection<Engagement> engagementCollection;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Collection<Reimbursement> reimbursementCollection;
@@ -138,6 +146,8 @@ public class Employee implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")
     private Collection<Professional> professionalCollection;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private Collection<Financial> financialCollection;
 //    private List<GrantedAuthority> authorities;
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -164,13 +174,17 @@ public class Employee implements Serializable {
 //    public void increment() {
 //        number = number + 1;
 //    }
-
     public Employee() {
     }
 
     public void addAccount(Account account) {
         account.setEmployee(this);
         accountCollection.add(account);
+    }
+
+    public void addMember(Member member) {
+        member.setEmployee(this);
+        memberCollection.add(member);
     }
 
     public Long getIdEmployee() {
@@ -565,14 +579,6 @@ public class Employee implements Serializable {
         this.accountCollection = accountCollection;
     }
 
-    public Collection<Member> getMemberCollection() {
-        return memberCollection;
-    }
-
-    public void setMemberCollection(Collection<Member> memberCollection) {
-        this.memberCollection = memberCollection;
-    }
-
     public Collection<Loan> getLoanCollection() {
         return loanCollection;
     }
@@ -621,14 +627,21 @@ public class Employee implements Serializable {
         this.gender = gender;
     }
 
-    public Integer getNumber() {
-        return number;
+    public Collection<Financial> getFinancialCollection() {
+        return financialCollection;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setFinancialCollection(Collection<Financial> financialCollection) {
+        this.financialCollection = financialCollection;
     }
 
+//    public Integer getNumber() {
+//        return number;
+//    }
+//
+//    public void setNumber(Integer number) {
+//        this.number = number;
+//    }
     public static String encrypt(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -650,5 +663,23 @@ public class Employee implements Serializable {
     public String getPassword() {
         return password;
     }
+
+    public List<Member> getMemberCollection() {
+        return memberCollection;
+    }
+
+    public void setMemberCollection(List<Member> memberCollection) {
+        this.memberCollection = memberCollection;
+    }
+
+    public Collection<Engagement> getEngagementCollection() {
+        return engagementCollection;
+    }
+
+    public void setEngagementCollection(Collection<Engagement> engagementCollection) {
+        this.engagementCollection = engagementCollection;
+    }
+    
+    
 
 }

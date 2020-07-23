@@ -8,8 +8,10 @@ package com.lawfirm.apps.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -57,8 +59,12 @@ public class Loan implements Serializable {
     @JoinColumn(name = "loan_type_id", referencedColumnName = "loan_type_id")
     private LoanType loantype;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "loan")
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "loan")
     private Collection<Financial> financialCollection;
+
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "loan")
+//    private Collection<LoanHistory> loanHistoryCollection;
+    private List<LoanHistory> loanHistoryCollection = new ArrayList<>();
 
     @Column(name = "loan_amount")
     private Double loanAmount;
@@ -116,7 +122,7 @@ public class Loan implements Serializable {
     protected Engagement engagement;
 
 //    @Basic(optional = false)
-    @Column(name = "tgl_input", nullable = true)
+    @Column(name = "tgl_input", length = 10, nullable = true)
     private String tgl_input;
 
     @Column(name = "date_month", nullable = true)
@@ -135,6 +141,11 @@ public class Loan implements Serializable {
     }
 
     public Loan() {
+    }
+
+    public void addAHistory(LoanHistory history) {
+        history.setLoan(this);
+        loanHistoryCollection.add(history);
     }
 
     public Long getId() {
@@ -353,7 +364,14 @@ public class Loan implements Serializable {
         this.date_month = date_month;
     }
 
-      
+    public List<LoanHistory> getLoanHistoryCollection() {
+        return loanHistoryCollection;
+    }
+
+    public void setLoanHistoryCollection(List<LoanHistory> loanHistoryCollection) {
+        this.loanHistoryCollection = loanHistoryCollection;
+    }
+
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.Loan[loanId=" + this.loanId + " ]";

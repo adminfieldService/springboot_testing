@@ -31,6 +31,8 @@ public interface EngagementRepoIface {
 //    Engagement findByName(String namaVisit);
     CaseDetails findByCaseID(String paramString);
 
+    CaseDetails createCaseID(Integer number);
+
     List<Engagement> listEngagement();
 
     List<Engagement> listActive();

@@ -9,17 +9,10 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.repo.interfaces.EmployeeRepoIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
-import com.lawfirm.apps.support.api.MyUserDetails;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +77,12 @@ public class EmployeeService implements EmployeeServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Employee findByEmployeeId(String paramString) {
         return employeeRepo.findByEmployeeId(paramString);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Employee> listEmployeeId(String param) {
+        return employeeRepo.listEmployeeId(param);
     }
 
     @Override
@@ -158,6 +157,18 @@ public class EmployeeService implements EmployeeServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Optional<Employee> findByUsername(String username) {
         return employeeRepo.findByUsername(username);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Employee cekPass(String param) {
+        return employeeRepo.cekPass(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Employee> listEmployeeByRole(String paramString) {
+        return employeeRepo.listEmployeeByRole(paramString);
     }
 
 }

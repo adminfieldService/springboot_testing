@@ -21,14 +21,17 @@ public class LoanApi {
     protected Long id_employee;
     protected Long id_employee_admin;
     protected Long financial_id;
-    protected Long loan_id;
-    protected Long case_id;
+    protected Long id_loan;
+    protected String case_id;
     protected String employeeId;
     protected String name;
+    protected String decision;//is_active;
     protected String npwp;
     protected String bank_name_l;
     protected String account_number_l;
     protected String loan_type;
+    protected String remarks;
+    protected String status;
     protected Double loan_amount;
     protected Double out_standing;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")

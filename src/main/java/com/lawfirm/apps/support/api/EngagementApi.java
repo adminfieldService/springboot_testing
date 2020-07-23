@@ -29,7 +29,11 @@ public class EngagementApi {
     protected Double profesional_fee;
     protected String case_over_view;
     protected String notes;
-    protected String id_employee_admin;
+    protected String decision;
+    protected String remarks;
+    protected String description;
+    protected Long id_employee;
+    protected Double dmp_fee;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     protected Date approved_date;
     protected String employee_id[] = null;

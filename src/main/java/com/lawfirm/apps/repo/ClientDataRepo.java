@@ -149,6 +149,25 @@ public class ClientDataRepo implements ClientDataRepoIface {
     }
 
     @Override
+    public ClientData checkCI(String paramString) {
+        try {
+            ClientData listAcquire = (ClientData) entityManager.createQuery("SELECT c FROM ClientData c WHERE "
+                    + " c.clientId = :clientId ")
+                    .setParameter("clientId", paramString.toLowerCase())
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public ClientData findBydataClient(String paramString1, String paramString2, String paramString3) {
         try {
             ClientData listAcquire = (ClientData) entityManager.createQuery("SELECT c FROM ClientData c WHERE "
@@ -224,5 +243,13 @@ public class ClientDataRepo implements ClientDataRepoIface {
     public EntityManager getEntityManager() {
         // TODO Auto-generated method stub
         return entityManager;
+    }
+
+    @Override
+    public Integer generateCleintId(String npwp) {
+        Query queryMax = entityManager.createQuery("SELECT COUNT(c) FROM ClientData c ");
+//           Query queryMax = entityManager.createQuery("SELECT COUNT(c) FROM ClientData c WHERE c.npwp = :npwp")
+//                .setParameter("npwp",npwp);
+        return Integer.parseInt(queryMax.getSingleResult().toString());
     }
 }

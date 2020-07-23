@@ -29,6 +29,8 @@ public interface TeamMemberRepoIface {
 
     TeamMember findByName(String namaVisit);
 
+    List<TeamMember> findByDmp(Long dmpId);
+
     List<TeamMember> listTeamMember();
 
     List<TeamMember> listActive(Boolean param);

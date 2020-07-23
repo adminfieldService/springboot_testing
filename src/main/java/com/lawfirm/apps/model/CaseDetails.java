@@ -9,20 +9,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
-import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -248,10 +241,12 @@ public class CaseDetails extends Engagement implements Serializable {
         this.professionalCollection = professionalCollection;
     }
 
+    @Override
     public Long getEngagementId() {
         return engagementId;
     }
 
+    @Override
     public void setEngagementId(Long engagementId) {
         this.engagementId = engagementId;
     }
@@ -338,14 +333,7 @@ public class CaseDetails extends Engagement implements Serializable {
         this.client = client;
     }
 
-    public TeamMember getTeamMember() {
-        return teamMember;
-    }
-
-    public void setTeamMember(TeamMember teamMember) {
-        this.teamMember = teamMember;
-    }
-
+ 
     public Date getApproved_date() {
         return approved_date;
     }
@@ -419,6 +407,23 @@ public class CaseDetails extends Engagement implements Serializable {
     public void setFinancialCollection(Collection<Financial> financialCollection) {
         this.financialCollection = financialCollection;
     }
+
+    public Collection<Loan> getLoanCollection() {
+        return loanCollection;
+    }
+
+    public void setLoanCollection(Collection<Loan> loanCollection) {
+        this.loanCollection = loanCollection;
+    }
+
+    public String getTgl_input() {
+        return tgl_input;
+    }
+
+    public void setTgl_input(String tgl_input) {
+        this.tgl_input = tgl_input;
+    }
+    
 
     @Override
     public String toString() {

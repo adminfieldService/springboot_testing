@@ -28,16 +28,20 @@ public interface ClientDataServiceIface {
     ClientData findById(Long paramLong);
 
     ClientData findByName(String paramString);
-    
+
     ClientData findBydataClient(String paramString1, String paramString2, String paramString3);
 
     List<ClientData> listClient();
 
-    List<ClientData>  listActive(String isActive);
+    List<ClientData> listActive(String isActive);
 
     List<ClientData> byName(Boolean isActive);
 
     Integer count();
 
+    Integer generateCleintId(String npwp);
+
     EntityManager getEntityManager();
+
+    ClientData checkCI(String paramString);
 }

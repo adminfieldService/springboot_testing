@@ -28,6 +28,8 @@ public interface ClientDataRepoIface {
     ClientData findById(Long paramLong);
 
     ClientData findByName(String namaVisit);
+    
+    ClientData checkCI(String paramString);
 
     ClientData findBydataClient(String paramString1, String paramString2, String paramString3);
 
@@ -40,4 +42,6 @@ public interface ClientDataRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
+
+    Integer generateCleintId(String npwp);
 }

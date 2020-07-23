@@ -38,4 +38,6 @@ public interface TeamMemberServiceIface {
     Integer count();
 
     EntityManager getEntityManager();
+
+    List<TeamMember> findByDmp(Long dmpId);
 }

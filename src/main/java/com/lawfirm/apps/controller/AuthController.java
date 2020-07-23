@@ -76,14 +76,14 @@ public class AuthController {
     @RequestMapping("/login")
     public String login() {
 //        return "createAuthenticationToken";
-        return "redirect:/signin";
+        return "redirect:/sign-in";
     }
 
 //    @RequestMapping("/logout")
 //    public String logout() {
 //        return "createAuthenticationToken";
 //    }
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -103,9 +103,6 @@ public class AuthController {
                     .loadUserByUsername(authenticationRequest.getUsername());
 //            log.info("userDetails : " + userDetails);
             if (userDetails == null) {
-//                rs.setResponse_code("05");
-//                rs.setInfo("fail");
-//                rs.setResponse("Login Fail");
                 response.setUsername(null);
 //                CreateLog.createJson(rs, "signin");
                 return new ResponseEntity(new CustomErrorType("05", "Error", " Login Failed For User"),

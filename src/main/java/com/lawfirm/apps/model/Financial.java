@@ -43,12 +43,15 @@ public class Financial implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "financial_seq")
     @Column(name = "financial_id")
     private Long financialId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_id", referencedColumnName = "loan_id")
     private Loan loan;
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
+//    private TeamMember teamMember;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
-    private TeamMember teamMember;
+    @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
+    private Employee employee;
     @Column(name = "salary")
     private Double salary;
     @Column(name = "pkp")
@@ -61,7 +64,7 @@ public class Financial implements Serializable {
     private String status;
     @Column(name = "out_standing")
     private Double outStanding;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "created_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -104,13 +107,15 @@ public class Financial implements Serializable {
         this.loan = loan;
     }
 
-    public TeamMember getTeamMember() {
-        return teamMember;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setTeamMember(TeamMember teamMember) {
-        this.teamMember = teamMember;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
+
+  
 
     public Double getSalary() {
         return salary;

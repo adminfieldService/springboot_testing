@@ -5,7 +5,10 @@
  */
 package com.lawfirm.apps.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +19,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -26,37 +32,59 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tbl_member")
 @NamedQueries({
-    @javax.persistence.NamedQuery(name = "Member.findAll", query = "SELECT t FROM Member t")})
+    @javax.persistence.NamedQuery(name = "Member.findAll", query = "SELECT m FROM Member m")})
 public class Member implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
+//    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
     @Column(name = "member_id")
-    private Long memberId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private String memberId;
+    @Column(name = "fee_share")
+    private Double feeShare;
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
     private TeamMember teamMember;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
-    @Column(name = "description")
-    private String description;
-    @Column(name = "is_active")
-    private Boolean isActive;
-    @Column(name = "feeShare")
-    private Double feeShare;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @Column(name = "tgl_input", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date tgInput;
+
+    @PrePersist
+    public void onCreate() {
+        tgInput = new Date();
+        this.setMemberId(UUID.randomUUID().toString());
+    }
 
     public Member() {
     }
 
-    public Long getMemberId() {
+    public String getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(Long memberId) {
+    public void setMemberId(String memberId) {
         this.memberId = memberId;
+    }
+
+    public Date getTgInput() {
+        return tgInput;
+    }
+
+    public void setTgInput(Date tgInput) {
+        this.tgInput = tgInput;
+    }
+
+    public Double getFeeShare() {
+        return feeShare;
+    }
+
+    public void setFeeShare(Double feeShare) {
+        this.feeShare = feeShare;
     }
 
     public TeamMember getTeamMember() {
@@ -75,46 +103,4 @@ public class Member implements Serializable {
         this.employee = employee;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
-                .replaceAll("<script>(.*?)</script>", "")
-                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
-                .replaceAll("vbscript", "")
-                .replaceAll("encode", "")
-                .replaceAll("decode", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
-                .replaceAll("</script>", "")
-                .replaceAll("<script(.*?)>", "")
-                .replaceAll("eval\\((.*?)\\)", "")
-                .replaceAll("expression\\((.*?)\\)", "");
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public Double getFeeShare() {
-        return feeShare;
-    }
-
-    public void setFeeShare(Double feeShare) {
-        this.feeShare = feeShare;
-    }
-
-    @Override
-    public String toString() {
-        return "com.lawfirm.apps.model.Member[memberId=" + this.memberId + " ]";
-    }
 }

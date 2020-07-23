@@ -74,24 +74,7 @@ public class MemberRepo implements MemberRepoIface {
 
     @Override
     public Member delete(Member entity) {
-        try {
-            entity.setIsActive(false);
-            entityManager.merge(entity);
-            if (entity != null) {
-// 	                CreateLog.createJson(entity, "fieldservice");
-                return entity;
-            }
-        } catch (Exception ex) {
-// 	            LogSystem.error(getClass(), e);
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-        return null;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -112,30 +95,26 @@ public class MemberRepo implements MemberRepoIface {
 
     @Override
     public Member findById(Long paramLong) {
-        try {
-            return (Member) entityManager.find(Member.class, paramLong);
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-    }
-
-    @Override
-    public Member findByName(String namaVisit) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Member> listMember() {
+    public List<Member> findByIdTeam(Long paramLong) {
         try {
-            List<Member> listAcquire = entityManager.createQuery("SELECT m FROM Member m ")
-                    .getResultList();
-            return listAcquire;
+//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
+//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
+//                    + " l.loanId = :loanId")
+//                    .setParameter("loanId", paramLong)
+//                    .getSingleResult();
+            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
+                    + " t.teamMemberId = :teamMemberId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("teamMemberId", paramLong);
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -148,13 +127,22 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
-    public List<Member> listMemberPaging(int max, int start) {
+    public List<Member> findByCaseId(String param) {
         try {
-            List<Member> listAcquire = entityManager.createQuery("SELECT m FROM Member m ")
-                    .setMaxResults(max)
-                    .setFirstResult(start)
-                    .getResultList();
-            return listAcquire;
+//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
+//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
+//                    + " l.loanId = :loanId")
+//                    .setParameter("loanId", paramLong)
+//                    .getSingleResult();
+            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
+                    + " t.teamMemberId = :teamMemberId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("teamMemberId", param);
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -167,13 +155,22 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
-    public List<Member> listActive(Boolean isActive) {
+    public List<Member> findByEmpId(String param) {
         try {
-            List<Member> listAcquire = entityManager.createQuery("SELECT m FROM Member m WHERE "
-                    + " m.isActive = :isActive")
-                    .setParameter("isActive", isActive)
-                    .getResultList();
-            return listAcquire;
+//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
+//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
+//                    + " l.loanId = :loanId")
+//                    .setParameter("loanId", paramLong)
+//                    .getSingleResult();
+            String sql = "SELECT m FROM Member m JOIN FETCH m.employee AS e WHERE "
+                    + " e.employeeId = :employeeId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("employeeId", param);
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -183,44 +180,5 @@ public class MemberRepo implements MemberRepoIface {
                 entityManager.close();
             }
         }
-    }
-
-    @Override
-    public List<Member> findByEmployee(int max, int start, String param) {
-        try {
-            List<Member> listAcquire = entityManager.createQuery("SELECT m FROM Member m WHERE "
-                    + " LOWER(m.employee.name) = :name OR "
-                    + " LOWER(m.employee.nik) = :nik OR "
-                    + " LOWER(m.employee.email) = :email OR "
-                    + " LOWER( m.employee.npwp) = :npwp")
-                    .setParameter("name", param.toLowerCase())
-                    .setParameter("nik", param)
-                    .setParameter("email", param.toLowerCase())
-                    .setParameter("npwp", param)
-                    .setMaxResults(max)
-                    .setFirstResult(start)
-                    .getResultList();
-            return listAcquire;
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-    }
-
-    @Override
-    public Integer count() {
-        Query queryMax = entityManager.createQuery("SELECT COUNT(m) FROM Member m");
-        return Integer.parseInt(queryMax.getSingleResult().toString());
-    }
-
-    @Override
-    public EntityManager getEntityManager() {
-        // TODO Auto-generated method stub
-        return entityManager;
     }
 }

@@ -69,9 +69,15 @@ public class LoanService implements LoanServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Loan> listLoan(int max, int start) {
-        return loanRepo.listLoan(max, start);
+    public List<Loan> listLoan(int max, int start,String type) {
+        return loanRepo.listLoan(max, start,type);
     }
+
+//    @Override
+//    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+//    public List<Loan> listLoanB(int max, int start) {
+//        return loanRepo.listLoanB(max, start);
+//    }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
@@ -81,14 +87,14 @@ public class LoanService implements LoanServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Loan> findByEmployee(String param) {
-        return loanRepo.findByEmployee(param);
+    public List<Loan> findByEmployee(String param, String type) {
+        return loanRepo.findByEmployee(param, type);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Loan> listActive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Loan> listActive(String param1, String param2, String type) {
+        return loanRepo.listActive(param1, param2, type);
     }
 
     @Override

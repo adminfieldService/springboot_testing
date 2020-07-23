@@ -87,8 +87,20 @@ public class ClientDataService implements ClientDataServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Integer generateCleintId(String npwp) {
+        return clientDataRepo.generateCleintId(npwp);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Integer count() {
         return clientDataRepo.count();
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public ClientData checkCI(String paramString) {
+        return clientDataRepo.checkCI(paramString);
     }
 
     @Override

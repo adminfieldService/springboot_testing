@@ -42,8 +42,8 @@ public class DocumentReimburse implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reimbursedoc_seq")
     @Column(name = "reimburse_document_id")
     protected Long reimburse_document_id;
-    @Column(name = "uuid")
-    protected String uuid;
+//    @Column(name = "uuid")
+//    protected String uuid;
     @Column(name = "link_document")
     private String linkDocument;
 
@@ -56,12 +56,10 @@ public class DocumentReimburse implements Serializable {
     @Column(name = "description")
     private String description;
 
-  
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "aprroved_date", nullable = true)
     private Date aprroved_date;
-
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
@@ -81,7 +79,7 @@ public class DocumentReimburse implements Serializable {
     protected void onCreate() {
         date_input = new Date();
         status = "0";
-        this.setUuid(UUID.randomUUID().toString());
+//        this.setUuid(UUID.randomUUID().toString());
     }
 
     public DocumentReimburse() {
@@ -95,14 +93,13 @@ public class DocumentReimburse implements Serializable {
         this.reimburse_document_id = reimburse_document_id;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
+//    public String getUuid() {
+//        return uuid;
+//    }
+//
+//    public void setUuid(String uuid) {
+//        this.uuid = uuid;
+//    }
     public String getLinkDocument() {
         return linkDocument;
     }
@@ -166,11 +163,6 @@ public class DocumentReimburse implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    
-   
-    
-    
 
     @Override
     public String toString() {

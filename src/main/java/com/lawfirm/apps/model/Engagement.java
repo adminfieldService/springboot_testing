@@ -80,12 +80,22 @@ public class Engagement implements Serializable {
     protected String status;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id")
+    @JoinColumn(name = "id_client", referencedColumnName = "id_client")
     protected ClientData client;
 
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
+//    protected TeamMember teamMember;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
-    protected TeamMember teamMember;
+    @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
+    protected Employee employee;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "engagement")
+    private Collection<TeamMember> teamMemberCollection;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "engagement")
+    private Collection<EngagementHistory> engagementHistoryCollection;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Financial> financialCollection;
@@ -97,6 +107,8 @@ public class Engagement implements Serializable {
 //    protected Collection<LoanType> loanTypeCollection;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
+    @Column(name = "tgl_input", length = 10, nullable = true)
+    protected String tgl_input;
 
     protected String caseID;
 
@@ -199,13 +211,13 @@ public class Engagement implements Serializable {
         this.client = client;
     }
 
-    public TeamMember getTeamMember() {
-        return teamMember;
-    }
-
-    public void setTeamMember(TeamMember teamMember) {
-        this.teamMember = teamMember;
-    }
+//    public TeamMember getTeamMember() {
+//        return teamMember;
+//    }
+//
+//    public void setTeamMember(TeamMember teamMember) {
+//        this.teamMember = teamMember;
+//    }
 
 //    public Collection<LoanType> getLoanTypeCollection() {
 //        return loanTypeCollection;
@@ -316,6 +328,36 @@ public class Engagement implements Serializable {
         this.loanCollection = loanCollection;
     }
 
+    public String getTgl_input() {
+        return tgl_input;
+    }
+
+    public void setTgl_input(String tgl_input) {
+        this.tgl_input = tgl_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -331,6 +373,22 @@ public class Engagement implements Serializable {
         }
         Engagement other = (Engagement) object;
         return !((this.engagementId == null && other.engagementId != null) || (this.engagementId != null && !this.engagementId.equals(other.engagementId)));
+    }
+
+    public Collection<TeamMember> getTeamMemberCollection() {
+        return teamMemberCollection;
+    }
+
+    public void setTeamMemberCollection(Collection<TeamMember> teamMemberCollection) {
+        this.teamMemberCollection = teamMemberCollection;
+    }
+
+    public Collection<EngagementHistory> getEngagementHistoryCollection() {
+        return engagementHistoryCollection;
+    }
+
+    public void setEngagementHistoryCollection(Collection<EngagementHistory> engagementHistoryCollection) {
+        this.engagementHistoryCollection = engagementHistoryCollection;
     }
 
     @Override

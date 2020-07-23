@@ -146,6 +146,25 @@ public class EngagementRepo implements EngagementRepoIface {
     }
 
     @Override
+    public CaseDetails createCaseID(Integer number) {
+        try {
+            CaseDetails listAcquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+                    + " c.caseID = :caseID ")
+                    .setParameter("caseID", number)
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<Engagement> listEngagement() {
         try {
@@ -186,4 +205,5 @@ public class EngagementRepo implements EngagementRepoIface {
         // TODO Auto-generated method stub
         return entityManager;
     }
+
 }

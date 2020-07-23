@@ -31,13 +31,14 @@ public interface LoanRepoIface {
 
     Loan findByLoanId(String param);
 
-    List<Loan> listLoan(int max, int start);
+    List<Loan> listLoan(int max, int start, String type);
 
+//    List<Loan> listLoanB(int max, int start);
     List<Loan> listLoanPaging(int max, int start);
 
-    List<Loan> findByEmployee(String param);
+    List<Loan> findByEmployee(String param, String type);
 
-    List<Loan> listActive();
+    List<Loan> listActive(String param1, String param2, String type);
 
     List<Loan> byName(Boolean isActive);
 

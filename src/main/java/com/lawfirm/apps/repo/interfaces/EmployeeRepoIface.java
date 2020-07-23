@@ -31,15 +31,20 @@ public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> 
 
     Employee findById(Long paramLong);
 
+    Employee cekPass(String param);
+
     Employee chekUserName(String paramString);
 
     Employee findByEmployee(String paramString);
 
 //    Employee findByEmployeeId(String paramString, Long Id);
-
     Employee findByEmployeeId(String paramString);
 
+    List<Employee> listEmployeeId(String paramString);
+
     List<Employee> listEmployee();
+
+    List<Employee> listEmployeeByRole(String paramString);
 
     List<Employee> listEmployeePaging(String param, int max, int start);
 
@@ -54,10 +59,9 @@ public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> 
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
-    
+
     Integer generateEmpId(String param);
 
     Optional<Employee> findByUsername(String username);
-    
-    
+
 }

@@ -63,8 +63,13 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public CaseDetails findByCaseId(String namaVisit) {
-        return caseDetailsRepo.findByCaseId(namaVisit);
+    public CaseDetails findByCaseId(String namaVisit, String paramY) {
+        return caseDetailsRepo.findByCaseId(namaVisit, paramY);
+    }
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public CaseDetails findCaseId(String namaVisit) {
+        return caseDetailsRepo.findCaseId(namaVisit);
     }
 
     @Override
@@ -93,8 +98,20 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Integer generateCaseId(String param1) {
+        return caseDetailsRepo.generateCaseId(param1);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public EntityManager getEntityManager() {
         return caseDetailsRepo.getEntityManager();
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<CaseDetails> findByEmployee(Long paramLong) {
+        return caseDetailsRepo.findByEmployee(paramLong);
     }
 
 }

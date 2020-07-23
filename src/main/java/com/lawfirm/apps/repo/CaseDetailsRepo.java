@@ -137,7 +137,12 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public CaseDetails findById(Long paramLong) {
         try {
-            return (CaseDetails) entityManager.find(CaseDetails.class, paramLong);
+//            return (CaseDetails) entityManager.find(CaseDetails.class, paramLong);
+            CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+                    + " c.engagementId = :engagementId ")
+                    .setParameter("engagementId", paramLong)
+                    .getSingleResult();
+            return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -150,10 +155,32 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     }
 
     @Override
-    public CaseDetails findByCaseId(String caseID) {
+    public CaseDetails findByCaseId(String caseID, String paramY) {
         try {
             CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
-                    + " LOWER(c.caseID) = :caseID")
+                    + " c.caseID = :caseID AND "
+                    + " c.tgl_input = :tgl_input")
+                    .setParameter("caseID", caseID)
+                    .setParameter("tgl_input", paramY)
+                    .getSingleResult();
+            return acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public CaseDetails findCaseId(String caseID) {
+        try {
+            CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+                    + " c.caseID = :caseID")
                     .setParameter("caseID", caseID)
                     .getSingleResult();
             return acquire;
@@ -173,7 +200,9 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @SuppressWarnings("unchecked")
     public List<CaseDetails> listCaseDetails() {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c").getResultList();
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + "JOIN FETCH c.employee AS e"
+                    + " LEFT JOIN FETCH c.client AS t ").getResultList();
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -191,11 +220,94 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @SuppressWarnings("unchecked")
     public List<CaseDetails> listActive(Boolean isActive) {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " JOIN FETCH c.employee AS e "
+                    + " LEFT JOIN FETCH c.client AS t"
+                    + " WHERE "
                     + " c.isActive = :isActive")
                     .setParameter("isActive", isActive)
                     .getResultList();
             return (List<CaseDetails>) listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public List<CaseDetails> findByEmployee(Long paramLong) {
+        try {
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c"
+                    + " JOIN FETCH c.employee AS e "
+                    + " LEFT JOIN FETCH c.client AS t "
+                    + "  WHERE "
+                    + " e.idEmployee = :idEmployee ")
+                    .setParameter("idEmployee", paramLong)
+                    .getResultList();
+            return (List<CaseDetails>) listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public List<CaseDetails> findByAdmin(Long paramLong) {
+        try {
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c WHERE  "
+                    + " c.approvedBy = :approvedBy")
+                    .setParameter("approvedBy", paramLong.toString())
+                    .getResultList();
+            if (listAcquire == null) {
+                return null;
+            } else {
+                return (List<CaseDetails>) listAcquire;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+//    Query queryMax = entityManager.createQuery("SELECT COUNT(l) FROM Loan l "
+//                    + " WHERE "
+//                    + " l.loantype.typeLoan = :typeLoan "
+//                    + " AND l.employee.employeeId = :employeeId "
+//                    + " AND l.tgl_input = :tgl_input")
+//                    .setParameter("typeLoan", param1.toLowerCase())
+//                    .setParameter("employeeId", param2.toLowerCase())
+//                    .setParameter("tgl_input", param3);
+//            return Integer.parseInt(queryMax.getSingleResult().toString());
+
+    @Override
+    public Integer generateCaseId(String param1) {
+        try {
+            Integer listAcquire = (Integer) entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+                    + " c.tgl_input = :tgl_input")
+                    .setParameter("tgl_input", param1)
+                    .getSingleResult();
+            if (listAcquire == null) {
+                return 0;
+            } else {
+                return listAcquire;
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());

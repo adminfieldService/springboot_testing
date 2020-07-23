@@ -29,7 +29,15 @@ public interface CaseDetailsRepoIface {
 
     CaseDetails findById(Long paramLong);
 
-    CaseDetails findByCaseId(String namaVisit);
+    Integer generateCaseId(String param1);
+
+    CaseDetails findByCaseId(String namaVisit, String paramY);
+
+    CaseDetails findCaseId(String caseID);
+
+    List<CaseDetails> findByEmployee(Long paramLong);
+
+    List<CaseDetails> findByAdmin(Long paramLong);
 
     List<CaseDetails> listCaseDetails();
 

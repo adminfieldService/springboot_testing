@@ -41,8 +41,10 @@ public class ClientData implements Serializable {
     @Id
     @SequenceGenerator(name = "client_seq", sequenceName = "client_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_seq")
+    @Column(name = "id_client")
+    private Long idClient;
     @Column(name = "client_id")
-    private Long clientId;
+    private String clientId;
     @Column(name = "client_name")
     private String clientName;
     @Column(name = "address")
@@ -80,22 +82,24 @@ public class ClientData implements Serializable {
     public ClientData() {
     }
 
-    public ClientData(Long clientId, String uuid, String clientName, String address, String npwp, String pic, Date tgInput, String isActive) {
+    public ClientData(Long idClient, String clientId, String clientName, String address, String npwp, String pic, String phoneNumber, Date tgInput, String isActive) {
+        this.idClient = idClient;
         this.clientId = clientId;
         this.clientName = clientName;
         this.address = address;
         this.npwp = npwp;
         this.pic = pic;
+        this.phoneNumber = phoneNumber;
         this.tgInput = tgInput;
         this.isActive = isActive;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public Long getIdClient() {
+        return idClient;
     }
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
+    public void setIdClient(Long idClient) {
+        this.idClient = idClient;
     }
 
     public String getClientName() {
@@ -186,6 +190,28 @@ public class ClientData implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
     public Date getTgInput() {
         return tgInput;
     }
@@ -234,6 +260,6 @@ public class ClientData implements Serializable {
 
     @Override
     public String toString() {
-        return "com.lawfirm.apps.model.ClientData[clientId=" + this.clientId + " ]";
+        return "com.lawfirm.apps.model.ClientData[idClient=" + this.idClient + " ]";
     }
 }

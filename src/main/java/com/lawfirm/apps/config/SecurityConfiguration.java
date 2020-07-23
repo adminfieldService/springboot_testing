@@ -15,6 +15,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,6 +38,7 @@ import org.springframework.web.filter.CorsFilter;
  *
  * @author newbiecihuy
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration
 @EnableAutoConfiguration
 @EnableWebSecurity
@@ -76,7 +78,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs",
+        web.ignoring().antMatchers(
+                "/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
                 "/configuration/security",
@@ -93,25 +96,42 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/employee/managed-employee/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()        
-                .antMatchers(HttpMethod.DELETE, "/employee/managed-employee/").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/employee/role/").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()                    
+                .antMatchers(HttpMethod.DELETE, "/employee/managed-employee/{id_employee}").hasAnyRole("admin", "sysadmin")//.permitAll()        
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/set-password/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()       
                 .antMatchers(HttpMethod.POST, "/employee/find-by-id/").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{employee_id}/find-by-employee-id/").hasAnyRole("admin", "sysadmin", "lawyer", "support")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/employe-role/role-name/").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/employee/cv/managed-cv/").hasAnyRole("admin", "sysadmin", "lawyer")
-                .antMatchers(HttpMethod.POST, "/employee/approved/by-admin/").hasAnyRole("admin", "sysadmin")
-                .antMatchers(HttpMethod.PUT, "/employee/managed-account/").hasAnyRole("lawyer", "admin", "dmp", "finance")//.permitAll()    
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/cv/").hasAnyRole("admin", "sysadmin", "lawyer")
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer")
+                .antMatchers(HttpMethod.POST, "/employee/approval/by-admin/").hasAnyRole("admin", "sysadmin")
+                .antMatchers(HttpMethod.POST, "/employee/managed-account/").hasAnyRole("lawyer", "admin", "dmp", "finance")//.permitAll()    
                 .antMatchers(HttpMethod.GET, "/employee/view/list-by-admin/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/view/list-by-finance/").hasAnyRole("finance", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.POST, "/loan/manage-loan/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/loan/manage-loan/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
-                .antMatchers(HttpMethod.PUT, "/loan/approved/by-admin/").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.GET, "/loan/approved/by-admin/").hasAnyRole("admin", "sysadmin","lawyer","support")//.permitAll()
-                .antMatchers("/engagement/**").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
-                .antMatchers("/opt/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/loan/manage-loan/loan-a/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/approval/by-admin/").hasRole("admin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/loan/approval/{id_loan}/by-admin/").hasAnyRole("admin", "sysadmin")//.permitAll()
+                .antMatchers(HttpMethod.PUT, "/loan/approval/{id_loan}/by-finance/").hasRole("finance")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/list-of-loan-a/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitSAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/{id_employee}/loans-a/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/list-of-loan-a/by-admin/").hasAnyRole("admin", "sysadmin")//.hasRole("admin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/loan/manage-loan/loan-b/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/list-of-loan-b/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/{id_employee}/loans-b/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
+                .antMatchers(HttpMethod.GET, "/loan/view/list-of-loan-b/by-admin/").hasAnyRole("admin", "sysadmin")//.hasRole("admin")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/engagement/manage-engagement/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/list-of-engagement/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/view/by-employee/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/aproval-list/by-admin/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
+                .antMatchers(HttpMethod.PATCH, "/engagement/approval/{engagement_id}/by-admin/").hasRole("admin")
+                .antMatchers("/opt/UploadFile/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .exceptionHandling().accessDeniedPage("/403")
+                .exceptionHandling()
+                .accessDeniedPage("/403")
                 .and()
                 .sessionManagement()
                 .maximumSessions(1);

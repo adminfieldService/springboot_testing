@@ -28,31 +28,31 @@ public class TeamMemberService implements TeamMemberServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember create(TeamMember entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.create(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember update(TeamMember entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.update(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember delete(TeamMember entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.delete(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public void remove(TeamMember entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        teamMemberRepo.remove(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember findById(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.findById(paramLong);
     }
 
     @Override
@@ -64,13 +64,13 @@ public class TeamMemberService implements TeamMemberServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<TeamMember> listTeamMember() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.listTeamMember();
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<TeamMember> listActive(Boolean param) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.listActive(param);
     }
 
     @Override
@@ -82,13 +82,19 @@ public class TeamMemberService implements TeamMemberServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Integer count() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.count();
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public EntityManager getEntityManager() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teamMemberRepo.getEntityManager();
+    }
+
+     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<TeamMember> findByDmp(Long dmpId) {
+        return teamMemberRepo.findByDmp(dmpId);
     }
 
 }

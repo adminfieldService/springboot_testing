@@ -6,13 +6,18 @@
 package com.lawfirm.apps.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -38,17 +43,37 @@ public class TeamMember implements Serializable {
     private Boolean isActive;
     @Column(name = "description")
     private String description;
-//    private Employee employeeId;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
-    private Collection<Engagement> engagementCollection;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
-    private Collection<Member> membertCollection;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
-    private Collection<Financial> financialCollection;
+    @Column(name = "dmp_id")
+    private Long dmpId;
+    @Column(name = "fee_share")
+    private Double feeShare;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
+    protected Engagement engagement;
+
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
+//    protected Employee employee;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
+////    private Collection<Member> membertCollection;
+//    private List<Member> membertCollection = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "teamMember")
+    private List<Member> memberCollection = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
+//    private Collection<Financial> financialCollection;
 
     public TeamMember() {
     }
 
+    public void addMember(Member member) {
+        member.setTeamMember(this);
+        memberCollection.add(member);
+    }
+
+//    public void addfee(Double fee) {
+//        feeShareCollection.add(fee);
+//    }
     public Long getTeamMemberId() {
         return teamMemberId;
     }
@@ -57,30 +82,21 @@ public class TeamMember implements Serializable {
         this.teamMemberId = teamMemberId;
     }
 
-    public Collection<Engagement> getEngagementCollection() {
-        return engagementCollection;
+    public Engagement getEngagement() {
+        return engagement;
     }
 
-    public void setEngagementCollection(Collection<Engagement> engagementCollection) {
-        this.engagementCollection = engagementCollection;
+    public void setEngagement(Engagement engagement) {
+        this.engagement = engagement;
     }
 
-    public Collection<Member> getMembertCollection() {
-        return membertCollection;
-    }
-
-    public Collection<Financial> getFinancialCollection() {
-        return financialCollection;
-    }
-
-    public void setFinancialCollection(Collection<Financial> financialCollection) {
-        this.financialCollection = financialCollection;
-    }
-
-    public void setMembertCollection(Collection<Member> membertCollection) {
-        this.membertCollection = membertCollection;
-    }
-
+//    public Collection<Financial> getFinancialCollection() {
+//        return financialCollection;
+//    }
+//
+//    public void setFinancialCollection(Collection<Financial> financialCollection) {
+//        this.financialCollection = financialCollection;
+//    }
     public String getDescription() {
         return description;
     }
@@ -109,6 +125,37 @@ public class TeamMember implements Serializable {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+//    public List<Double> getFeeShareCollection() {
+//        return feeShareCollection;
+//    }
+//
+//    public void setFeeShareCollection(List<Double> feeShareCollection) {
+//        this.feeShareCollection = feeShareCollection;
+//    }
+    public Double getFeeShare() {
+        return feeShare;
+    }
+
+    public void setFeeShare(Double feeShare) {
+        this.feeShare = feeShare;
+    }
+
+    public List<Member> getMemberCollection() {
+        return memberCollection;
+    }
+
+    public void setMemberCollection(List<Member> memberCollection) {
+        this.memberCollection = memberCollection;
+    }
+
+    public Long getDmpId() {
+        return dmpId;
+    }
+
+    public void setDmpId(Long dmpId) {
+        this.dmpId = dmpId;
     }
 
     @Override
