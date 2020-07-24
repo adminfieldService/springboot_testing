@@ -832,8 +832,14 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+//            rs.setResponse_code("05");
+//            rs.setInfo("Failed");
+//            rs.setResponse(ex.getMessage());
+//            CreateLog.createJson(rs, "list-of-loan-a");
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-a");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
+
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
@@ -933,6 +939,7 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-a-employee");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1074,6 +1081,7 @@ public class LoanController {
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-a-admin");
             System.out.println("ERROR: " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -1090,9 +1098,9 @@ public class LoanController {
             int start = 0;
             List<Loan> entityList = null;
             if (start == 0) {
-                entityList = this.loanService.listLoan(0, 0,"b");
+                entityList = this.loanService.listLoan(0, 0, "b");
             } else {
-                entityList = this.loanService.listLoan(max, start,"b");
+                entityList = this.loanService.listLoan(max, start, "b");
             }
 
             JSONArray array = new JSONArray();
@@ -1189,6 +1197,7 @@ public class LoanController {
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-b");
             System.out.println("ERROR: " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -1299,6 +1308,7 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-b-employee");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1441,6 +1451,7 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-of-loan-b-admin");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1551,6 +1562,7 @@ public class LoanController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-history-of-loan-b-admin");
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }

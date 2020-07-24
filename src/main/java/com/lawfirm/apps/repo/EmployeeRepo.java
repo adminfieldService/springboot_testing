@@ -499,8 +499,10 @@ public class EmployeeRepo implements EmployeeRepoIface {
     public Optional<Employee> findByUsername(String username) {
         try {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
-                    + " e.userName = :userName")
+                    + " e.userName = :userName OR "
+                    + " e.email = :email")
                     .setParameter("userName", username.toLowerCase())
+                    .setParameter("email", username.toLowerCase())
                     .getSingleResult();
             if (listAcquire.getIsLogin() == true) {
                 return Optional.empty();

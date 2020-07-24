@@ -78,6 +78,9 @@ public class Engagement implements Serializable {
 //    
     @Column(name = "status")
     protected String status;
+    
+    @Column(name = "operational_cost")
+    protected Double operational_cost;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_client", referencedColumnName = "id_client")
@@ -86,8 +89,7 @@ public class Engagement implements Serializable {
 //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
 //    protected TeamMember teamMember;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     protected Employee employee;
 
@@ -218,7 +220,6 @@ public class Engagement implements Serializable {
 //    public void setTeamMember(TeamMember teamMember) {
 //        this.teamMember = teamMember;
 //    }
-
 //    public Collection<LoanType> getLoanTypeCollection() {
 //        return loanTypeCollection;
 //    }
@@ -389,6 +390,14 @@ public class Engagement implements Serializable {
 
     public void setEngagementHistoryCollection(Collection<EngagementHistory> engagementHistoryCollection) {
         this.engagementHistoryCollection = engagementHistoryCollection;
+    }
+
+    public Double getOperational_cost() {
+        return operational_cost;
+    }
+
+    public void setOperational_cost(Double operational_cost) {
+        this.operational_cost = operational_cost;
     }
 
     @Override

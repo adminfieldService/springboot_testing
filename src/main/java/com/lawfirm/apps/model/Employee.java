@@ -137,7 +137,7 @@ public class Employee implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "employee")//cascade = CascadeType.MERGE
     private Collection<Loan> loanCollection;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")//cascade = CascadeType.MERGE
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.MERGE)//cascade = CascadeType.MERGE
     private Collection<Engagement> engagementCollection;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
@@ -679,7 +679,5 @@ public class Employee implements Serializable {
     public void setEngagementCollection(Collection<Engagement> engagementCollection) {
         this.engagementCollection = engagementCollection;
     }
-    
-    
 
 }

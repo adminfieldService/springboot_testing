@@ -869,6 +869,7 @@ public class EmployeeController { //LawfirmController
                     byte[] bytes = file.getBytes();
                     Path path = Paths.get(pathDoc + file.getOriginalFilename());
                     Files.write(path, bytes);
+                    log.info("fiel getOriginalFilename : "+file.getOriginalFilename());
                     entity.setLinkCv(pathDoc + file.getOriginalFilename());
                     Employee newEmp = employeeService.update(entity);
                     if (newEmp != null) {
@@ -2258,7 +2259,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
 //    @PutMapping(value = "/cv/managed-cv/download-cv/{id_employee}", produces = {"application/json"})
-    @RequestMapping(value = "/cv/managed-cv/download-cv/{id_employee}", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
     public ResponseEntity<String> downloadCv(ServletRequest request, HttpServletResponse response,
             @PathVariable("id_employee") Long idEmployee) {
@@ -2266,7 +2267,6 @@ public class EmployeeController { //LawfirmController
             Employee entity = employeeService.findById(idEmployee);
             Boolean process = true;
             if (entity == null) {
-
                 rs.setResponse_code("05");
                 rs.setInfo("Warning");
                 rs.setResponse("Employee Null");
@@ -2274,6 +2274,7 @@ public class EmployeeController { //LawfirmController
                 process = false;
             }
             if (process) {
+                
                 FileOutputStream fop = null;
                 String bytenya = entity.getLinkCv();
                 byte[] imageInByte = ISOUtil.hex2byte(bytenya);

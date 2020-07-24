@@ -47,32 +47,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Slf4j
 public class AuthController {
-
+    
     @Autowired
     AuthenticationManager authenticationManager;
-
+    
     @Autowired
     PasswordEncoder encoder;
-
+    
     @Autowired
     JwtUtils jwtTokenUtil;
-
+    
     @Autowired
     EmployeeService empRepository;
     @Autowired
     UserServiceImpl userRepository;
-
+    
     @Autowired
     EmployeeRoleService roleRepository;
-
+    
     final Response rs = new Response();
-
+    
     @RequestMapping("/")
     public String home() {
 //        return "redirect:/login";
         return login();
     }
-
+    
     @RequestMapping("/login")
     public String login() {
 //        return "createAuthenticationToken";
@@ -94,7 +94,7 @@ public class AuthController {
 //            );
 //            log.info("getPassword : " + authenticationRequest.getPassword());
             Authentication authenticate = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
             );
             AuthenticationResponse response = null;
             //if authentication was succesful else throw an exception
@@ -115,11 +115,12 @@ public class AuthController {
             response.setId(userDetails.getId());
             response.setUsername(userDetails.getUsername());
             response.setActive(userDetails.isEnabled());
+            response.setEmployeeId(userDetails.getEmployeeId());
             List<String> roles = new ArrayList<>();
             userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
             response.setRoles(roles);
             return new ResponseEntity(response, responseHeaders, HttpStatus.OK);
-
+            
         } catch (AuthenticationException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.toString());
@@ -130,7 +131,7 @@ public class AuthController {
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
     }
-
+    
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupApi signUpRequest) {
         try {
@@ -151,7 +152,7 @@ public class AuthController {
                         .badRequest()
                         .body(rs);
             }
-
+            
             if (empRepository.existsByEmail(signUpRequest.getEmail())) {
                 rs.setResponse_code("05");
                 rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail() + " already Exist");
@@ -171,9 +172,9 @@ public class AuthController {
             entity.setApproved_date(new Date());
             entity.setPassword(encoder.encode(signUpRequest.getEmail() + signUpRequest.getEmail()));
             entity.setRoleName("sysadmin");
-
+            
             Employee dataEmp = this.empRepository.create(entity);
-
+            
             if (dataEmp == null) {
                 return new ResponseEntity(new CustomErrorType("05", "Fail", "User registered Failed"),
                         HttpStatus.NOT_FOUND);

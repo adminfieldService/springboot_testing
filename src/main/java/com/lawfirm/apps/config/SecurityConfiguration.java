@@ -54,8 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        auth
-                .eraseCredentials(true)
+        auth.eraseCredentials(true)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
@@ -78,13 +77,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                "/v2/api-docs",
-                "/configuration/ui",
-                "/swagger-resources/**",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**");
+        web.ignoring().antMatchers("/v3/api-docs", "/configuration/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/api-docs/**")
+                .antMatchers("/opt/UploadFile/");
     }
 
     @Override
@@ -104,7 +98,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{employee_id}/find-by-employee-id/").hasAnyRole("admin", "sysadmin", "lawyer", "support")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/employe-role/role-name/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/cv/").hasAnyRole("admin", "sysadmin", "lawyer")
-                .antMatchers(HttpMethod.POST, "/employee/managed-employee/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer")
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer", "support", "dmp", "finance")
                 .antMatchers(HttpMethod.POST, "/employee/approval/by-admin/").hasAnyRole("admin", "sysadmin")
                 .antMatchers(HttpMethod.POST, "/employee/managed-account/").hasAnyRole("lawyer", "admin", "dmp", "finance")//.permitAll()    
                 .antMatchers(HttpMethod.GET, "/employee/view/list-by-admin/").hasAnyRole("admin", "sysadmin")//.permitAll()
@@ -125,8 +119,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/view/by-employee/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/aproval-list/by-admin/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .antMatchers(HttpMethod.PATCH, "/engagement/approval/{engagement_id}/by-admin/").hasRole("admin")
-                .antMatchers("/opt/UploadFile/**").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
+                 .antMatchers(HttpMethod.POST, "/engagement-dto/manage-engagement-dto/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -167,16 +160,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
 //https://stackoverflow.com/questions/51719889/spring-boot-cors-issue
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+//        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }

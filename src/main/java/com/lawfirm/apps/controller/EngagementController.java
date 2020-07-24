@@ -628,7 +628,7 @@ public class EngagementController {
                         if (data.getApprovedBy() == null) {
                             obj.put("approved_by", "");
                         } else {
-                            Employee entityEmp = employeeService.findByEmployee(data.getApprovedBy());
+                            Employee entityEmp = employeeService.findById(Long.parseLong(data.getApprovedBy()));
                             obj.put("approved_by", entityEmp.getName());
 
                         }

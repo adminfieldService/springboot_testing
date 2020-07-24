@@ -48,7 +48,6 @@ public class CaseDetails extends Engagement implements Serializable {
     @Column(name = "panitera")
     private String panitera;
 
-
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "event_date", nullable = true)
     @Temporal(TemporalType.DATE)
@@ -333,7 +332,6 @@ public class CaseDetails extends Engagement implements Serializable {
         this.client = client;
     }
 
- 
     public Date getApproved_date() {
         return approved_date;
     }
@@ -423,7 +421,22 @@ public class CaseDetails extends Engagement implements Serializable {
     public void setTgl_input(String tgl_input) {
         this.tgl_input = tgl_input;
     }
-    
+
+    public Double getOperational_cost() {
+        return operational_cost;
+    }
+
+    public void setOperational_cost(Double operational_cost) {
+        this.operational_cost = operational_cost;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 
     @Override
     public String toString() {
