@@ -791,7 +791,21 @@ public class EmployeeController { //LawfirmController
 //                CreateLog.createJson(rs, "set-password");
 //                process = false;
 //            }
-            Employee entity = employeeService.findById(id_employee);
+            Date todayDate = new Date();
+            Date now = new Date();
+            String name = authenticationRequest.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't access this feature");
+                CreateLog.createJson(rs, "acreateLoana");
+                return rs;
+            }
+//            Employee entity = employeeService.findById(id_employee);
+            Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
                 rs.setResponse_code("05");
                 rs.setInfo("Error");
@@ -836,9 +850,23 @@ public class EmployeeController { //LawfirmController
 //            String nama = object.getName().replaceAll("\\s", "").toLowerCase();
 //            System.out.println("nama" + nama);
 //            System.out.println("isi_file : " + file);
+            Date todayDate = new Date();
+            Date now = new Date();
+            String name = authenticationRequest.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't access this feature");
+                CreateLog.createJson(rs, "acreateLoana");
+                return rs;
+            }
             String pathDoc = null;
             Boolean process = true;
-            Employee entity = employeeService.findById(id_employee);
+//            Employee entity = employeeService.findById(id_employee);
+            Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
                 rs.setResponse_code("05");
                 rs.setInfo("Error");
@@ -869,7 +897,7 @@ public class EmployeeController { //LawfirmController
                     byte[] bytes = file.getBytes();
                     Path path = Paths.get(pathDoc + file.getOriginalFilename());
                     Files.write(path, bytes);
-                    log.info("fiel getOriginalFilename : "+file.getOriginalFilename());
+                    log.info("fiel getOriginalFilename : " + file.getOriginalFilename());
                     entity.setLinkCv(pathDoc + file.getOriginalFilename());
                     Employee newEmp = employeeService.update(entity);
                     if (newEmp != null) {
@@ -2237,7 +2265,7 @@ public class EmployeeController { //LawfirmController
                 if (data.getName() == null) {
                     obj.put("name", "");
                 } else {
-                    obj.put("name", data.getRoleName());
+                    obj.put("name", data.getName());
                 }
                 if (data.getEmployeeId() == null) {
                     obj.put("employee_id", "");
@@ -2259,7 +2287,7 @@ public class EmployeeController { //LawfirmController
 
     @PermitAll
 //    @PutMapping(value = "/cv/managed-cv/download-cv/{id_employee}", produces = {"application/json"})
-    @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
     public ResponseEntity<String> downloadCv(ServletRequest request, HttpServletResponse response,
             @PathVariable("id_employee") Long idEmployee) {
@@ -2274,17 +2302,17 @@ public class EmployeeController { //LawfirmController
                 process = false;
             }
             if (process) {
-                
+
                 FileOutputStream fop = null;
                 String bytenya = entity.getLinkCv();
-                byte[] imageInByte = ISOUtil.hex2byte(bytenya);
+                byte[] pdf = ISOUtil.hex2byte(bytenya);
                 File file = new File(entity.getLinkCv());
                 fop = new FileOutputStream(file);
 
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                fop.write(imageInByte);
+                fop.write(pdf);
                 fop.flush();
                 fop.close();
 
@@ -2293,12 +2321,14 @@ public class EmployeeController { //LawfirmController
                 String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
                 System.out.println("Chek myFile_1" + myFile_1);
 //                String filename = "cv_" + entity.getEmployeeId() + "_" + entity.getName() + ".pdf";
-//                String filename = entity.getName() + ".pdf";
-//                String filepath = entity.getLinkCv();
+                String filename = myFile_1;
+                String filepath = entity.getLinkCv();
+//                System.out.println("Chek filepath" + filepath);
+                System.out.println("Chek baseUrl" + baseUrl);
                 response.setContentType("APPLICATION/OCTET-STREAM");
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + myFile_1 + "\"");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+//                java.io.FileInputStream fileInputStream = new java.io.FileInputStream(baseUrl + "/" + myFile_1);
                 java.io.FileInputStream fileInputStream = new java.io.FileInputStream(baseUrl + "/" + myFile_1);
-//                java.io.FileInputStream fileInputStream = new java.io.FileInputStream(filepath + "/" + filename);
 
                 System.out.println("Chek Size fileInputStream" + fileInputStream);
                 System.out.println("Chek Size fileInputStream.available()" + fileInputStream.available());
@@ -2307,7 +2337,7 @@ public class EmployeeController { //LawfirmController
                     out.write(i);
 //                    System.out.println("isi i" + i);
                 }
-                System.out.println("isi i " + i);
+//                System.out.println("isi i " + i);
                 fileInputStream.close();
                 out.close();
             }

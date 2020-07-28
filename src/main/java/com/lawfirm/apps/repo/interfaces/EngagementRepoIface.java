@@ -39,6 +39,8 @@ public interface EngagementRepoIface {
 
     List<Engagement> byName(Boolean isActive);
 
+    List<Engagement> getMember(Long paramLong);
+
     Integer count();
 
     EntityManager getEntityManager();

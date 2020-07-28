@@ -40,4 +40,6 @@ public interface TeamMemberServiceIface {
     EntityManager getEntityManager();
 
     List<TeamMember> findByDmp(Long dmpId);
+    
+     List<TeamMember> listTeamMemberByEngagement(Long param);
 }

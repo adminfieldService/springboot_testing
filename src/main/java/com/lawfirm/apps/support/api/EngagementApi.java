@@ -34,6 +34,7 @@ public class EngagementApi {
     protected String description;
     protected Long id_employee;
     protected Double dmp_fee;
+    protected Double operational_cost;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     protected Date approved_date;
     protected String employee_id[] = null;

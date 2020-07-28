@@ -31,4 +31,5 @@ public interface MemberServiceIface {
     List<Member> findByCaseId(String param);
 
     List<Member> findByEmpId(String param);//@Repository
+    
 }

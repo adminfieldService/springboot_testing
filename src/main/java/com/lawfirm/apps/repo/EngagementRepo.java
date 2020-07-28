@@ -181,6 +181,13 @@ public class EngagementRepo implements EngagementRepoIface {
             }
         }
     }
+    
+     @Override
+     @SuppressWarnings("unchecked")
+    public List<Engagement> getMember(Long paramLong) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -206,4 +213,5 @@ public class EngagementRepo implements EngagementRepoIface {
         return entityManager;
     }
 
+   
 }

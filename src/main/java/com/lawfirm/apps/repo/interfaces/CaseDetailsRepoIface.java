@@ -45,6 +45,8 @@ public interface CaseDetailsRepoIface {
 
     List<CaseDetails> byName(Boolean isActive);
 
+    List<CaseDetails> findByEngagementId(Long paramLong);
+
     Integer count();
 
     EntityManager getEntityManager();

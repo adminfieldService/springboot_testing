@@ -202,4 +202,25 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         return entityManager;
     }
 
+    @Override
+    public List<TeamMember> listTeamMemberByEngagement(Long param) {
+        try {
+            List<TeamMember> listAcquire = entityManager.createQuery("SELECT t FROM TeamMember t "
+                    + " JOIN FETCH t.engagement AS e "
+                    + " WHERE "
+                    + " e.engagementId  = :engagementId")
+                    .setParameter("engagementId", param)
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
 }

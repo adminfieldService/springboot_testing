@@ -261,7 +261,7 @@ public class EngagementControllerDto {
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setClient(dataClient);
                     dataCaseDetails.setOperational_cost(object.getOperational_cost());
-                    dataCaseDetails.setTgl_input(sdfYear.format(now));
+                    dataCaseDetails.setTahun_input(sdfYear.format(now));
                     CaseDetails caseDetails = this.caseDetailsService.create(dataCaseDetails);
 
                     if (caseDetails != null) {
@@ -346,7 +346,7 @@ public class EngagementControllerDto {
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setClient(dataClient);
                     dataCaseDetails.setOperational_cost(object.getOperational_cost());
-                    dataCaseDetails.setTgl_input(sdfYear.format(now));
+                    dataCaseDetails.setTahun_input(sdfYear.format(now));
 //                    dataCaseDetails.setClient(newClient);
                     CaseDetails caseDetails = this.caseDetailsService.create(dataCaseDetails);
                     ClientData dClient = clientDataService.create(newClient);

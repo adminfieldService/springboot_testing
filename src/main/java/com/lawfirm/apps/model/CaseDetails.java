@@ -414,12 +414,27 @@ public class CaseDetails extends Engagement implements Serializable {
         this.loanCollection = loanCollection;
     }
 
-    public String getTgl_input() {
-        return tgl_input;
+    public String getTahun_input() {
+        return tahun_input;
     }
 
-    public void setTgl_input(String tgl_input) {
-        this.tgl_input = tgl_input;
+    public void setTahun_input(String tahun_input) {
+        this.tahun_input = tahun_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+
     }
 
     public Double getOperational_cost() {

@@ -91,10 +91,15 @@ public class TeamMemberService implements TeamMemberServiceIface {
         return teamMemberRepo.getEntityManager();
     }
 
-     @Override
+    @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<TeamMember> findByDmp(Long dmpId) {
         return teamMemberRepo.findByDmp(dmpId);
+    }
+
+    @Override
+    public List<TeamMember> listTeamMemberByEngagement(Long param) {
+        return teamMemberRepo.listTeamMemberByEngagement(param);
     }
 
 }

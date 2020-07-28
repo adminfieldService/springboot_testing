@@ -148,29 +148,6 @@ public class LoanController {
                 process = false;
             }
             if ("A".equalsIgnoreCase(object.getLoan_type())) {
-//                Employee dataEMploye = null;
-//                if (object.getId_employee() != null) {
-//                    dataEMploye = employeeService.findById(object.getId_employee());
-//                }
-//                if (object.getEmployeeId() != null) {
-//                    dataEMploye = employeeService.findByEmployee(object.getEmployeeId());
-//                }
-
-//                if (entityEmp.getIdEmployee() != null) {
-//                    dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
-//                }
-//                if (entityEmp.getEmployeeId() != null) {
-//                    dataEMploye = employeeService.findByEmployee(entityEmp.getEmployeeId());
-//                }
-//                log.info("isi dataEMploye " + dataEMploye.toString());
-//                if (dataEMploye == null) {
-//                    rs.setResponse_code("05");
-//                    rs.setInfo("Failed");
-//                    rs.setResponse("Employee Id Not found");
-//                    process = false;
-//                    CreateLog.createJson(rs, "createLoan-employee");
-//                    return rs;
-//                }
                 if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) == 0) {
                     rs.setResponse_code("05");
                     rs.setInfo("Failed");
@@ -222,15 +199,6 @@ public class LoanController {
                         tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
                     }
 
-//                    dataLoan.setEmployee(dataEMploye);
-//                    dataLoan.setLoantype(typeLoan);
-//                    dataLoan.setTgl_input(sdfYear.format(now));
-//                    dataLoan.setDate_month(sdfMY.format(object.getCreated_date()));//sdfMonth.format(new Date())
-//                    dataLoan.setRepayment_date(tgl_repayment);
-//                    dataLoan.setDate_created(tgl_pengajuan);
-//                    dataLoan.setStatus("s");
-//                    entityHistory.setUserId(dataEMploye.getIdEmployee());
-//                    entityHistory.setResponse(" submit  : " + typeLoan.getTypeLoan() + "By :" + dataEMploye.getIdEmployee());
                     dataLoan.setEmployee(entityEmp);
                     dataLoan.setLoantype(typeLoan);
                     dataLoan.setTgl_input(sdfYear.format(now));
@@ -241,18 +209,6 @@ public class LoanController {
                     entityHistory.setUserId(entityEmp.getIdEmployee());
                     entityHistory.setResponse(" submit  : " + typeLoan.getTypeLoan() + "By :" + entityEmp.getIdEmployee());
 
-//                    if (dataEMploye.getLoanAmount().compareTo(object.getLoan_amount()) == 0) {
-//                       
-//                    }
-//                    if (dataEMploye.getLoanAmount() != null) {
-//                    if (dataEMploye.getLoanAmount().compareTo(object.getLoan_amount()) < 0) {
-//                        rs.setResponse_code("05");
-//                        rs.setInfo("Failed");
-//                        rs.setResponse("limit loan : " + dataEMploye.getLoanAmount());
-//                        process = false;
-//                        CreateLog.createJson(rs, "createLoan-employee");
-//                        return rs;
-//                    }
                     if (entityEmp.getLoanAmount().compareTo(object.getLoan_amount()) < 0) {
                         rs.setResponse_code("05");
                         rs.setInfo("Failed");

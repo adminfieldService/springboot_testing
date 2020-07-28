@@ -46,4 +46,8 @@ public interface CaseDetailsServiceIface {
     Integer generateCaseId(String param1);
 
     EntityManager getEntityManager();
+    
+    List<CaseDetails> findByEngagementId(Long paramLong);
+    
+    List<CaseDetails> findByAdmin(Long paramLong);
 }

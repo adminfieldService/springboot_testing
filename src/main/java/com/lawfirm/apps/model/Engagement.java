@@ -78,7 +78,7 @@ public class Engagement implements Serializable {
 //    
     @Column(name = "status")
     protected String status;
-    
+
     @Column(name = "operational_cost")
     protected Double operational_cost;
 
@@ -109,8 +109,8 @@ public class Engagement implements Serializable {
 //    protected Collection<LoanType> loanTypeCollection;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
-    @Column(name = "tgl_input", length = 10, nullable = true)
-    protected String tgl_input;
+    @Column(name = "tahun_input", length = 10, nullable = true)
+    protected String tahun_input;
 
     protected String caseID;
 
@@ -329,12 +329,12 @@ public class Engagement implements Serializable {
         this.loanCollection = loanCollection;
     }
 
-    public String getTgl_input() {
-        return tgl_input;
+    public String getTahun_input() {
+        return tahun_input;
     }
 
-    public void setTgl_input(String tgl_input) {
-        this.tgl_input = tgl_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+    public void setTahun_input(String tahun_input) {
+        this.tahun_input = tahun_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")

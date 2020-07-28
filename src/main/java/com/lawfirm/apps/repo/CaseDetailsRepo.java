@@ -155,13 +155,36 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     }
 
     @Override
+    public List<CaseDetails> findByEngagementId(Long paramLong) {
+        try {
+//            return (CaseDetails) entityManager.find(CaseDetails.class, paramLong);
+            List<CaseDetails> list_acquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " JOIN FETCH c.employee AS e "
+                    + " LEFT JOIN FETCH c.client AS t "
+                    + " WHERE "
+                    + " c.engagementId = :engagementId ")
+                    .setParameter("engagementId", paramLong)
+                    .getResultList();
+            return list_acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public CaseDetails findByCaseId(String caseID, String paramY) {
         try {
             CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
                     + " c.caseID = :caseID AND "
-                    + " c.tgl_input = :tgl_input")
+                    + " c.tahun_input = :tahun_input")
                     .setParameter("caseID", caseID)
-                    .setParameter("tgl_input", paramY)
+                    .setParameter("tahun_input", paramY)
                     .getSingleResult();
             return acquire;
         } catch (Exception ex) {
@@ -266,7 +289,10 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public List<CaseDetails> findByAdmin(Long paramLong) {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c WHERE  "
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " JOIN FETCH c.employee AS e "
+                    + " LEFT JOIN FETCH c.client AS t "
+                    + " WHERE  "
                     + " c.approvedBy = :approvedBy")
                     .setParameter("approvedBy", paramLong.toString())
                     .getResultList();
@@ -300,8 +326,8 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     public Integer generateCaseId(String param1) {
         try {
             Integer listAcquire = (Integer) entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
-                    + " c.tgl_input = :tgl_input")
-                    .setParameter("tgl_input", param1)
+                    + " c.tahun_input = :tahun_input")
+                    .setParameter("tahun_input", param1)
                     .getSingleResult();
             if (listAcquire == null) {
                 return 0;

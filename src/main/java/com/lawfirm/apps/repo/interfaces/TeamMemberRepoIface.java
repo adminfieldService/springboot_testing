@@ -40,4 +40,6 @@ public interface TeamMemberRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
+    
+    List<TeamMember> listTeamMemberByEngagement(Long param);
 }

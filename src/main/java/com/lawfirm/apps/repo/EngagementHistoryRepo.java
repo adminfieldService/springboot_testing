@@ -6,8 +6,8 @@
 package com.lawfirm.apps.repo;
 
 import com.lawfirm.apps.config.Constants;
-import com.lawfirm.apps.model.Member;
-import com.lawfirm.apps.repo.interfaces.MemberRepoIface;
+import com.lawfirm.apps.model.EngagementHistory;
+import com.lawfirm.apps.repo.interfaces.EngagementHistoryRepoIface;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,15 +21,15 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
  *
  * @author newbiecihuy
  */
-@Repository("memberRepo")
-public class MemberRepo implements MemberRepoIface {
+@Repository("engagementHistoryRepo")
+public class EngagementHistoryRepo implements EngagementHistoryRepoIface{
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
-    public Member create(Member entity) {
+    public EngagementHistory create(EngagementHistory entity) {
         try {
             entityManager.persist(entity);
             if (entity != null) {
@@ -51,7 +51,7 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
-    public Member update(Member entity) {
+    public EngagementHistory update(EngagementHistory entity) {
         try {
             entityManager.merge(entity);
             if (entity != null) {
@@ -73,12 +73,29 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
-    public Member delete(Member entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public EngagementHistory delete(EngagementHistory entity) {
+        try {
+            entity.setIsActive("3");
+            entityManager.merge(entity);
+            if (entity != null) {
+// 	                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            }
+        } catch (Exception ex) {
+// 	            LogSystem.error(getClass(), e);
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+        return null;
     }
 
     @Override
-    public void remove(Member entity) {
+    public void remove(EngagementHistory entity) {
         try {
             entityManager.remove(entity);
         } catch (Exception ex) {
@@ -93,113 +110,93 @@ public class MemberRepo implements MemberRepoIface {
         }
     }
 
-    @Override
-    public Member findById(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+  
 
     @Override
-    public List<Member> findByIdTeam(Long paramLong) {
+    public List<EngagementHistory> findByCaseId(Long paramLong) {
         try {
 //         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
 //            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
 //                    + " l.loanId = :loanId")
 //                    .setParameter("loanId", paramLong)
 //                    .getSingleResult();
-            String sql = "SELECT m FROM Member m "
-                    + " JOIN FETCH m.teamMember AS t "
-                    + " JOIN FETCH m.employee AS e "
-                    + " WHERE "
-                    + " t.teamMemberId = :teamMemberId";
-            Query query = entityManager.createQuery(sql);
-            query.setParameter("teamMemberId", paramLong);
-            if (query != null) {
-                return query.getResultList();
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-    }
-
-    @Override
-    public List<Member> findByCaseId(String param) {
-        try {
-//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
-//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
-//                    + " l.loanId = :loanId")
-//                    .setParameter("loanId", paramLong)
-//                    .getSingleResult();
-            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
-                    + " t.teamMemberId = :teamMemberId";
-            Query query = entityManager.createQuery(sql);
-            query.setParameter("teamMemberId", param);
-            if (query != null) {
-                return query.getResultList();
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-    }
-
-    @Override
-    public List<Member> findByEmpId(String param) {
-        try {
-            String sql = "SELECT m FROM Member m JOIN FETCH m.employee AS e WHERE "
-                    + " e.employeeId = :employeeId";
-            Query query = entityManager.createQuery(sql);
-            query.setParameter("employeeId", param);
-            if (query != null) {
-                return query.getResultList();
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            System.out.println("ERROR: " + ex.getMessage());
-            return null;
-        } finally {
-            if ((entityManager != null) && (entityManager.isOpen())) {
-                entityManager.close();
-            }
-        }
-    }
-
-//    @Override
-//    public List<Member> findByTeam(Long param) {
-//        try {
-//            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
-//                    + " t.team_member_id = :team_member_id";
+//            String sql = "SELECT h FROM EngagementHistory h JOIN FETCH h.id_loan AS l WHERE "
+//                    + " l.Id = :Id";
 //            Query query = entityManager.createQuery(sql);
-//            query.setParameter("team_member_id", param);
+//            query.setParameter("Id", paramLong);
 //            if (query != null) {
 //                return query.getResultList();
 //            } else {
-//                return null;
+                return null;
 //            }
-//        } catch (Exception ex) {
-//            logger.error(ex.getMessage());
-//            System.out.println("ERROR: " + ex.getMessage());
-//            return null;
-//        } finally {
-//            if ((entityManager != null) && (entityManager.isOpen())) {
-//                entityManager.close();
-//            }
-//        }
-//    }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+//        return null;
+    }
+
+    @Override
+    public List<EngagementHistory> findByEngagementId(String param) {
+        try {
+//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
+//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
+//                    + " l.loanId = :loanId")
+//                    .setParameter("loanId", paramLong)
+//                    .getSingleResult();
+            String sql = "SELECT h FROM EngagementHistory h JOIN FETCH h.engagement AS l WHERE "
+                    + " l.engagement_id = :engagement_id";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("engagement_id", param);
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<EngagementHistory> findByUserId(Long paramLong, String param) {
+        try {
+//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
+//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
+//                    + " l.loanId = :loanId")
+//                    .setParameter("loanId", paramLong)
+//                    .getSingleResult();
+            String sql = "SELECT h FROM EngagementHistory h JOIN FETCH h.engagement AS l WHERE "
+                    + " h.employee.idEmployee = :idEmployee OR "
+                    + " h.response = :response ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("idEmployee", paramLong);
+            query.setParameter("response", param);
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
 }
