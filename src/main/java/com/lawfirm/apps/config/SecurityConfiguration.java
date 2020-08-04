@@ -82,8 +82,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {//.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
-
+    protected void configure(HttpSecurity http) throws Exception {
+//  .exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
         http.cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -91,9 +91,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/role/").hasAnyRole("admin", "sysadmin")//.permitAll()
-                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()                    
-                .antMatchers(HttpMethod.DELETE, "/employee/managed-employee/{id_employee}").hasAnyRole("admin", "sysadmin")//.permitAll()        
+                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()                    
+                .antMatchers(HttpMethod.DELETE, "/employee/managed-employee/{id_employee}/").hasAnyRole("admin", "sysadmin")//.permitAll()        
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/set-password/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()       
+                .antMatchers(HttpMethod.PUT, "/employee/managed-employee/set-password/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()       
                 .antMatchers(HttpMethod.POST, "/employee/find-by-id/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{employee_id}/find-by-employee-id/").hasAnyRole("admin", "sysadmin", "lawyer", "support")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/employe-role/role-name/").hasAnyRole("admin", "sysadmin")//.permitAll()
@@ -121,6 +122,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .antMatchers(HttpMethod.PATCH, "/engagement/approval/{engagement_id}/by-admin/").hasRole("admin")
                 .antMatchers(HttpMethod.POST, "/engagement-dto/manage-engagement-dto/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
+                .antMatchers(HttpMethod.POST, "/engagement/manage-engagement/{engagement_id}/event/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.PATCH, "/engagement/manage-engagement/event/{event_id}/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/view-event/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/events/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.POST, "/engagement/manage-engagement/{engagement_id}/document/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/view-documents/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/document/").hasAnyRole("admin", "dmp", "lawyer")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -129,7 +137,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .maximumSessions(1);
-
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 //    @Override

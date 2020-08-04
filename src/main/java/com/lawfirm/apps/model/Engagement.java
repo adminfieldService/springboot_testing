@@ -96,7 +96,7 @@ public class Engagement implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "engagement")
     private Collection<TeamMember> teamMemberCollection;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "engagement")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     private Collection<EngagementHistory> engagementHistoryCollection;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")

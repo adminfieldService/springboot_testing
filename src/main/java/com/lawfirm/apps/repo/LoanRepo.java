@@ -183,33 +183,41 @@ public class LoanRepo implements LoanRepoIface {
                 if (start == 0) {
                     listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
                             + " JOIN FETCH l.employee AS e "
-                            + " LEFT JOIN FETCH l.loantype AS t"
+                            + " LEFT JOIN FETCH l.loantype AS t "
+                            + " WHERE t.typeLoan = :typeLoan "
                             + " ORDER BY l.date_created Desc ")
+                            .setParameter("typeLoan", "a")
                             .getResultList();
                 } else {
                     listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
                             + " JOIN FETCH l.employee AS e "
                             + " LEFT JOIN FETCH l.loantype AS t"
+                            + " WHERE t.typeLoan = :typeLoan "
                             + " ORDER BY l.date_created Desc")
+                            .setParameter("typeLoan", "a")
                             .setMaxResults(max)
                             .setFirstResult(start)
                             .getResultList();
                 }
             }
-             if (type.contentEquals("b")) {
+            if (type.contentEquals("b")) {
                 if (start == 0) {
                     listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
-                        + " JOIN FETCH l.employee AS e "
-                        + " LEFT JOIN FETCH l.loantype AS t "
-                        + " RIGHT JOIN FETCH l.engagement AS n"
-                        + " ORDER BY l.date_created Desc ")
-                        .getResultList();
+                            + " JOIN FETCH l.employee AS e "
+                            + " LEFT JOIN FETCH l.loantype AS t "
+                            + " RIGHT JOIN FETCH l.engagement AS n"
+                            + " WHERE t.typeLoan = :typeLoan "
+                            + " ORDER BY l.date_created Desc ")
+                            .setParameter("typeLoan", "b")
+                            .getResultList();
                 } else {
-                      listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
+                    listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
                             + " JOIN FETCH l.employee AS e "
                             + " LEFT JOIN FETCH l.loantype AS t "
                             + " RIGHT JOIN FETCH l.engagement AS n "
+                            + " WHERE t.typeLoan = :typeLoan "
                             + " ORDER BY l.date_created Desc")
+                            .setParameter("typeLoan", "b")
                             .setMaxResults(max)
                             .setFirstResult(start)
                             .getResultList();

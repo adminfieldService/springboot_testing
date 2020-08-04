@@ -501,7 +501,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
                     + " e.userName = :userName OR "
                     + " e.email = :email")
-                    .setParameter("userName", username.toLowerCase())
+                    .setParameter("userName", username.toLowerCase())//username.toLowerCase()
                     .setParameter("email", username.toLowerCase())
                     .getSingleResult();
             if (listAcquire.getIsLogin() == true) {

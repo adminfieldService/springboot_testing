@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -61,6 +62,9 @@ public class CaseDetails extends Engagement implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "caseDetails")
     private Collection<Professional> professionalCollection;
+
+    @OneToMany(mappedBy = "caseDetails")
+    private List<Events> evenList;
 
 //    @Basic(optional = false)
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
@@ -222,6 +226,14 @@ public class CaseDetails extends Engagement implements Serializable {
                 .replaceAll("<script(.*?)>", "")
                 .replaceAll("eval\\((.*?)\\)", "")
                 .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public List<Events> getEvenList() {
+        return evenList;
+    }
+
+    public void setEvenList(List<Events> evenList) {
+        this.evenList = evenList;
     }
 
     public Collection<CaseDocument> getCaseDocumentCollection() {

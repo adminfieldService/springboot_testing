@@ -31,19 +31,18 @@ import javax.persistence.TemporalType;
  * @author newbiecihuy
  */
 @Entity
-@Table(name = "tbl_doc_reimburse")
+@Table(name = "tbl_document_reimburse")
 @NamedQueries({
     @javax.persistence.NamedQuery(name = "DocumentReimbursement.findAll", query = "SELECT d FROM DocumentReimburse d")})
 public class DocumentReimburse implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @SequenceGenerator(name = "reimbursedoc_seq", sequenceName = "reimbursedoc_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reimbursedoc_seq")
+//    @SequenceGenerator(name = "reimbursedoc_seq", sequenceName = "reimbursedoc_seq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reimbursedoc_seq")
     @Column(name = "reimburse_document_id")
-    protected Long reimburse_document_id;
-//    @Column(name = "uuid")
-//    protected String uuid;
+    protected String reimburse_document_id;
+    
     @Column(name = "link_document")
     private String linkDocument;
 
@@ -79,17 +78,18 @@ public class DocumentReimburse implements Serializable {
     protected void onCreate() {
         date_input = new Date();
         status = "0";
+        this.setReimburse_document_id(UUID.randomUUID().toString());
 //        this.setUuid(UUID.randomUUID().toString());
     }
 
     public DocumentReimburse() {
     }
 
-    public Long getReimburse_document_id() {
+    public String getReimburse_document_id() {
         return reimburse_document_id;
     }
 
-    public void setReimburse_document_id(Long reimburse_document_id) {
+    public void setReimburse_document_id(String reimburse_document_id) {
         this.reimburse_document_id = reimburse_document_id;
     }
 

@@ -31,17 +31,17 @@ import javax.persistence.TemporalType;
  * @author newbiecihuy
  */
 @Entity
-@Table(name = "tbl_doc_case")
+@Table(name = "tbl_document_case")
 @NamedQueries({
     @javax.persistence.NamedQuery(name = "CaseDocument.findAll", query = "SELECT d FROM CaseDocument d")})
 public class CaseDocument implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @SequenceGenerator(name = "casedoc_seq", sequenceName = "casedoc_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "casedoc_seq")
+//    @SequenceGenerator(name = "casedoc_seq", sequenceName = "casedoc_seq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "casedoc_seq")
     @Column(name = "case_document_id")
-    private Long case_document_id;
+    private String case_document_id;
     @Column(name = "link_document")
     private String linkDocument;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)// fetch = FetchType.LAZY
@@ -59,16 +59,17 @@ public class CaseDocument implements Serializable {
     protected void onCreate() {
         isActive = "1";
         date_input = new Date();
+        this.setCase_document_id(UUID.randomUUID().toString());
     }
 
     public CaseDocument() {
     }
 
-    public Long getCase_document_id() {
+    public String getCase_document_id() {
         return case_document_id;
     }
 
-    public void setCase_document_id(Long case_document_id) {
+    public void setCase_document_id(String case_document_id) {
         this.case_document_id = case_document_id;
     }
 

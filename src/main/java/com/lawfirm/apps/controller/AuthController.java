@@ -75,14 +75,14 @@ public class AuthController {
     
     @RequestMapping("/login")
     public String login() {
-//        return "createAuthenticationToken";
-        return "redirect:/sign-in";
+        return "createAuthenticationToken";
+//        return "redirect:/sign-in";
     }
 
-//    @RequestMapping("/logout")
-//    public String logout() {
-//        return "createAuthenticationToken";
-//    }
+    @RequestMapping("/sign-out")
+    public String logout() {
+        return "createAuthenticationToken";
+    }
     @PostMapping("/sign-in")
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {

@@ -804,6 +804,68 @@ public class EmployeeController { //LawfirmController
                 CreateLog.createJson(rs, "acreateLoana");
                 return rs;
             }
+            Employee entity = employeeService.findById(id_employee);
+//            Employee entity = employeeService.findById(entityEmp.getIdEmployee());
+            if (entity == null) {
+                rs.setResponse_code("05");
+                rs.setInfo("Error");
+                rs.setResponse("Employee not found");
+                CreateLog.createJson(rs, "set-password");
+                process = false;
+            }
+            if (process) {
+                entity.setPassword(encoder.encode(object.getUser_pass()));
+//                entity.setPassword(object.getUser_pass());
+                Employee setPassword = this.employeeService.update(entity);
+                if (setPassword != null) {
+                    rs.setResponse_code("01");
+                    rs.setInfo("Success");
+                    rs.setResponse("set password employee Id " + entity.getEmployeeId() + " success");
+                    CreateLog.createJson(rs, "set-password");
+                    return rs;
+                }
+            }
+            rs.setResponse_code("05");
+            rs.setInfo("Error");
+            rs.setResponse("Employee not found");
+            CreateLog.createJson(rs, "set-password");
+            return rs;
+        } catch (Exception ex) {
+//            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("05");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "set-password");
+            return rs;
+        }
+
+    }
+@RequestMapping(path = "/managed-employee/set-password", produces = {"application/json"}, method = RequestMethod.PUT)
+    @XxsFilter
+    public Response setPassword(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
+        try {
+            Boolean process = true;
+//            Employee cekOldPass = employeeService.cekPass(encoder.encode(object.getUser_pass()));
+//            if (cekOldPass == null) {
+//                rs.setResponse_code("05");
+//                rs.setInfo("Error");
+//                rs.setResponse("wrong password");
+//                CreateLog.createJson(rs, "set-password");
+//                process = false;
+//            }
+            Date todayDate = new Date();
+            Date now = new Date();
+            String name = authenticationRequest.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't access this feature");
+                CreateLog.createJson(rs, "acreateLoana");
+                return rs;
+            }
 //            Employee entity = employeeService.findById(id_employee);
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
@@ -840,7 +902,6 @@ public class EmployeeController { //LawfirmController
         }
 
     }
-
     @RequestMapping(value = "/managed-employee/{id_employee}/cv", produces = {"application/json"}, method = RequestMethod.POST)
     @XxsFilter
     public Response saveUploadedFile(@RequestPart("doc_cv") MultipartFile file,
@@ -895,10 +956,10 @@ public class EmployeeController { //LawfirmController
                     }
 
                     byte[] bytes = file.getBytes();
-                    Path path = Paths.get(pathDoc + file.getOriginalFilename());
+                    Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
                     Files.write(path, bytes);
-                    log.info("fiel getOriginalFilename : " + file.getOriginalFilename());
-                    entity.setLinkCv(pathDoc + file.getOriginalFilename());
+                    log.info("fiel getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
+                    entity.setLinkCv(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
                     Employee newEmp = employeeService.update(entity);
                     if (newEmp != null) {
                         AprovedApi obj = new AprovedApi();

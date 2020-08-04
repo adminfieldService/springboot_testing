@@ -224,8 +224,11 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     public List<CaseDetails> listCaseDetails() {
         try {
             List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
-                    + "JOIN FETCH c.employee AS e"
-                    + " LEFT JOIN FETCH c.client AS t ").getResultList();
+                    + " JOIN FETCH c.employee  e"
+                    + " JOIN FETCH c.client t "
+                    + " ORDER BY c.engagementId ASC").getResultList();
+//            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "
+//                    + " JOIN FETCH c.employee AS e").getResultList();
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
@@ -236,7 +239,6 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                 entityManager.close();
             }
         }
-
     }
 
     @Override
@@ -266,12 +268,17 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public List<CaseDetails> findByEmployee(Long paramLong) {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c"
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT DISTINCT c FROM CaseDetails c"
                     + " JOIN FETCH c.employee AS e "
                     + " LEFT JOIN FETCH c.client AS t "
+                    + " JOIN  c.teamMemberCollection AS a "
+                    + " JOIN  a.memberCollection  AS b "
+                    + " JOIN  b.employee AS d "
                     + "  WHERE "
-                    + " e.idEmployee = :idEmployee ")
+                    + " e.idEmployee = :idEmployee OR "
+                    + " d.idEmployee = :id_employee ")
                     .setParameter("idEmployee", paramLong)
+                    .setParameter("id_employee", paramLong)
                     .getResultList();
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
