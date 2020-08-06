@@ -677,6 +677,13 @@ public class LoanController {
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
                 process = false;
             }
+            if (dataLoan.getIsActive().contentEquals("4")) {
+                rs.setResponse_code("05");
+                rs.setInfo("Failed");
+                rs.setResponse("Already approved by finance ");
+                CreateLog.createJson(rs, "loan-approve-Byfinance");
+                process = false;
+            }
             if (process) {
                 dataLoan.setAprovedByFinance(dataEMploye.getName());
                 dataLoan.setDate_approved_by_finance(new Date());

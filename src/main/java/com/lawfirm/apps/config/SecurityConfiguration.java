@@ -77,8 +77,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v3/api-docs", "/configuration/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/api-docs/**")
-                .antMatchers("/opt/UploadFile/");
+        web.ignoring().antMatchers("/v3/api-docs", "/configuration/**", "/swagger-resources/**", "/swagger-ui.html/..", "/webjars/**", "/api-docs/**")
+                .antMatchers("/opt/UploadFile/**");
     }
 
     @Override
@@ -88,6 +88,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
+                .antMatchers("/opt/UploadFile/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/role/").hasAnyRole("admin", "sysadmin")//.permitAll()
