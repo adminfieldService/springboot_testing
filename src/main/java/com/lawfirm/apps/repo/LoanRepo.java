@@ -302,8 +302,10 @@ public class LoanRepo implements LoanRepoIface {
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
-                        + " e.idEmployee = :idEmployee  "
+                        + " e.idEmployee = :idEmployee  AND "
+                        + " t.typeLoan = :typeLoan "
                         + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "a")
                         .setParameter("idEmployee", Long.parseLong(param))
                         .getResultList();
             }
@@ -313,8 +315,10 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
-                        + " e.idEmployee = :idEmployee  "
+                        + " e.idEmployee = :idEmployee AND "
+                        + " t.typeLoan = :typeLoan "
                         + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "b")
                         .setParameter("idEmployee", Long.parseLong(param))
                         .getResultList();
             }
@@ -418,33 +422,63 @@ public class LoanRepo implements LoanRepoIface {
         try {
             List<Loan> listAcquire = null;
             if (type.contentEquals("a")) {
-                listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
-                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
-                        + " l.aprovedByFinance = :aprovedByFinance OR"
-                        + " l.status = :status "
+                        + " ( l.aprovedByAdmin = :aprovedByAdmin OR "
+                        + " l.aprovedByFinance = :aprovedByFinance ) AND"
+                        + " t.typeLoan = :typeLoan "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("aprovedByAdmin", param1)
                         .setParameter("aprovedByFinance", param1)
-                        .setParameter("status", param2)
+                        .setParameter("typeLoan", "a")
                         .getResultList();
+//                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+//                        + " JOIN FETCH l.employee AS e "
+//                        + " LEFT JOIN FETCH l.loantype AS t "
+//                        + " WHERE "
+//                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
+//                        + " l.aprovedByFinance = :aprovedByFinance OR"
+//                        + " l.status = :status AND "
+//                        + " t.typeLoan = :typeLoan "
+//                        + " ORDER BY l.date_created Desc ")
+//                        .setParameter("aprovedByAdmin", param1)
+//                        .setParameter("aprovedByFinance", param1)
+//                        .setParameter("status", param2)
+//                        .setParameter("typeLoan", "a")
+//                        .getResultList();
             }
             if (type.contentEquals("b")) {
-                listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
-                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
-                        + " l.aprovedByFinance = :aprovedByFinance OR"
-                        + " l.status = :status "
+                        + " ( l.aprovedByAdmin = :aprovedByAdmin OR "
+                        + " l.aprovedByFinance = :aprovedByFinance ) AND"
+                        + " t.typeLoan = :typeLoan "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("aprovedByAdmin", param1)
                         .setParameter("aprovedByFinance", param1)
-                        .setParameter("status", param2)
+                        .setParameter("typeLoan", "b")
                         .getResultList();
+//                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+//                        + " JOIN FETCH l.employee AS e "
+//                        + " LEFT JOIN FETCH l.loantype AS t "
+//                        + " RIGHT JOIN FETCH l.engagement AS n "
+//                        + " WHERE "
+//                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
+//                        + " l.aprovedByFinance = :aprovedByFinance OR"
+//                        + " l.status = :status AND "
+//                        + " t.typeLoan = :typeLoan "
+//                        + " ORDER BY l.date_created Desc ")
+//                        .setParameter("aprovedByAdmin", param1)
+//                        .setParameter("aprovedByFinance", param1)
+//                        .setParameter("status", param2)
+//                        .setParameter("typeLoan", "b")
+//                        .getResultList();
             }
             if (listAcquire.isEmpty()) {
                 return listAcquire;

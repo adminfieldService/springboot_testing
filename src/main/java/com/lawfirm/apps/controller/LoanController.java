@@ -1020,7 +1020,7 @@ public class LoanController {
 
     @GetMapping(value = "/view/list-of-loan-a/by-admin", produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> viewLoanByAdmin(@RequestParam(value = "param_status", required = false) String param, Authentication authentication) {
+    public ResponseEntity<String> viewLoanAByAdmin(@RequestParam(value = "param_status", required = false) String param, Authentication authentication) {
         try {
             String name = authentication.getName();
             log.info("name : " + name);
@@ -1030,7 +1030,7 @@ public class LoanController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "viewLoanByAdmin");
+                CreateLog.createJson(rs, "viewLoanAByAdmin");
                 return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1041,7 +1041,7 @@ public class LoanController {
                 rs.setResponse_code("05");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "loan-approve-Byfinance");
+                CreateLog.createJson(rs, "viewLoanAByAdmin");
                 return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1049,12 +1049,13 @@ public class LoanController {
                 rs.setResponse_code("05");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "loan-approve-Byfinance");
+                CreateLog.createJson(rs, "viewLoanAByAdmin");
                 return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
 
-            int max = loanService.count();
+//            int max = loanService.count();
+            int max = 0;
             int start = 0;
             List<Loan> entityList = null;
             if (param == null) {
@@ -1116,9 +1117,160 @@ public class LoanController {
                 } else {
                     jsonobj.put("loan_type", entity.getLoantype().getTypeLoan());
                 }
+//                if (entity.getLoantype().getTypeLoan().equalsIgnoreCase("B")) {
+//
+//                    if (entity.getEngagement() == null) {
+//                        jsonobj.put("case_id", "");
+//                    } else {
+//                        jsonobj.put("case_id", entity.getEngagement().getCaseID());
+//                    }
+//                }
+
+                if (entity.getEmployee().getIdEmployee() == null) {
+                    jsonobj.put("id_employee", "");
+                } else {
+                    jsonobj.put("id_employee", entity.getEmployee().getIdEmployee());
+                }
+                if (entity.getEmployee().getEmployeeId() == null) {
+                    jsonobj.put("employee_id", "");
+                } else {
+                    jsonobj.put("employee_id", entity.getEmployee().getEmployeeId());
+                }
+                if (entity.getEmployee().getNik() == null) {
+                    jsonobj.put("nik", "");
+                } else {
+                    jsonobj.put("nik", entity.getEmployee().getNik());
+                }
+                if (entity.getEmployee().getNpwp() == null) {
+                    jsonobj.put("npwp", "");
+                } else {
+                    jsonobj.put("npwp", entity.getEmployee().getNpwp());
+                }
+                if (entity.getEmployee().getName() == null) {
+                    jsonobj.put("nama", "");
+                } else {
+                    jsonobj.put("nama", entity.getEmployee().getName());
+                }
+                if (entity.getStatus() == null) {
+                    jsonobj.put("status_loan", "");
+                } else {
+                    jsonobj.put("status_loan", entity.getStatus());
+                }
+                array.put(jsonobj);
+            }
+            return ResponseEntity.ok(array.toString());
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+            CreateLog.createJson(ex.getMessage(), "viewLoanAByAdmin");
+            System.out.println("ERROR: " + ex.getMessage());
+            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/view/list-of-loan-b/by-admin", produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<String> viewLoanBByAdmin(@RequestParam(value = "param_status", required = false) String param, Authentication authentication) {
+        try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "viewLoanByAdmin");
+                return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+//            Employee dataEmp = employeeService.findById(id_employee_admin);
+            Employee dataEmp = employeeService.findById(entityEmp.getIdEmployee());
+            log.info("dataEmp : " + dataEmp.getRoleName());
+            if (dataEmp == null) {
+                rs.setResponse_code("05");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "viewLoanBByAdmin");
+                return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (!dataEmp.getRoleName().matches("admin")) {
+                rs.setResponse_code("05");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "viewLoanBByAdmin");
+                return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            int max = loanService.count();
+            int start = 0;
+            List<Loan> entityList = null;
+            if (param == null) {
+                param = "s";
+            }
+            if (start == 0) {
+                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+            } else {
+                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+            }
+
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < entityList.size(); i++) {
+                JSONObject jsonobj = new JSONObject();
+                Loan entity = (Loan) entityList.get(i);
+                if (entity.getId() == null) {
+                    jsonobj.put("id_loan", "");
+                } else {
+                    jsonobj.put("id_loan", entity.getId());
+                }
+                if (entity.getLoanId() == null) {
+                    jsonobj.put("loan_id", "");
+                } else {
+                    jsonobj.put("loan_id", entity.getLoanId());
+                }
+                if (entity.getLoanAmount() == null) {
+                    jsonobj.put("amount", "");
+                } else {
+                    jsonobj.put("amount", String.format("%.0f", entity.getLoanAmount()));
+                }
+
+                if (entity.getAprovedByAdmin() == null) {
+                    jsonobj.put("aproved_by_admin", "");
+                } else {
+                    jsonobj.put("aproved_by_admin", entity.getAprovedByAdmin());
+                }
+                if (entity.getDate_approved() == null) {
+                    jsonobj.put("date_approve_by_admin", "");
+                } else {
+                    jsonobj.put("date_approve_by_admin", dateFormat.format(entity.getDate_approved()));
+                }
+                if (entity.getAprovedByFinance() == null) {
+                    jsonobj.put("disburse_by_finance", "");
+                } else {
+                    jsonobj.put("disburse_by_finance", entity.getAprovedByFinance());
+                }
+                if (entity.getDate_created() == null) {
+                    jsonobj.put("date_created", "");
+                } else {
+                    jsonobj.put("date_created", dateFormat.format(entity.getDate_created()));
+                }
+                if (entity.getDate_approved_by_finance() == null) {
+                    jsonobj.put("date_disburse_by_finance", "");
+                } else {
+                    jsonobj.put("date_disburse_by_finance", dateFormat.format(entity.getDate_approved_by_finance()));
+                }
+                if (entity.getLoantype().getTypeLoan() == null) {
+                    jsonobj.put("loan_type", "");
+                } else {
+                    jsonobj.put("loan_type", entity.getLoantype().getTypeLoan());
+                }
                 if (entity.getLoantype().getTypeLoan().equalsIgnoreCase("B")) {
 
-                    if (entity.getEngagement().getCaseID() == null) {
+                    if (entity.getEngagement() == null) {
                         jsonobj.put("case_id", "");
                     } else {
                         jsonobj.put("case_id", entity.getEngagement().getCaseID());
@@ -1160,7 +1312,7 @@ public class LoanController {
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
-            CreateLog.createJson(ex.getMessage(), "list-of-loan-a-admin");
+            CreateLog.createJson(ex.getMessage(), "viewLoanBByAdmin");
             System.out.println("ERROR: " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);

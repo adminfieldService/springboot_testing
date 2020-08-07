@@ -182,9 +182,11 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
         try {
             CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
                     + " c.caseID = :caseID AND "
-                    + " c.tahun_input = :tahun_input")
+                    + " c.tahun_input = :tahun_input AND "
+                    + " c.status = :status ")
                     .setParameter("caseID", caseID)
                     .setParameter("tahun_input", paramY)
+                    .setParameter("status", "a")
                     .getSingleResult();
             return acquire;
         } catch (Exception ex) {
@@ -329,15 +331,42 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
 //                    .setParameter("tgl_input", param3);
 //            return Integer.parseInt(queryMax.getSingleResult().toString());
 
+//    @Override
+//    public Integer generateCaseId(String param1) {
+//        try {
+//            Integer listAcquire = (Integer) entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+//                    + " c.tahun_input = :tahun_input AND "
+//                    + " c.status = :status")
+//                    .setParameter("tahun_input", param1)
+//                    .setParameter("status", "a")
+//                    .getSingleResult();
+//            if (listAcquire == null) {
+//                return 0;
+//            } else {
+//                return listAcquire;
+//            }
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//
+//    }
     @Override
-    public Integer generateCaseId(String param1) {
+    public List<CaseDetails> generateCaseId(String param1) {
         try {
-            Integer listAcquire = (Integer) entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
-                    + " c.tahun_input = :tahun_input")
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+                    + " c.tahun_input = :tahun_input AND "
+                    + " c.status = :status")
                     .setParameter("tahun_input", param1)
-                    .getSingleResult();
+                    .setParameter("status", "a")
+                    .getResultList();
             if (listAcquire == null) {
-                return 0;
+                return null;
             } else {
                 return listAcquire;
             }

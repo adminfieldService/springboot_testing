@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
+import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -148,8 +149,8 @@ public class EngagementController {
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't approveByAdmin :");
-                CreateLog.createJson(rs, "manage-engagement");
+                rs.setResponse("can't createEngagement :");
+                CreateLog.createJson(rs, "createEngagement");
                 process = false;
                 return rs;
             }
@@ -282,10 +283,11 @@ public class EngagementController {
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setStrategy(object.getStrategy());
                     dataCaseDetails.setPanitera(object.getPanitera());
-                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
+//                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setClient(dataClient);
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
+                    dataCaseDetails.setStatus("s");
                     dataCaseDetails = this.caseDetailsService.create(dataCaseDetails);
                     if (dataCaseDetails != null) {
 //                        rs.setResponse_code("01");
@@ -336,9 +338,10 @@ public class EngagementController {
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setStrategy(object.getStrategy());
                     dataCaseDetails.setPanitera(object.getPanitera());
-                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
+//                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
                     dataCaseDetails.setEmployee(cekEMP);
+                    dataCaseDetails.setStatus("s");
 //                    dataCaseDetails.setClient(newClient);
 //                    dataCaseDetails = this.caseDetailsService.create(dataCaseDetails);
                     newClient.addEngagement(dataCaseDetails);
@@ -558,7 +561,7 @@ public class EngagementController {
 
     }
 
-    @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.PATCH, produces = {"application/json"})
+    @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
     public Response updateEngagement(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
             Date now = new Date();
@@ -616,7 +619,7 @@ public class EngagementController {
 
     }
 
-    @RequestMapping(value = "/approval/{engagement_id}/by-admin", method = RequestMethod.PATCH, produces = {"application/json"})
+    @RequestMapping(value = "/approval/{engagement_id}/by-admin", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
     public Response approveByAdmin(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
@@ -650,45 +653,66 @@ public class EngagementController {
                 CreateLog.createJson(rs, "approval-ByAdmin");
                 return rs;
             }
-            if (entity.getStatus().contains("r")) {
+//            if (entity.getStatus().contains("r")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("reject ByAdmin :");
+//                CreateLog.createJson(rs, "approval-ByAdmin");
+//                return rs;
+//            }
+            if (entity.getIsActive().contains("1")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Alredy approve By Admin :");
+                CreateLog.createJson(rs, "approval-ByAdmin");
+                return rs;
+            }
+            if (entity.getIsActive().contains("2")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("reject ByAdmin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
                 return rs;
             }
-            if (entity.getStatus().contains("a")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Alredy approve ByAdmin :");
-                CreateLog.createJson(rs, "approval-ByAdmin");
-                return rs;
-            }
-            Integer number = caseDetailsService.generateCaseId(entity.getTahun_input());
+//            if (entity.getStatus().contains("a")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("Alredy approve ByAdmin :");
+//                CreateLog.createJson(rs, "approval-ByAdmin");
+//                return rs;
+//            }
+            Integer number = caseDetailsService.generateCaseId(entity.getTahun_input()).size();
+            String check_caseId = null;
+            Log.info("number : " + number);
             if (number == null) {
                 number = 1;
+                check_caseId = "CASEID" + Util.setNumber(number.toString());
             } else {
                 number = number + 1;
+                check_caseId = "CASEID" + Util.setNumber(number.toString());
             }
-            String caseId = null;
-            String check_caseId = "CASEID" + Util.setNumber(number.toString());
+//            String caseId = null;
 
             CaseDetails findByCaseId = caseDetailsService.findByCaseId(check_caseId, entity.getTahun_input());
             if (findByCaseId == null) {
                 number = 1;
-                caseId = "CASEID" + Util.setNumber(number.toString());
+                check_caseId = "CASEID" + Util.setNumber(number.toString());
             } else {
                 number = number + 1;
-                caseId = "CASEID" + Util.setNumber(number.toString());
+                check_caseId = "CASEID" + Util.setNumber(number.toString());
             }
+            Log.info("check_caseId  findByCaseId : " + check_caseId);
+
             if (object.getDecision().contains("a")) {
-                entity.setCaseID(caseId);
+                entity.setCaseID(check_caseId);
                 entity.setStatus(object.getDecision());
                 entity.setIsActive("1");
                 entity.setApproved_date(now);
                 entity.setTahun_input(sdfYear.format(now));
                 entity.setApprovedBy(entityEmp.getIdEmployee().toString());
                 enHistory.setEngagement(entity);
+                enHistory.setResponse("approve");
+                enHistory.setUserId(entityEmp.getIdEmployee());
 
             }
 
@@ -699,17 +723,26 @@ public class EngagementController {
                 entity.setTahun_input(sdfYear.format(now));
                 entity.setApprovedBy(entityEmp.getIdEmployee().toString());
                 enHistory.setEngagement(entity);
-//                enHistory.setResponse(object.getRemarks());
+                enHistory.setUserId(entityEmp.getIdEmployee());
+                enHistory.setResponse(object.getRemarks());
 
             }
 
             CaseDetails updateEng = caseDetailsService.update(entity);
             this.EngagementHistoryService.create(enHistory);
             if (updateEng != null) {
-                rs.setResponse_code("00");
-                rs.setInfo("Sucess");
-                rs.setResponse("approval BY : " + entityEmp.getEmployeeId());
-                CreateLog.createJson(rs, "approval-ByAdmin");
+                if (object.getDecision().contains("r")) {
+                    rs.setResponse_code("00");
+                    rs.setInfo("Sucess");
+                    rs.setResponse("Reject BY : " + entityEmp.getEmployeeId());
+                    CreateLog.createJson(rs, "approval-ByAdmin");
+                }
+                if (object.getDecision().contains("a")) {
+                    rs.setResponse_code("00");
+                    rs.setInfo("Sucess");
+                    rs.setResponse("approval BY : " + entityEmp.getEmployeeId());
+                    CreateLog.createJson(rs, "approval-ByAdmin");
+                }
             }
             return rs;
 
@@ -818,6 +851,11 @@ public class EngagementController {
                             obj.put("panitera", "");
                         } else {
                             obj.put("panitera", data.getPanitera());
+                        }
+                        if (data.getStatus() == null) {
+                            obj.put("status", "");
+                        } else {
+                            obj.put("status", data.getStatus());
                         }
                         if (data.getClient() == null) {
                             obj.put("id_client", "");
@@ -1014,6 +1052,11 @@ public class EngagementController {
                     } else {
                         obj.put("case_id", data.getCaseID());
                     }
+                    if (data.getStatus() == null) {
+                        obj.put("status", "");
+                    } else {
+                        obj.put("status", data.getStatus());
+                    }
 
 //                    obj.put("approved_by", entityTeam.get(i));
                     array.put(obj);
@@ -1058,12 +1101,12 @@ public class EngagementController {
                     } else {
                         obj.put("case_id", data.getCaseID());
                     }
-                    if (data.getOperational_cost() == null) {
-                        obj.put("operational_cost", "");
-                    } else {
-                        obj.put("operational_cost", data.getOperational_cost());
-
-                    }
+//                    if (data.getOperational_cost() == null) {
+//                        obj.put("operational_cost", "");
+//                    } else {
+//                        obj.put("operational_cost", data.getOperational_cost());
+//
+//                    }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
                     } else {
@@ -1111,7 +1154,11 @@ public class EngagementController {
                     } else {
                         obj.put("panitera", data.getPanitera());
                     }
-
+                    if (data.getStatus() == null) {
+                        obj.put("status", "");
+                    } else {
+                        obj.put("status", data.getStatus());
+                    }
                     List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
                     for (int j = 0; j < entityTeam.size(); j++) {
                         JSONObject objTeam = new JSONObject();
@@ -1245,12 +1292,12 @@ public class EngagementController {
                     } else {
                         obj.put("case_id", data.getCaseID());
                     }
-                    if (data.getOperational_cost() == null) {
-                        obj.put("operational_cost", "");
-                    } else {
-                        obj.put("operational_cost", data.getOperational_cost());
-
-                    }
+//                    if (data.getOperational_cost() == null) {
+//                        obj.put("operational_cost", "");
+//                    } else {
+//                        obj.put("operational_cost", data.getOperational_cost());
+//
+//                    }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
                     } else {
@@ -1292,7 +1339,11 @@ public class EngagementController {
                     } else {
                         obj.put("panitera", data.getPanitera());
                     }
-
+                    if (data.getStatus() == null) {
+                        obj.put("status", "");
+                    } else {
+                        obj.put("status", data.getStatus());
+                    }
                     List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
                     for (int j = 0; j < entityTeam.size(); j++) {
                         JSONObject objTeam = new JSONObject();
@@ -1496,7 +1547,7 @@ public class EngagementController {
 
     }
 
-    @RequestMapping(value = "/manage-engagement/event/{event_id}", method = RequestMethod.PATCH, produces = {"application/json"})
+    @RequestMapping(value = "/manage-engagement/event/{event_id}", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
     public Response updateEvent(@PathVariable("event_id") String event_id, @RequestBody EventsApi object, Authentication authentication) {
         try {
@@ -1760,7 +1811,7 @@ public class EngagementController {
                 return rs;
             }
             pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
-            
+
             if (process) {
                 if (!file.isEmpty()) {
 
@@ -1782,14 +1833,15 @@ public class EngagementController {
                     byte[] bytes = file.getBytes();
                     Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
                     Files.write(path, bytes);
-                    log.info("fiel getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
+                    String fileName = file.getOriginalFilename().replaceAll(" ", "");
+                    log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
                     entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
                     entCaseDocument.setCaseDetails(caseDetails);
                     CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
                     if (cerateCaseDocument != null) {
                         rs.setResponse_code("00");
                         rs.setInfo("Succes");
-                        rs.setResponse("Upload: Succes");
+                        rs.setResponse("Upload: Succes : " + fileName);
                         CreateLog.createJson(rs, "upload-case-document");
                         return rs;
                     } else {

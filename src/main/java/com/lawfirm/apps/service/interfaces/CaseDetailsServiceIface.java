@@ -43,7 +43,8 @@ public interface CaseDetailsServiceIface {
 
     Integer count();
 
-    Integer generateCaseId(String param1);
+//    Integer generateCaseId(String param1);
+    List<CaseDetails> generateCaseId(String param1);
 
     EntityManager getEntityManager();
     

@@ -2364,7 +2364,7 @@ public class EmployeeController { //LawfirmController
 
     }
 
-//    @PermitAll
+//    @PermitAll  
 //    @PutMapping(value = "/cv/managed-cv/download-cv/{id_employee}", produces = {"application/json"})
     @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.GET, produces = {"application/json"})//produces = {"application/json"}
     @XxsFilter

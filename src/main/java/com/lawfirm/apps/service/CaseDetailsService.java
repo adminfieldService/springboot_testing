@@ -97,9 +97,14 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
         return caseDetailsRepo.count();
     }
 
+//    @Override
+//    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+//    public Integer generateCaseId(String param1) {
+//        return caseDetailsRepo.generateCaseId(param1);
+//    }
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Integer generateCaseId(String param1) {
+    public List<CaseDetails> generateCaseId(String param1) {
         return caseDetailsRepo.generateCaseId(param1);
     }
 
