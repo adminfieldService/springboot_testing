@@ -176,6 +176,25 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
+    public Loan findByLoanIdB(String param) {
+        try {
+            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l WHERE "
+                    + " l.loanId = :loanId")
+                    .setParameter("loanId", param)
+                    .getSingleResult();
+            return entity;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public List<Loan> listLoan(int max, int start, String type) {
         try {
             List<Loan> listAcquire = null;
@@ -368,6 +387,43 @@ public class LoanRepo implements LoanRepoIface {
                     .setParameter("employeeId", param2.toLowerCase())
                     .setParameter("tgl_input", param3);
             return Integer.parseInt(queryMax.getSingleResult().toString());
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> generateLoanIdB(String param1, String param2, String param3) {//typeLoan/idEmployee/tgl_input(yy)
+        try {
+//            Query queryMax = entityManager.createQuery("SELECT COUNT(l) FROM Loan l "
+//                    + " WHERE "
+//                    + " l.loantype.typeLoan = :typeLoan "
+//                    + " AND l.employee.employeeId = :employeeId "
+//                    + " AND l.tgl_input = :tgl_input")
+//                    .setParameter("typeLoan", param1.toLowerCase())
+//                    .setParameter("employeeId", param2.toLowerCase())
+//                    .setParameter("tgl_input", param3);
+//            return Integer.parseInt(queryMax.getSingleResult().toString());
+
+            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+                    + " JOIN FETCH l.employee AS e "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " n.caseID = :caseID AND "
+                    + " t.typeLoan = :typeLoan ")
+                    .setParameter("caseID", param1)
+                    .setParameter("typeLoan", "b")
+                    .getResultList();
+
+            return listAcquire;
+
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());

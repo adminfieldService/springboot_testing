@@ -75,6 +75,7 @@ public class CaseDetails extends Engagement implements Serializable {
     @Override
     protected void onCreate() {
         isActive = "0";
+        created_date = new Date();
     }
 
     public CaseDetails() {

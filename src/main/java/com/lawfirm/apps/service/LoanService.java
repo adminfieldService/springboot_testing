@@ -69,8 +69,14 @@ public class LoanService implements LoanServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Loan> listLoan(int max, int start,String type) {
-        return loanRepo.listLoan(max, start,type);
+    public Loan findByLoanIdB(String param) {
+        return loanRepo.findByLoanIdB(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> listLoan(int max, int start, String type) {
+        return loanRepo.listLoan(max, start, type);
     }
 
 //    @Override
@@ -78,7 +84,6 @@ public class LoanService implements LoanServiceIface {
 //    public List<Loan> listLoanB(int max, int start) {
 //        return loanRepo.listLoanB(max, start);
 //    }
-
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Loan> listLoanPaging(int max, int start) {
@@ -119,6 +124,12 @@ public class LoanService implements LoanServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Integer generateLoanId(String typeLoan, String idEmployee, String date_created) {
         return loanRepo.generateLoanId(typeLoan, idEmployee, date_created);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> generateLoanIdB(String typeLoan, String idEmployee, String date_created) {
+        return loanRepo.generateLoanIdB(typeLoan, idEmployee, date_created);
     }
 
     @Override

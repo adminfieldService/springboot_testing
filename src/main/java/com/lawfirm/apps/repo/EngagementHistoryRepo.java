@@ -22,7 +22,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
  * @author newbiecihuy
  */
 @Repository("engagementHistoryRepo")
-public class EngagementHistoryRepo implements EngagementHistoryRepoIface{
+public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
@@ -110,8 +110,6 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface{
         }
     }
 
-  
-
     @Override
     public List<EngagementHistory> findByCaseId(Long paramLong) {
         try {
@@ -127,8 +125,16 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface{
 //            if (query != null) {
 //                return query.getResultList();
 //            } else {
+            String sql = "SELECT h FROM EngagementHistory h "
+                    + " JOIN FETCH h.engagement AS l WHERE "
+                    + " l.caseID = :caseID";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("caseID", paramLong);
+            if (query != null) {
+                return query.getResultList();
+            } else {
                 return null;
-//            }
+            }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
@@ -149,7 +155,8 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface{
 //                    + " l.loanId = :loanId")
 //                    .setParameter("loanId", paramLong)
 //                    .getSingleResult();
-            String sql = "SELECT h FROM EngagementHistory h JOIN FETCH h.engagement AS l WHERE "
+            String sql = "SELECT h FROM EngagementHistory h "
+                    + " JOIN FETCH h.engagement AS l WHERE "
                     + " l.engagement_id = :engagement_id";
             Query query = entityManager.createQuery(sql);
             query.setParameter("engagement_id", param);

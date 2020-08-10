@@ -10,6 +10,7 @@ import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.repo.interfaces.CaseDetailsRepoIface;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -202,6 +203,30 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     }
 
     @Override
+    public Optional<CaseDetails> checkCaseId(String caseID, String paramY) {
+        try {
+            return (Optional<CaseDetails>) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+                    + " c.caseID = :caseID AND "
+                    + " c.tahun_input = :tahun_input AND "
+                    + " c.status = :status ")
+                    .setParameter("caseID", caseID)
+                    .setParameter("tahun_input", paramY)
+                    .setParameter("status", "a")
+                    .getSingleResult();
+           
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
     public CaseDetails findCaseId(String caseID) {
         try {
             CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
@@ -359,7 +384,8 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public List<CaseDetails> generateCaseId(String param1) {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+//              List<CaseDetails> listAcquire = entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
                     + " c.tahun_input = :tahun_input AND "
                     + " c.status = :status")
                     .setParameter("tahun_input", param1)

@@ -10,6 +10,7 @@ import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.repo.interfaces.CaseDetailsRepoIface;
 import com.lawfirm.apps.service.interfaces.CaseDetailsServiceIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,12 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public CaseDetails findByCaseId(String namaVisit, String paramY) {
         return caseDetailsRepo.findByCaseId(namaVisit, paramY);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Optional<CaseDetails> checkCaseId(String caseID, String paramY) {
+        return caseDetailsRepo.checkCaseId(caseID, paramY);
     }
 
     @Override

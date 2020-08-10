@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.repo.interfaces.TeamMemberRepoIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -123,6 +124,27 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
                 entityManager.close();
             }
         }
+    }
+
+    public TeamMember findByEngId(Long engID) {
+        try {
+            TeamMember acquire = (TeamMember) entityManager.createQuery("SELECT t FROM TeamMember t "
+                    + " JOIN FETCH t.engagement AS e "
+                    + " WHERE "
+                    + " e.engagement_id = :engagement_id ")
+                    .setParameter("engagement_id", engID)
+                    .getSingleResult();
+            return acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
     }
 
     @Override

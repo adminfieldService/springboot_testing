@@ -181,14 +181,14 @@ public class Util {
             isiParam = "0" + param;
         }
         if (param.length() == 2) {
-             isiParam = param;
+            isiParam = param;
         }
 //        if (param.length() == 4) {
 //            isiParam = param;
 //        }
         return isiParam;//getEmployeeIdBy(isiParam);
     }
-    
+
     public static String getEmployeeIdBy(final String param) {
 //        String res1 = param.substring(0, Integer.parseInt(param));
         String finalResult = "";
@@ -217,5 +217,14 @@ public class Util {
 //        } else {
 //            return false;
 //        }
+    }
+
+    public static String removeCase(final String input) {
+        final String domain = "CASE";
+//        final String[] tokens = input.split("@");
+        String kata1 = input;
+        kata1 = kata1.replaceAll(domain, "");
+
+        return kata1;
     }
 }

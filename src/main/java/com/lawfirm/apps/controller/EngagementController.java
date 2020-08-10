@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
@@ -412,6 +413,7 @@ public class EngagementController {
     @RequestMapping(value = "/add-member", method = RequestMethod.POST, produces = {"application/json"})
     public Response addTeamMember(@RequestBody final EngagementApi object) {
         try {
+            Date now = new Date();
             log.info("msg obj : " + object);
             String[] employeeId = null;
             String[] employeeName = null;
@@ -485,9 +487,11 @@ public class EngagementController {
                 dataTeam.setEngagement(dataEngagement);
                 dataTeam.setDmpId(object.getId_employee());
                 dataTeam.setFeeShare(object.getDmp_fee());
-                if (!object.getDescription().isEmpty()) {
-                    dataTeam.setDescription(object.getDescription());
-                }
+                dataTeam.setTahun_input(sdfYear.format(now));
+                dataTeam.setDescription("TMCS" + sdfYear.format(now));
+//                if (!object.getDescription().isEmpty()) {
+//                    dataTeam.setDescription(object.getDescription());
+//                }
                 dataTeam.setIsActive(Boolean.TRUE);
                 TeamMember team = this.teamMemberService.create(dataTeam);
                 if (team == null) {
@@ -681,29 +685,36 @@ public class EngagementController {
 //                CreateLog.createJson(rs, "approval-ByAdmin");
 //                return rs;
 //            }
-            Integer number = caseDetailsService.generateCaseId(entity.getTahun_input()).size();
+            List<CaseDetails> generateCaseId = caseDetailsService.generateCaseId(entity.getTahun_input());
+            Integer number = 0;
+            if (generateCaseId != null || !generateCaseId.isEmpty()) {
+                number = generateCaseId.size();
+            }
+            System.out.println("number size : " + number);
             String check_caseId = null;
             Log.info("number : " + number);
-            if (number == null) {
+            if (number == 0) {
                 number = 1;
-                check_caseId = "CASEID" + Util.setNumber(number.toString());
+                check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             } else {
                 number = number + 1;
-                check_caseId = "CASEID" + Util.setNumber(number.toString());
+                check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             }
 //            String caseId = null;
 
-            CaseDetails findByCaseId = caseDetailsService.findByCaseId(check_caseId, entity.getTahun_input());
-            if (findByCaseId == null) {
-                number = 1;
-                check_caseId = "CASEID" + Util.setNumber(number.toString());
-            } else {
+            Log.info("check_caseId : " + check_caseId);
+            CaseDetails checkCaseId = caseDetailsService.findByCaseId(check_caseId, entity.getTahun_input());
+
+            if (checkCaseId != null) {
                 number = number + 1;
-                check_caseId = "CASEID" + Util.setNumber(number.toString());
+                check_caseId = "CASE" + entity.getTahun_input() + Util.setNumber(number.toString());
             }
             Log.info("check_caseId  findByCaseId : " + check_caseId);
 
             if (object.getDecision().contains("a")) {
+//                Optional<TeamMember> checkTeamMember = teamMemberService.findByEngId(entity.getEngagementId());
+//                Log.info("checkTeamMember.isPresent() : " + checkTeamMember.isPresent());
+
                 entity.setCaseID(check_caseId);
                 entity.setStatus(object.getDecision());
                 entity.setIsActive("1");

@@ -7,6 +7,7 @@ package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.TeamMember;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +28,8 @@ public interface TeamMemberRepoIface {
 
     TeamMember findById(Long paramLong);
 
+    TeamMember findByEngId(Long engID);
+
     TeamMember findByName(String namaVisit);
 
     List<TeamMember> findByDmp(Long dmpId);
@@ -40,6 +43,6 @@ public interface TeamMemberRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
-    
+
     List<TeamMember> listTeamMemberByEngagement(Long param);
 }

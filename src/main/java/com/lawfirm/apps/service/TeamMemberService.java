@@ -10,6 +10,7 @@ import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.repo.interfaces.TeamMemberRepoIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,12 @@ public class TeamMemberService implements TeamMemberServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember findById(Long paramLong) {
         return teamMemberRepo.findById(paramLong);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public TeamMember findByEngId(Long engID) {
+        return teamMemberRepo.findByEngId(engID);
     }
 
     @Override

@@ -31,6 +31,8 @@ public interface LoanRepoIface {
 
     Loan findByLoanId(String param);
 
+    Loan findByLoanIdB(String param);
+
     List<Loan> listLoan(int max, int start, String type);
 
 //    List<Loan> listLoanB(int max, int start);
@@ -47,6 +49,8 @@ public interface LoanRepoIface {
     Double loanEmp(String param1, String param2);
 
     Integer generateLoanId(String param1, String param2, String param3);
+
+    List<Loan> generateLoanIdB(String param1, String param2, String param3);
 
     EntityManager getEntityManager();
 }

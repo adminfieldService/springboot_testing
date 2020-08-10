@@ -7,6 +7,7 @@ package com.lawfirm.apps.service.interfaces;
 
 import com.lawfirm.apps.model.TeamMember;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,8 @@ public interface TeamMemberServiceIface {
 
     TeamMember findById(Long paramLong);
 
+    TeamMember findByEngId(Long engID);
+
     TeamMember findByName(String namaVisit);
 
     List<TeamMember> listTeamMember();
@@ -40,6 +43,6 @@ public interface TeamMemberServiceIface {
     EntityManager getEntityManager();
 
     List<TeamMember> findByDmp(Long dmpId);
-    
-     List<TeamMember> listTeamMemberByEngagement(Long param);
+
+    List<TeamMember> listTeamMemberByEngagement(Long param);
 }

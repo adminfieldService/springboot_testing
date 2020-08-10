@@ -47,6 +47,8 @@ public class TeamMember implements Serializable {
     private Long dmpId;
     @Column(name = "fee_share")
     private Double feeShare;
+    @Column(name = "tahun_input", length = 10, nullable = true)
+    protected String tahun_input;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
@@ -156,6 +158,28 @@ public class TeamMember implements Serializable {
 
     public void setDmpId(Long dmpId) {
         this.dmpId = dmpId;
+    }
+
+    public String getTahun_input() {
+        return tahun_input;
+    }
+
+    public void setTahun_input(String tahun_input) {
+        this.tahun_input = tahun_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     @Override
