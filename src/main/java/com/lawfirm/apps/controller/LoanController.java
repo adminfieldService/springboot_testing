@@ -253,45 +253,53 @@ public class LoanController {
 //                    
 //                    }
                     dataLoan.setLoanAmount(object.getLoan_amount());
-//                    if (sdfYear.format(now).compareTo(sdfYear.format(object.getCreated_date())) == 0) {
-//                        number = loanService.generateLoanId("A", dataEMploye.getEmployeeId(), sdfYear.format(object.getCreated_date()));//dateFormat.format(todayDate));
-//                        if (number == 0) {
-//                            number = 1;
-//                        }
-//                    } else {
-//                        number = 1;
-//                    }
                     if (sdfYear.format(now).compareTo(sdfYear.format(object.getCreated_date())) == 0) {
-                        number = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));//dateFormat.format(todayDate));
+//                        number = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));//dateFormat.format(todayDate));
+                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));
+
+                        if (list != null || !list.isEmpty()) {
+                            number = list.size();
+                        }
                         if (number == 0) {
                             number = 1;
+                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                        } else {
+                            number = number + 1;
+                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
                         }
                     } else {
-                        number = 1;
+                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));
+
+                        if (list != null || !list.isEmpty()) {
+                            number = list.size();
+                        }
+                        if (number == 0) {
+                            number = 1;
+                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                        } else {
+                            number = number + 1;
+                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                        }
                     }
 
 //                    Loan entity = loanService.findByLoanId("A" + dataEMploye.getEmployeeId() + year_val + Util.setNumbering(number.toString()));
-                    Loan entity = loanService.findByLoanId("A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString()));
+                    log.info("load_id : " + load_id);
+                    Loan entity = loanService.findByLoanId(load_id);
 //                    if (entity == null) {
 //                        number = 1;
-//                        load_id = "A" + dataEMploye.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
 //                        dataLoan.setLoanId(load_id);
 //                    } else {
 //                        number = number + 1;
-//                        load_id = "A" + dataEMploye.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
 //                        dataLoan.setLoanId(load_id);
-//
 //                    }
-                    if (entity == null) {
-                        number = 1;
-                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        dataLoan.setLoanId(load_id);
-                    } else {
+                    if (entity != null) {
                         number = number + 1;
                         load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        dataLoan.setLoanId(load_id);
-
                     }
+                    log.info("load_id now : " + load_id);
+                    dataLoan.setLoanId(load_id);
                     dataLoan.addAHistory(entityHistory);
                     dataLoan = loanService.create(dataLoan);
 //                   typeLoan.addLoan(dataLoan);

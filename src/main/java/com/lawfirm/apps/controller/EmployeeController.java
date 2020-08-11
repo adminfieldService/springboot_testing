@@ -27,15 +27,12 @@ import com.lawfirm.apps.support.api.DataEmployee;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.support.api.AccountApi;
-import com.lawfirm.apps.support.api.MyUserDetails;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import static java.lang.System.out;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,18 +58,12 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jpos.iso.ISOUtil;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import static org.springframework.security.jwt.JwtHelper.headers;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -172,6 +163,7 @@ public class EmployeeController { //LawfirmController
             String bank_name_l = object.getBank_name_l();
             String account_number_l = object.getAccount_number_l();
             String account_name_l = object.getAccount_name_l();
+//            Double salary = object.getSalary();
             Boolean cheking = Util.validation(email);
             Boolean process = true;
 //            if (!authentication.getPrincipal().toString().contains("admin") || !authentication.getPrincipal().toString().contains("sysadmin")) {
@@ -325,16 +317,16 @@ public class EmployeeController { //LawfirmController
                     process = false;
                 }
 
-                if (bank_name_l.length() > 20 || bank_name_p.length() > 20) {
+                if (bank_name_l.length() > 25 || bank_name_p.length() > 25) {
                     rs.setResponse_code("05");
-                    rs.setInfo("Field BANK NAME Maximum 200 character");
+                    rs.setInfo("Field BANK NAME Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
-                if (account_number_l.length() > 20 || account_number_p.length() > 20) {
+                if (account_number_l.length() > 25 || account_number_p.length() > 25) {
                     rs.setResponse_code("05");
-                    rs.setInfo("Field BANK NAME Maximum 20 character");
+                    rs.setInfo("Field ACCOUNT NUMBER Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
@@ -372,6 +364,23 @@ public class EmployeeController { //LawfirmController
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
+                String dt = dateFormat.format(object.getJoin_date());
+                Date join_date = dateFormat.parse(dt);
+//                    if (object.getRegister_date() == null) {
+//                        newEmployee.setDateRegister(new Date());
+//                    } else {
+//                        String reg_date = dateFormat.format(object.getRegister_date());
+//                        Date reg_val = dateFormat.parse(reg_date);
+//                        newEmployee.setDateRegister(reg_val);
+//                    }
+                if (join_date == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Field register_date date can't be NULL");
+                    CreateLog.createJson(rs, "create-employee");
+                    process = false;
+                    return rs;
+                }
                 if (process) {
 
                     Employee newEmployee = new Employee();
@@ -390,6 +399,7 @@ public class EmployeeController { //LawfirmController
                     newEmployee.setEmail(email);
                     newEmployee.setNpwp(npwp);
                     newEmployee.setTaxStatus(tax_status);
+                    newEmployee.setSalary(object.getSalary());
 //                    if (object.getUser_pass() != null) {
 //                        newEmployee.setPassword(object.getUser_pass());
 //                    } else {
@@ -404,13 +414,15 @@ public class EmployeeController { //LawfirmController
                     newEmployee.setParentId(dataAdmin);
                     newEmployee.setRoleName(role_name);
                     newEmployee.setApproved_date(new Date());
-                    if (object.getRegister_date() == null) {
-                        newEmployee.setDateRegister(new Date());
-                    } else {
-                        String reg_date = dateFormat.format(object.getRegister_date());
-                        Date reg_val = dateFormat.parse(reg_date);
-                        newEmployee.setDateRegister(reg_val);
-                    }
+                    newEmployee.setDateRegister(join_date);
+//                    if (object.getRegister_date() == null) {
+//                        newEmployee.setDateRegister(new Date());
+//                    } else {
+//                        String reg_date = dateFormat.format(object.getRegister_date());
+//                        Date reg_val = dateFormat.parse(reg_date);
+//                        newEmployee.setDateRegister(reg_val);
+//                    }
+
                     Integer number = 0;
 
                     if (object.getLoan_limit() != null) {
@@ -915,7 +927,7 @@ public class EmployeeController { //LawfirmController
 
     }
 
-    @RequestMapping(value = "/managed-employee/{id_employee}/cv", produces = {"application/json"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/managed-employee/{id_employee}/cv",  method = RequestMethod.POST)//produces = {"application/json"},
     @XxsFilter
     public Response saveUploadedFile(@RequestPart("doc_cv") MultipartFile file,
             @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) throws IOException {
@@ -1559,6 +1571,16 @@ public class EmployeeController { //LawfirmController
                 } else {
                     jsonobj.put("status_employee", entity.getStatus());
                 }
+                if (entity.getSalary() == null) {
+                    jsonobj.put("salary", "");
+                } else {
+                    jsonobj.put("salary", entity.getSalary());
+                }
+                if (entity.getDateRegister() == null) {
+                    jsonobj.put("join_date", "");
+                } else {
+                    jsonobj.put("join_date", dateFormat.format(entity.getDateRegister()));
+                }
                 if (entity.getLinkCv() == null) {
                     jsonobj.put("doc_cv", "");
                 } else {
@@ -1764,7 +1786,16 @@ public class EmployeeController { //LawfirmController
                 } else {
                     jsonobj.put("status_employee", entity.getStatus());
                 }
-
+                if (entity.getSalary() == null) {
+                    jsonobj.put("salary", "");
+                } else {
+                    jsonobj.put("salary", entity.getSalary());
+                }
+                if (entity.getDateRegister() == null) {
+                    jsonobj.put("join_date", "");
+                } else {
+                    jsonobj.put("join_date", dateFormat.format(entity.getDateRegister()));
+                }
                 if (entity.IsActive() == true) {
                     jsonobj.put("is_active", true);
 //                    jsonobj.put("status_employee", "a");
@@ -2012,7 +2043,16 @@ public class EmployeeController { //LawfirmController
                 } else {
                     obj.put("status_employee", entity.getStatus());
                 }
-
+                if (entity.getSalary() == null) {
+                    obj.put("salary", "");
+                } else {
+                    obj.put("salary", entity.getSalary());
+                }
+                if (entity.getDateRegister() == null) {
+                    obj.put("join_date", "");
+                } else {
+                    obj.put("join_date", dateFormat.format(entity.getDateRegister()));
+                }
                 if (entity.IsActive() == true) {
                     obj.put("is_active", true);
 //                    jsonobj.put("status_employee", "a");
@@ -2204,6 +2244,11 @@ public class EmployeeController { //LawfirmController
                     obj.put("address", "");
                 } else {
                     obj.put("address", entity.getNpwp());
+                }
+                if (entity.getSalary() == null) {
+                    obj.put("salary", "");
+                } else {
+                    obj.put("salary", entity.getSalary());
                 }
                 if (entity.getIdEmployee() != null) {
                     List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());
@@ -2402,18 +2447,10 @@ public class EmployeeController { //LawfirmController
             byte[] encodedBytes = null;
             if (process) {
 
-//                FileOutputStream fop = null;
                 String bytenya = entity.getLinkCv();
                 byte[] pdf = ISOUtil.hex2byte(bytenya);
                 File file = new File(entity.getLinkCv());
-//                fop = new FileOutputStream(file);
 
-//                if (!file.exists()) {
-//                    file.createNewFile();
-//                }
-//                fop.write(pdf);
-//                fop.flush();
-//                fop.close();
                 String baseUrl = FilenameUtils.getPath(file.getPath());
                 System.out.println("Chek Size baseUrl" + baseUrl);
                 String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
@@ -2446,6 +2483,7 @@ public class EmployeeController { //LawfirmController
             rs.setResponse_code("05");
             rs.setInfo("Error");
             rs.setResponse("Employee Null");
+            CreateLog.createJson(rs, "download-cv");
             return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
                     HttpStatus.NOT_FOUND);
         } catch (IOException ex) {

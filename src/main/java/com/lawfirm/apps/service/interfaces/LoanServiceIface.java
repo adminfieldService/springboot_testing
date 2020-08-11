@@ -49,7 +49,8 @@ public interface LoanServiceIface {
 
     Double loanEmp(String param1, String param2);
 
-    Integer generateLoanId(String param1, String param2, String param3);
+//    Integer generateLoanId(String param1, String param2, String param3);
+    List<Loan> generateLoanId(String param1, String param2, String param3);
     
     List<Loan> generateLoanIdB(String param1, String param2, String param3);
 

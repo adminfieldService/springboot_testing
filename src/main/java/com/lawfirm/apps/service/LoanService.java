@@ -122,7 +122,7 @@ public class LoanService implements LoanServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Integer generateLoanId(String typeLoan, String idEmployee, String date_created) {
+    public List<Loan> generateLoanId(String typeLoan, String idEmployee, String date_created) {
         return loanRepo.generateLoanId(typeLoan, idEmployee, date_created);
     }
 

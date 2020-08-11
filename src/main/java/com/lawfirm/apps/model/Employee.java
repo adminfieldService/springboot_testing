@@ -81,9 +81,9 @@ public class Employee implements Serializable {
     @Column(name = "user_pass")
     private String password;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "date_register", nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateRegister;
 
     @Column(name = "salary")
@@ -166,7 +166,7 @@ public class Employee implements Serializable {
         this.isDelete = false;
         this.isLogin = false;
         tgInput = new Date();
-        dateRegister = new Date();
+//        dateRegister = new Date();
         this.status = "a";
     }
 

@@ -376,17 +376,27 @@ public class LoanRepo implements LoanRepoIface {
 //        }
 //    }
     @Override
-    public Integer generateLoanId(String param1, String param2, String param3) {//typeLoan/idEmployee/tgl_input(yy)
+    public List<Loan> generateLoanId(String param1, String param2, String param3) {//typeLoan/idEmployee/tgl_input(yy)
         try {
-            Query queryMax = entityManager.createQuery("SELECT COUNT(l) FROM Loan l "
+//            Query queryMax = entityManager.createQuery("SELECT COUNT(l) FROM Loan l "
+//                    + " WHERE "
+//                    + " l.loantype.typeLoan = :typeLoan "
+//                    + " AND l.employee.employeeId = :employeeId "
+//                    + " AND l.tgl_input = :tgl_input")
+//                    .setParameter("typeLoan", param1.toLowerCase())
+//                    .setParameter("employeeId", param2.toLowerCase())
+//                    .setParameter("tgl_input", param3);
+//            return Integer.parseInt(queryMax.getSingleResult().toString());
+            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan "
                     + " AND l.employee.employeeId = :employeeId "
                     + " AND l.tgl_input = :tgl_input")
-                    .setParameter("typeLoan", param1.toLowerCase())
-                    .setParameter("employeeId", param2.toLowerCase())
-                    .setParameter("tgl_input", param3);
-            return Integer.parseInt(queryMax.getSingleResult().toString());
+                    .setParameter("typeLoan", "a")
+                    .setParameter("employeeId", param2)
+                    .setParameter("tgl_input", param3)
+                    .getResultList();
+            return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());

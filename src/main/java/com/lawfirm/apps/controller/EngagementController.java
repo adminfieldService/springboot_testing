@@ -1258,7 +1258,7 @@ public class EngagementController {
     @XxsFilter
     public ResponseEntity<String> byAdmin(@PathVariable("id_employee_admin") Long id_employee_admin, Authentication authentication) {
         try {
-//            Engagement entity = engagementService.findById(id_employee_admin);
+//          Engagement entity = engagementService.findById(id_employee_admin);
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entity = employeeService.findByEmployee(name);
@@ -1600,7 +1600,7 @@ public class EngagementController {
             Events enEvent = this.eventService.findById(event_id);
 
             if (process) {
-//                enEvent.setCaseDetails(dataCase);
+//              enEvent.setCaseDetails(dataCase);
                 enEvent.setScheduleDate(schedule);
                 enEvent.setScheduleTime(object.getSchedule_time());
                 enEvent.setEventName(object.getEvent_name());
@@ -1899,5 +1899,53 @@ public class EngagementController {
             return rs;
         }
         return null;
+    }
+
+    @RequestMapping(value = "/manage-engagement/{engagement_id}/closing", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+        try {
+            Date now = new Date();
+//          Integer number = null;
+            EngagementHistory enHistory = new EngagementHistory();
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            log.info("engagement_id : " + engagement_id);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case :");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            CaseDetails entity = caseDetailsService.findById(engagement_id);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case engagement_id "+engagement_id+"Not Found");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "upload-case-document");
+            return rs;
+
+        }
+        return null;
+
     }
 }
