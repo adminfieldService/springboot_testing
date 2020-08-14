@@ -2487,6 +2487,7 @@ public class EmployeeController { //LawfirmController
     @ResponseBody
     public ResponseEntity<?> downloadCv(ServletRequest request, HttpServletResponse response, @PathVariable("id_employee") Long idEmployee, Authentication authentication) {
         try {
+            JSONObject jsonobj = new JSONObject();
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -2516,17 +2517,16 @@ public class EmployeeController { //LawfirmController
             byte[] encodedBytes = null;
             if (process) {
 
-                String bytenya = entity.getLinkCv();
-                byte[] pdf = ISOUtil.hex2byte(bytenya);
-                File file = new File(entity.getLinkCv());
-
-                String baseUrl = FilenameUtils.getPath(file.getPath());
-                System.out.println("Chek Size baseUrl" + baseUrl);
-                String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
-                System.out.println("Chek myFile_1" + myFile_1);
+//                String bytenya = entity.getLinkCv();
+//                byte[] pdf = ISOUtil.hex2byte(bytenya);
+//                File file = new File(entity.getLinkCv());
+//                String baseUrl = FilenameUtils.getPath(file.getPath());
+//                System.out.println("Chek Size baseUrl" + baseUrl);
+//                String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
+//                System.out.println("Chek myFile_1" + myFile_1);
 //                String filename = "cv_" + entity.getEmployeeId() + "_" + entity.getName() + ".pdf";
-                String filename = myFile_1;
-                System.out.println("Chek baseUrl" + baseUrl);
+//                String filename = myFile_1;
+//                System.out.println("Chek baseUrl" + baseUrl);
 //                HttpHeaders headers = new HttpHeaders();
 //                headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 //                headers.add("Pragma", "no-cache");
@@ -2541,13 +2541,17 @@ public class EmployeeController { //LawfirmController
 //                        .contentLength(file.length())
 //                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
 //                        .body(resource);
+//                input_file = Files.readAllBytes(Paths.get(file.getPath()));
+                input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
+//                encodedBytes = Base64.getEncoder().encode(input_file);
+                linkDoc = new String(Base64.getEncoder().encode(input_file));
 
-                input_file = Files.readAllBytes(Paths.get(file.getPath()));
-                encodedBytes = Base64.getEncoder().encode(input_file);
-                linkDoc = new String(encodedBytes);
-
-                return new ResponseEntity(new CustomErrorType("00", "success", linkDoc),
-                        HttpStatus.ACCEPTED);
+                jsonobj.put("response_code", "00");
+                jsonobj.put("response", "success");//linkDoc
+                jsonobj.put("info", linkDoc);//linkDoc
+//                return new ResponseEntity(new CustomErrorType("00", "success", linkDoc),
+//                        HttpStatus.ACCEPTED);
+                return ResponseEntity.ok(jsonobj.toString());
             }
             rs.setResponse_code("05");
             rs.setInfo("Error");
@@ -2565,7 +2569,11 @@ public class EmployeeController { //LawfirmController
 //            return null;
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
+        } catch (JSONException ex) {
+            Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
+                HttpStatus.NOT_FOUND);
 
     }
 }
