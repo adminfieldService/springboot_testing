@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Member;
 import com.lawfirm.apps.repo.interfaces.MemberRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -40,6 +41,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -62,6 +64,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -84,6 +87,7 @@ public class MemberRepo implements MemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -101,11 +105,6 @@ public class MemberRepo implements MemberRepoIface {
     @Override
     public List<Member> findByIdTeam(Long paramLong) {
         try {
-//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
-//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
-//                    + " l.loanId = :loanId")
-//                    .setParameter("loanId", paramLong)
-//                    .getSingleResult();
             String sql = "SELECT m FROM Member m "
                     + " JOIN FETCH m.teamMember AS t "
                     + " JOIN FETCH m.employee AS e "
@@ -120,6 +119,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -132,15 +132,13 @@ public class MemberRepo implements MemberRepoIface {
     @Override
     public List<Member> findByCaseId(String param) {
         try {
-//         from CellPhoneBaiturridho as c JOIN fetch c.officer as o where o.email = :email";
-//            Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l JOIN FETCH l.employee e WHERE "
-//                    + " l.loanId = :loanId")
-//                    .setParameter("loanId", paramLong)
-//                    .getSingleResult();
-            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
-                    + " t.teamMemberId = :teamMemberId";
+            String sql = "SELECT m FROM Member m "
+                    + " JOIN FETCH m.teamMember AS t "
+                    + " LEFT JOIN FETCH t.engagement AS e"
+                    + " WHERE "
+                    + " e.caseID = :caseID";
             Query query = entityManager.createQuery(sql);
-            query.setParameter("teamMemberId", param);
+            query.setParameter("caseID", param);
             if (query != null) {
                 return query.getResultList();
             } else {
@@ -148,6 +146,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -171,6 +170,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

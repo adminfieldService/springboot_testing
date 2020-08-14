@@ -45,15 +45,32 @@ public class Reimbursement implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "reimburse_amount")
+    private Double reimburseAmount;
+
 //    @Column(name = "approved_by")
 //    private String approvedBy;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reimbursement")
     private Collection<DocumentReimburse> documentReimburseCollection;
 
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private Loan loan;
+
     @Column(name = "signature")
     private String signature;
 
     public Reimbursement() {
+    }
+
+    public Reimbursement(Long reimburseId, Employee employee, String status, Double reimburseAmount, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, String signature) {
+        this.reimburseId = reimburseId;
+        this.employee = employee;
+        this.status = status;
+        this.reimburseAmount = reimburseAmount;
+        this.documentReimburseCollection = documentReimburseCollection;
+        this.loan = loan;
+        this.signature = signature;
     }
 
     public Long getReimburseId() {
@@ -99,7 +116,21 @@ public class Reimbursement implements Serializable {
     }
 
     public void setSignature(String signature) {
-        this.signature = signature;
+        this.signature = signature.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public Collection<DocumentReimburse> getDocumentReimburseCollection() {
@@ -108,6 +139,22 @@ public class Reimbursement implements Serializable {
 
     public void setDocumentReimburseCollection(Collection<DocumentReimburse> documentReimburseCollection) {
         this.documentReimburseCollection = documentReimburseCollection;
+    }
+
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
+    }
+
+    public Double getReimburseAmount() {
+        return reimburseAmount;
+    }
+
+    public void setReimburseAmount(Double reimburseAmount) {
+        this.reimburseAmount = reimburseAmount;
     }
 
     @Override

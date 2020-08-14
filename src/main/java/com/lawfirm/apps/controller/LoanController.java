@@ -6,6 +6,7 @@
 package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Financial;
 import com.lawfirm.apps.model.Loan;
@@ -72,6 +73,8 @@ public class LoanController {
     SimpleDateFormat sdfYear;
     SimpleDateFormat sdfMonth;
     SimpleDateFormat sdfMY;
+    SimpleDateFormat sdfDisbursM;
+    SimpleDateFormat sdfDisbursMY;
 //    Date now;
     String date_now;
     String notif = null;
@@ -116,6 +119,8 @@ public class LoanController {
         this.sdfYear = new SimpleDateFormat("yy");
         this.sdfMonth = new SimpleDateFormat("MM");
         this.sdfMY = new SimpleDateFormat("MMyyyy");
+        this.sdfDisbursM = new SimpleDateFormat("MMM");
+        this.sdfDisbursMY = new SimpleDateFormat("MMMyyyy");
     }
 
     @RequestMapping(value = "/manage-loan/loan-a", method = RequestMethod.POST, produces = {"application/json"})
@@ -348,7 +353,7 @@ public class LoanController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't access this feature");
-                CreateLog.createJson(rs, "createLoanb");
+                CreateLog.createJson(rs, "createLoanb-employee");
                 return rs;
             }
             log.info("isi object " + object.toString());
@@ -370,7 +375,7 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("Create Loan Apps Type B Failed");
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
 //                Loan dataLoan = new Loan();
 //                LoanType typeLoan = new LoanType();
@@ -381,14 +386,14 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("Employee Id Not found");
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
                 if (!dataEMploye.getRoleName().contentEquals("dmp")) {
                     rs.setResponse_code("05");
                     rs.setInfo("Failed");
                     rs.setResponse("Create Loan Apps Type B Failed");
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
 //                CaseDetails dataCase = new CaseDetails();
                 if (object.getCase_id() == null) {
@@ -396,7 +401,7 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("Can't Access Loan Apps Type Type B");
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
 //                if (!dataEMploye.getRoleName().equalsIgnoreCase("lawyer")) {
 //                    rs.setResponse_code("05");
@@ -409,19 +414,32 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("repayment_date not permission" + "repayment_date : " + dateFormat.format(object.getRepayment_date()) + " equals  todayDate : " + dateFormat.format(todayDate));
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
                 if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) > 0) {
                     rs.setResponse_code("05");
                     rs.setInfo("Failed");
                     rs.setResponse("repayment_date : " + dateFormat.format(object.getRepayment_date()) + " before  todayDate : " + dateFormat.format(todayDate));
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoanb-employee");
                 }
                 if (process) {
 
                     CaseDetails dataCase = caseDetailsService.findCaseId(object.getCase_id());
-
+                    if (dataCase.getStatus().contains("r")) {
+                        rs.setResponse_code("05");
+                        rs.setInfo("Failed");
+                        rs.setResponse("CASE ID : " + dataCase.getCaseID() + "rejected ");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb-employee");
+                    }
+                    if (dataCase.getStatus().contains("d")) {
+                        rs.setResponse_code("05");
+                        rs.setInfo("Failed");
+                        rs.setResponse("CASE ID : " + dataCase.getCaseID() + "already disbursement ");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb-employee");
+                    }
                     dataLoan.setEmployee(dataEMploye);
                     String isi_tgl_repayment = null;
                     Date tgl_repayment = null;
@@ -530,7 +548,7 @@ public class LoanController {
 //             Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "loan-approve-ByAdmin");
@@ -540,27 +558,33 @@ public class LoanController {
 
             Loan dataLoan = loanService.findByIdLoan(id_loan);//findById
             if (dataLoan == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "loan-approve-ByAdmin");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("0") || dataLoan.getStatus().contentEquals("a")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Already Approved, at : " + dataLoan.getAprovedByAdmin());
                 CreateLog.createJson(rs, "loan-approve-ByAdmin");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("2") || dataLoan.getStatus().contentEquals("r")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loans Rejected, at : " + dataLoan.getAprovedByAdmin());
                 CreateLog.createJson(rs, "loan-approve-ByAdmin");
                 process = false;
             }
-
+            if (dataLoan.getIsActive().contains("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Already reimbursement By Finance :");
+                CreateLog.createJson(rs, "loan-approval-ByAdmin");
+                return rs;
+            }
             if (process) {
                 dataLoan.setAprovedByAdmin(dataEMploye.getName());
                 dataLoan.setDate_approved(now);
@@ -741,6 +765,7 @@ public class LoanController {
     public Response approveByFinance(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
         try {
             Date now = new Date();
+            Date dateDisburs = new Date();
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -750,7 +775,7 @@ public class LoanController {
             Loan dataLoan = new Loan();
             LoanType typeLoan = new LoanType();
             LoanHistory entityHistory = new LoanHistory();
-
+            Disbursement entityDisbursement = new Disbursement();
             Financial dataFinance = new Financial();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("05");
@@ -779,7 +804,7 @@ public class LoanController {
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
 
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
@@ -794,28 +819,28 @@ public class LoanController {
             dataLoan = loanService.findById(id_loan);
 
             if (dataLoan == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
                 process = false;
             }
             if (dataLoan.getStatus().contentEquals("r")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps are rejected");
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("1")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("4")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Already approved by finance ");
                 CreateLog.createJson(rs, "loan-approve-Byfinance");
@@ -830,6 +855,15 @@ public class LoanController {
                 String dt = dateFormat.format(object.getDisburse_date());
                 Date disburse = dateFormat.parse(dt);
                 dataLoan.setDisburse_date(disburse);
+                String disburseM = sdfDisbursM.format(new Date());
+                String disburseMy = sdfDisbursMY.format(new Date());
+                System.out.println("isi disburseM : " + disburseM);
+
+                entityDisbursement.setBulanInput(disburseM);
+                String dsb_id = "DSB" + disburseMy;
+                entityDisbursement.setDisbursementId(dsb_id);
+                entityDisbursement.setDisburse_date(disburse);
+
                 entityHistory.setLoan(dataLoan);
                 entityHistory.setUserId(entityEmp.getIdEmployee());
                 entityHistory.setResponse("disburse");
@@ -1857,9 +1891,9 @@ public class LoanController {
 //                HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/view/history-of-loan/by-admin/{id_employee_admin}", produces = {"application/json"})
+    @GetMapping(value = "/view/history-of-loan/by-admin", produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> viewHistoryByAdmin(@PathVariable("id_employee_admin") Long id_employee_admin, @RequestParam(value = "param_status", required = false) String param, Authentication authentication) {
+    public ResponseEntity<?> viewHistoryByAdmin(@RequestParam(value = "param_status", required = false) String param, Authentication authentication) {
         try {
             String name = authentication.getName();
             log.info("name : " + name);
@@ -1873,7 +1907,9 @@ public class LoanController {
                 return new ResponseEntity(new CustomErrorType("05", "Failed", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            Employee dataEmp = employeeService.findById(id_employee_admin);
+//            Employee dataEmp = employeeService.findById(id_employee_admin);
+            Employee dataEmp = employeeService.findById(entityEmp.getIdEmployee());
+
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
                 rs.setResponse_code("05");
@@ -1899,9 +1935,9 @@ public class LoanController {
                 param = "submit";
             }
             if (start == 0) {
-                entityList = this.loanHistoryService.findByUserId(id_employee_admin, param);
+                entityList = this.loanHistoryService.findByUserId(entityEmp.getIdEmployee(), param);
             } else {
-                entityList = this.loanHistoryService.findByUserId(id_employee_admin, param);
+                entityList = this.loanHistoryService.findByUserId(entityEmp.getIdEmployee(), param);
             }
 
             JSONArray array = new JSONArray();

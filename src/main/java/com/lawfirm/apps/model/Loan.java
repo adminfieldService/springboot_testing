@@ -66,6 +66,15 @@ public class Loan implements Serializable {
 //    private Collection<LoanHistory> loanHistoryCollection;
     private List<LoanHistory> loanHistoryCollection = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+    private Collection<Disbursement> disbursementCollection;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+    private Collection<Reimbursement> reimbursementCollection;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+    private Collection<OutStanding> outStandingCollection;
+
     @Column(name = "loan_amount")
     private Double loanAmount;
 
@@ -135,12 +144,38 @@ public class Loan implements Serializable {
         isDelete = false;
     }
 
+    public Loan() {
+    }
+
+    public Loan(Long Id, Employee employee, String loanId, LoanType loantype, Collection<Financial> financialCollection, Collection<Disbursement> disbursementCollection, Collection<Reimbursement> reimbursementCollection, Collection<OutStanding> outStandingCollection, Double loanAmount, Double outstanding, Date disburse_date, String isActive, Date repayment_date, Date date_created, Date date_approved, Date date_approved_by_finance, String aprovedByAdmin, String aprovedByFinance, String status, Boolean isDelete, Engagement engagement, String tgl_input, String date_month) {
+        this.Id = Id;
+        this.employee = employee;
+        this.loanId = loanId;
+        this.loantype = loantype;
+        this.financialCollection = financialCollection;
+        this.disbursementCollection = disbursementCollection;
+        this.reimbursementCollection = reimbursementCollection;
+        this.outStandingCollection = outStandingCollection;
+        this.loanAmount = loanAmount;
+        this.outstanding = outstanding;
+        this.disburse_date = disburse_date;
+        this.isActive = isActive;
+        this.repayment_date = repayment_date;
+        this.date_created = date_created;
+        this.date_approved = date_approved;
+        this.date_approved_by_finance = date_approved_by_finance;
+        this.aprovedByAdmin = aprovedByAdmin;
+        this.aprovedByFinance = aprovedByFinance;
+        this.status = status;
+        this.isDelete = isDelete;
+        this.engagement = engagement;
+        this.tgl_input = tgl_input;
+        this.date_month = date_month;
+    }
+
     public void addFinancial(Financial financial) {
         financial.setLoan(this);
         financialCollection.add(financial);
-    }
-
-    public Loan() {
     }
 
     public void addAHistory(LoanHistory history) {
@@ -370,6 +405,30 @@ public class Loan implements Serializable {
 
     public void setLoanHistoryCollection(List<LoanHistory> loanHistoryCollection) {
         this.loanHistoryCollection = loanHistoryCollection;
+    }
+
+    public Collection<Disbursement> getDisbursementCollection() {
+        return disbursementCollection;
+    }
+
+    public void setDisbursementCollection(Collection<Disbursement> disbursementCollection) {
+        this.disbursementCollection = disbursementCollection;
+    }
+
+    public Collection<OutStanding> getOutStandingCollection() {
+        return outStandingCollection;
+    }
+
+    public void setOutStandingCollection(Collection<OutStanding> outStandingCollection) {
+        this.outStandingCollection = outStandingCollection;
+    }
+
+    public Collection<Reimbursement> getReimbursementCollection() {
+        return reimbursementCollection;
+    }
+
+    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
+        this.reimbursementCollection = reimbursementCollection;
     }
 
     @Override

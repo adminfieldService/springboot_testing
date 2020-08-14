@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.repo.interfaces.EmployeeRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -41,6 +42,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -63,6 +65,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -85,6 +88,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -109,6 +113,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -126,6 +131,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -141,6 +147,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return (Employee) entityManager.find(Employee.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -188,6 +195,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -233,6 +241,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -260,6 +269,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -285,6 +295,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -332,6 +343,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -354,6 +366,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -375,6 +388,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -395,6 +409,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -432,6 +447,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -455,6 +471,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return false;
         } finally {
@@ -478,6 +495,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return false;
         } finally {
@@ -513,6 +531,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -536,6 +555,7 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

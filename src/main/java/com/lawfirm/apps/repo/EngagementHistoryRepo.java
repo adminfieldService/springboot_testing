@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.EngagementHistory;
 import com.lawfirm.apps.repo.interfaces.EngagementHistoryRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,6 +42,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -63,6 +65,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -85,6 +88,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             return null;
         } finally {
             if ((entityManager != null) && (entityManager.isOpen())) {
@@ -102,6 +106,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
 
         } finally {
             if ((entityManager != null) && (entityManager.isOpen())) {
@@ -138,6 +143,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             return null;
         } finally {
             if ((entityManager != null) && (entityManager.isOpen())) {
@@ -157,9 +163,9 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
 //                    .getSingleResult();
             String sql = "SELECT h FROM EngagementHistory h "
                     + " JOIN FETCH h.engagement AS l WHERE "
-                    + " l.engagement_id = :engagement_id";
+                    + " l.engagementId = :engagementId";
             Query query = entityManager.createQuery(sql);
-            query.setParameter("engagement_id", param);
+            query.setParameter("engagementId", param);
             if (query != null) {
                 return query.getResultList();
             } else {
@@ -167,6 +173,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -197,6 +204,7 @@ public class EngagementHistoryRepo implements EngagementHistoryRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementHistoryRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

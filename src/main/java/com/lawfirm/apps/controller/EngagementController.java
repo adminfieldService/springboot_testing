@@ -48,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
@@ -110,7 +109,7 @@ public class EngagementController {
     @Autowired
     EngagementServiceIface engagementService;
     @Autowired
-    EngagementHistoryServiceIface EngagementHistoryService;
+    EngagementHistoryServiceIface engagementHistoryService;
     @Autowired
     FinancialServiceIface financialService;
     @Autowired
@@ -340,6 +339,7 @@ public class EngagementController {
                     dataCaseDetails.setStrategy(object.getStrategy());
                     dataCaseDetails.setPanitera(object.getPanitera());
 //                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
+                    dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setStatus("s");
@@ -667,7 +667,7 @@ public class EngagementController {
             if (entity.getIsActive().contains("1")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("Alredy approve By Admin :");
+                rs.setResponse("Already approve By Admin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
                 return rs;
             }
@@ -678,6 +678,7 @@ public class EngagementController {
                 CreateLog.createJson(rs, "approval-ByAdmin");
                 return rs;
             }
+
 //            if (entity.getStatus().contains("a")) {
 //                rs.setResponse_code("55");
 //                rs.setInfo("Failed");
@@ -712,8 +713,22 @@ public class EngagementController {
             Log.info("check_caseId  findByCaseId : " + check_caseId);
 
             if (object.getDecision().contains("a")) {
-//                Optional<TeamMember> checkTeamMember = teamMemberService.findByEngId(entity.getEngagementId());
+
+                Integer numberTeam = 0;
+                String team_Id = null;
+//                List<TeamMember> generateTeamCaseId = teamMemberService.generateTeamCaseId(entity.getTahun_input());
+//                if (generateTeamCaseId != null || !generateTeamCaseId.isEmpty()) {
+//                    numberTeam = generateTeamCaseId.size();
+//                }
+                TeamMember dataTeamMember = teamMemberService.findByEngId(entity.getEngagementId());
 //                Log.info("checkTeamMember.isPresent() : " + checkTeamMember.isPresent());
+                if (dataTeamMember == null) {
+                    rs.setResponse_code("50");
+                    rs.setInfo("Error");
+                    rs.setResponse("TeamMember EngagagemenId  : " + entity.getEngagementId() + " Not Found ");
+                    CreateLog.createJson(rs, "approval-ByAdmin");
+                    return rs;
+                }
 
                 entity.setCaseID(check_caseId);
                 entity.setStatus(object.getDecision());
@@ -724,12 +739,17 @@ public class EngagementController {
                 enHistory.setEngagement(entity);
                 enHistory.setResponse("approve");
                 enHistory.setUserId(entityEmp.getIdEmployee());
+                team_Id = Util.changeCase(check_caseId);
 
+                Log.info("check_caseId  findByCaseId : " + team_Id);
+                dataTeamMember.setDescription(team_Id);
+                this.teamMemberService.update(dataTeamMember);
             }
 
             if (object.getDecision().contains("r")) {
                 entity.setStatus(object.getDecision());
                 entity.setIsActive("2");
+                entity.setProfesionalFee(0d);
                 entity.setApproved_date(now);
                 entity.setTahun_input(sdfYear.format(now));
                 entity.setApprovedBy(entityEmp.getIdEmployee().toString());
@@ -740,7 +760,8 @@ public class EngagementController {
             }
 
             CaseDetails updateEng = caseDetailsService.update(entity);
-            this.EngagementHistoryService.create(enHistory);
+
+            this.engagementHistoryService.create(enHistory);
             if (updateEng != null) {
                 if (object.getDecision().contains("r")) {
                     rs.setResponse_code("00");
@@ -749,6 +770,7 @@ public class EngagementController {
                     CreateLog.createJson(rs, "approval-ByAdmin");
                 }
                 if (object.getDecision().contains("a")) {
+
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
                     rs.setResponse("approval BY : " + entityEmp.getEmployeeId());
@@ -837,10 +859,28 @@ public class EngagementController {
                             obj.put("approved_by", entityEmp.getName());
 
                         }
-                        if (data.getOperational_cost() == null) {
-                            obj.put("operational_cost", "");
+//                        if (data.getOperational_cost() == null) {
+//                            obj.put("operational_cost", "");
+//                        } else {
+//                            obj.put("operational_cost", data.getOperational_cost());
+//
+//                        }
+                        if (data.getProfesionalFee() == null) {
+                            obj.put("professionalFee", "");
                         } else {
-                            obj.put("operational_cost", data.getOperational_cost());
+                            obj.put("professionalFee", data.getProfesionalFee());
+
+                        }
+                        if (data.getProfesionalFee() == null) {
+                            obj.put("professional_fee", "");
+                        } else {
+                            obj.put("professional_fee", data.getProfesionalFee());
+
+                        }
+                        if (data.getProfesionalFeeNet() == null) {
+                            obj.put("professional_fee_net", "");
+                        } else {
+                            obj.put("professional_fee_net", data.getProfesionalFeeNet());
 
                         }
                         if (data.getApproved_date() == null) {
@@ -858,6 +898,11 @@ public class EngagementController {
                         } else {
                             obj.put("strategy", data.getStrategy());
                         }
+                        if (data.getNote() == null) {
+                            obj.put("notes", "");
+                        } else {
+                            obj.put("notes", data.getNote());
+                        }
                         if (data.getPanitera() == null) {
                             obj.put("panitera", "");
                         } else {
@@ -873,9 +918,13 @@ public class EngagementController {
                             obj.put("client_id", "");
                             obj.put("address", "");
                             obj.put("client_name", "");
+                            obj.put("npwp", "");
+                            obj.put("pic", "");
                         } else {
                             obj.put("id_client", data.getClient().getIdClient());
                             obj.put("client_id", data.getClient().getClientId());
+                            obj.put("npwp", data.getClient().getNpwp());
+                            obj.put("pic", data.getClient().getPic());
                             obj.put("address", data.getClient().getAddress());
                             obj.put("client_name", data.getClient().getClientName());
                         }
@@ -906,16 +955,9 @@ public class EngagementController {
                                     obj.put("dmp_name", getDmp.getName());
                                     obj.put("description", dataTeam.getDescription());
                                     obj.put("fee_share_dmp", dataTeam.getFeeShare());
-
-//                                break;
-//                            obj.put("member_name", entityMember.getDescription());
-//                                arrayM.put(objMember);
                                 }
 
                             }
-//                        arrayM.put(objMember);
-//                        obj.put("team", objTeam);
-//                        obj.put("members", arrayM);
 
                         }
 //                        if (i != 0 || i == 1) {
@@ -1003,10 +1045,28 @@ public class EngagementController {
                     } else {
                         obj.put("case_id", data.getCaseID());
                     }
-                    if (data.getOperational_cost() == null) {
-                        obj.put("operational_cost", "");
+//                    if (data.getOperational_cost() == null) {
+//                        obj.put("operational_cost", "");
+//                    } else {
+//                        obj.put("operational_cost", data.getOperational_cost());
+//
+//                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professionalFee", "");
                     } else {
-                        obj.put("operational_cost", data.getOperational_cost());
+                        obj.put("professionalFee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professional_fee", "");
+                    } else {
+                        obj.put("professional_fee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFeeNet() == null) {
+                        obj.put("professional_fee_net", "");
+                    } else {
+                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
 
                     }
                     if (data.getApprovedBy() == null) {
@@ -1031,9 +1091,13 @@ public class EngagementController {
                         obj.put("client_id", "");
                         obj.put("address", "");
                         obj.put("client_name", "");
+                        obj.put("npwp", "");
+                        obj.put("pic", "");
                     } else {
                         obj.put("id_client", data.getClient().getIdClient());
                         obj.put("client_id", data.getClient().getClientId());
+                        obj.put("npwp", data.getClient().getNpwp());
+                        obj.put("pic", data.getClient().getPic());
                         obj.put("address", data.getClient().getAddress());
                         obj.put("client_name", data.getClient().getClientName());
                     }
@@ -1042,6 +1106,11 @@ public class EngagementController {
                         obj.put("strategy", "");
                     } else {
                         obj.put("strategy", data.getStrategy());
+                    }
+                    if (data.getNote() == null) {
+                        obj.put("notes", "");
+                    } else {
+                        obj.put("notes", data.getNote());
                     }
                     if (data.getPanitera() == null) {
                         obj.put("panitera", "");
@@ -1053,11 +1122,7 @@ public class EngagementController {
                     } else {
                         obj.put("target_achievement", data.getTargetAchievement());
                     }
-                    if (data.getProfesionalFee() == null) {
-                        obj.put("profesional_fee", "");
-                    } else {
-                        obj.put("profesional_fee", data.getProfesionalFee());
-                    }
+
                     if (data.getCaseID() == null) {
                         obj.put("case_id", "");
                     } else {
@@ -1118,6 +1183,24 @@ public class EngagementController {
 //                        obj.put("operational_cost", data.getOperational_cost());
 //
 //                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professionalFee", "");
+                    } else {
+                        obj.put("professionalFee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professional_fee", "");
+                    } else {
+                        obj.put("professional_fee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFeeNet() == null) {
+                        obj.put("professional_fee_net", "");
+                    } else {
+                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
+
+                    }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
                     } else {
@@ -1146,6 +1229,16 @@ public class EngagementController {
                         obj.put("client_id", data.getClient().getClientId());
                     }
                     if (data.getClient() == null) {
+                        obj.put("npwp", "");
+                    } else {
+                        obj.put("npwp", data.getClient().getNpwp());
+                    }
+                    if (data.getClient() == null) {
+                        obj.put("pic", "");
+                    } else {
+                        obj.put("pic", data.getClient().getPic());
+                    }
+                    if (data.getClient() == null) {
                         obj.put("address", "");
                     } else {
                         obj.put("address", data.getClient().getAddress());
@@ -1164,6 +1257,11 @@ public class EngagementController {
                         obj.put("panitera", "");
                     } else {
                         obj.put("panitera", data.getPanitera());
+                    }
+                    if (data.getNote() == null) {
+                        obj.put("notes", "");
+                    } else {
+                        obj.put("notes", data.getNote());
                     }
                     if (data.getStatus() == null) {
                         obj.put("status", "");
@@ -1309,6 +1407,24 @@ public class EngagementController {
 //                        obj.put("operational_cost", data.getOperational_cost());
 //
 //                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professionalFee", "");
+                    } else {
+                        obj.put("professionalFee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFee() == null) {
+                        obj.put("professional_fee", "");
+                    } else {
+                        obj.put("professional_fee", data.getProfesionalFee());
+
+                    }
+                    if (data.getProfesionalFeeNet() == null) {
+                        obj.put("professional_fee_net", "");
+                    } else {
+                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
+
+                    }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
                     } else {
@@ -1340,6 +1456,16 @@ public class EngagementController {
                     } else {
                         obj.put("client_name", data.getClient().getClientName());
                     }
+                    if (data.getClient() == null) {
+                        obj.put("npwp", "");
+                    } else {
+                        obj.put("npwp", data.getClient().getNpwp());
+                    }
+                    if (data.getClient() == null) {
+                        obj.put("pic", "");
+                    } else {
+                        obj.put("pic", data.getClient().getPic());
+                    }
                     if (data.getStrategy() == null) {
                         obj.put("strategy", "");
                     } else {
@@ -1349,6 +1475,11 @@ public class EngagementController {
                         obj.put("panitera", "");
                     } else {
                         obj.put("panitera", data.getPanitera());
+                    }
+                    if (data.getNote() == null) {
+                        obj.put("notes", "");
+                    } else {
+                        obj.put("notes", data.getNote());
                     }
                     if (data.getStatus() == null) {
                         obj.put("status", "");
@@ -1662,14 +1793,6 @@ public class EngagementController {
                 return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature"),
                         HttpStatus.FORBIDDEN);
             }
-//            if (!entity.getRoleName().contentEquals("dmp")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
-//                CreateLog.createJson(rs, "create-event");
-//                process = false;
-//                return rs;
-//            }
 
             CaseDetails dataCase = caseDetailsService.findById(engagement_id);
             if (dataCase == null) {
@@ -1734,18 +1857,6 @@ public class EngagementController {
                     }
                     array.put(obj);
                 }
-//                enEvent.setCaseDetails(dataCase);
-////                enEvent.setScheduleDate(object.getSchedule_date());
-//                enEvent.setEventName(object.getEvent_name());
-//                enEvent.setEventType(object.getEvent_type());
-//                Events newEvents = this.eventServiceIface.create(enEvent);
-//                if (newEvents != null) {
-//                    rs.setResponse_code("00");
-//                    rs.setInfo("Succes");
-//                    rs.setResponse("Succes create new events");
-//                    CreateLog.createJson(rs, "create-event");
-//                    return rs;
-//                }
             }
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
@@ -1931,10 +2042,26 @@ public class EngagementController {
             if (entity == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id "+engagement_id+"Not Found");
+                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
+
+            entity.setIsActive("4");
+            entity.setStatus("closed");
+            enHistory.setEngagement(entity);
+            enHistory.setUserId(entityEmp.getIdEmployee());
+            enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
+            CaseDetails closeCase = this.caseDetailsService.update(entity);
+            if (closeCase != null) {
+                this.engagementHistoryService.create(enHistory);
+                rs.setResponse_code("00");
+                rs.setInfo("Success");
+                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
@@ -1946,6 +2073,5 @@ public class EngagementController {
 
         }
         return null;
-
     }
 }

@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.repo.interfaces.CaseDetailsRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -64,6 +66,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,6 +90,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -107,9 +111,10 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                 return entity;
             }
         } catch (Exception ex) {
-//	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
             if ((entityManager != null) && (entityManager.isOpen())) {
@@ -126,6 +131,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -146,6 +152,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -169,6 +176,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return list_acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -192,6 +200,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -213,9 +222,10 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                     .setParameter("tahun_input", paramY)
                     .setParameter("status", "a")
                     .getSingleResult();
-           
+
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -259,6 +269,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -282,6 +293,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -310,6 +322,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -337,6 +350,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

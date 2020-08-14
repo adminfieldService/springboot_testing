@@ -109,4 +109,14 @@ public class TeamMemberService implements TeamMemberServiceIface {
         return teamMemberRepo.listTeamMemberByEngagement(param);
     }
 
+    @Override
+    public List<TeamMember> generateTeamCaseId(String param1) {
+        return teamMemberRepo.generateTeamCaseId(param1);
+    }
+
+    @Override
+    public TeamMember findByTeamCaseId(String teamcaseID, String paramY) {
+        return teamMemberRepo.findByTeamCaseId(teamcaseID, paramY);
+    }
+
 }

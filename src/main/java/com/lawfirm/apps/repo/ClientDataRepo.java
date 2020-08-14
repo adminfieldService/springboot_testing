@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.ClientData;
 import com.lawfirm.apps.repo.interfaces.ClientDataRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,6 +42,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -63,6 +65,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -84,6 +87,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -101,6 +105,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -116,6 +121,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return (ClientData) entityManager.find(ClientData.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -139,6 +145,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -158,6 +165,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -181,6 +189,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -218,6 +227,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return (List<ClientData>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

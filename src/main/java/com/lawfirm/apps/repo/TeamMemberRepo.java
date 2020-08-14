@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.repo.interfaces.TeamMemberRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -41,6 +42,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -64,6 +66,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -85,6 +88,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -102,6 +106,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -117,6 +122,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return (TeamMember) entityManager.find(TeamMember.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -126,17 +132,19 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         }
     }
 
+    @Override
     public TeamMember findByEngId(Long engID) {
         try {
             TeamMember acquire = (TeamMember) entityManager.createQuery("SELECT t FROM TeamMember t "
                     + " JOIN FETCH t.engagement AS e "
                     + " WHERE "
-                    + " e.engagement_id = :engagement_id ")
-                    .setParameter("engagement_id", engID)
+                    + " e.engagementId = :engagementId ")
+                    .setParameter("engagementId", engID)
                     .getSingleResult();
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -160,6 +168,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -167,6 +176,55 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
                 entityManager.close();
             }
         }
+    }
+
+    @Override
+    public List<TeamMember> generateTeamCaseId(String param1) {
+        try {
+//              List<CaseDetails> listAcquire = entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
+            List<TeamMember> listAcquire = entityManager.createQuery("SELECT t FROM TeamMember t WHERE "
+                    + " c.tahun_input = :tahun_input ")
+                    .setParameter("tahun_input", param1)
+                    .getResultList();
+            if (listAcquire == null) {
+                return null;
+            } else {
+                return listAcquire;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
+    public TeamMember findByTeamCaseId(String caseID, String paramY) {
+        try {
+            TeamMember acquire = (TeamMember) entityManager.createQuery("SELECT t FROM TeamMember t WHERE "
+                    + " t.description = :description AND "
+                    + " t.tahun_input = :tahun_input ")
+                    .setParameter("description", caseID)
+                    .setParameter("tahun_input", paramY)
+                    .getSingleResult();
+            return acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
     }
 
     @Override
@@ -179,6 +237,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -198,6 +257,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -236,6 +296,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

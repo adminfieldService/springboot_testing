@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Engagement;
 import com.lawfirm.apps.repo.interfaces.EngagementRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -42,6 +43,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -64,6 +66,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -85,6 +88,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -102,6 +106,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -117,6 +122,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return (Engagement) entityManager.find(Engagement.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -136,6 +142,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -155,6 +162,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -173,6 +181,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -181,13 +190,12 @@ public class EngagementRepo implements EngagementRepoIface {
             }
         }
     }
-    
-     @Override
-     @SuppressWarnings("unchecked")
+
+    @Override
+    @SuppressWarnings("unchecked")
     public List<Engagement> getMember(Long paramLong) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -213,5 +221,4 @@ public class EngagementRepo implements EngagementRepoIface {
         return entityManager;
     }
 
-   
 }

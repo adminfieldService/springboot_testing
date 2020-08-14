@@ -8,6 +8,7 @@ package com.lawfirm.apps.repo;
 import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.EmployeeRole;
 import com.lawfirm.apps.repo.interfaces.EmployeeRoleRepoIface;
+import com.lawfirm.apps.utils.CreateLog;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -41,6 +42,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -63,6 +65,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -85,6 +88,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -102,6 +106,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -117,6 +122,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             return (EmployeeRole) entityManager.find(EmployeeRole.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -137,6 +143,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -155,6 +162,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -198,6 +206,7 @@ public class EmployeeRoleRepo implements EmployeeRoleRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

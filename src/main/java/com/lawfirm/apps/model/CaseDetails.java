@@ -38,6 +38,10 @@ public class CaseDetails extends Engagement implements Serializable {
     protected String caseID;
     @Column(name = "profesional_fee")
     private Double profesionalFee;
+
+    @Column(name = "profesional_fee_net")
+    private Double profesionalFeeNet;
+
     @Column(name = "case_over_view")
     private String caseOverview;
     @Column(name = "note")
@@ -87,6 +91,14 @@ public class CaseDetails extends Engagement implements Serializable {
 
     public void setProfesionalFee(Double profesionalFee) {
         this.profesionalFee = profesionalFee;
+    }
+
+    public Double getProfesionalFeeNet() {
+        return profesionalFeeNet;
+    }
+
+    public void setProfesionalFeeNet(Double profesionalFeeNet) {
+        this.profesionalFeeNet = profesionalFeeNet;
     }
 
     public String getCaseOverview() {

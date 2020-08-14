@@ -227,4 +227,13 @@ public class Util {
 
         return kata1;
     }
+    
+    public static String changeCase(final String input) {
+        final String domain = "CASE";
+//        final String[] tokens = input.split("@");
+        String kata1 = input;
+        kata1 = kata1.replaceAll(domain, "TMCS");
+
+        return kata1;
+    }
 }

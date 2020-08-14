@@ -54,7 +54,7 @@ public class ConfigDataSource {
     public LocalContainerEntityManagerFactoryBean entityManagerDs(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(dsDataSource())
-                .properties(singletonMap("hibernate.hbm2ddl.auto", "none"))//.properties(hibernateProperties())#Hibernate ddl auto (none, create, create-drop, validate, update)s
+                .properties(singletonMap("hibernate.hbm2ddl.auto", "none"))//.properties(hibernateProperties())#Hibernate ddl auto (none, create, create-drop, validate, update)
                 .packages(Constants.PACKAGE_ENTITIES_LF)//"com.spin.bpr.datasource.entity"
                 .persistenceUnit(Constants.JPA_UNIT_NAME_LF).build();
     }

@@ -8,10 +8,8 @@ package com.lawfirm.apps.config;
 import com.lawfirm.apps.security.jwt.AuthEntryPointJwt;
 import com.lawfirm.apps.security.jwt.AuthTokenFilter;
 import com.lawfirm.apps.service.UserServiceImpl;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -29,10 +27,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 /**
  *
@@ -88,7 +82,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/opt/UploadFile/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/role/").hasAnyRole("admin", "sysadmin")//.permitAll()
@@ -100,7 +93,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{employee_id}/find-by-employee-id/").hasAnyRole("admin", "sysadmin", "lawyer", "support")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/employee/employe-role/role-name/").hasAnyRole("admin", "sysadmin")//.permitAll()
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/cv/").hasAnyRole("admin", "sysadmin", "lawyer")
-                .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer", "support", "dmp", "finance")
+                .antMatchers(HttpMethod.GET, "/employee/managed-employee/{id_employee}/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer", "support", "dmp", "finance")// .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/download-cv/").hasAnyRole("admin", "sysadmin", "lawyer", "support", "dmp", "finance")
                 .antMatchers(HttpMethod.POST, "/employee/approval/by-admin/").hasAnyRole("admin", "sysadmin")
                 .antMatchers(HttpMethod.POST, "/employee/managed-account/").hasAnyRole("lawyer", "admin", "dmp", "finance")//.permitAll()    
                 .antMatchers(HttpMethod.GET, "/employee/view/list-by-admin/").hasAnyRole("admin", "sysadmin")//.permitAll()
@@ -139,7 +132,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .maximumSessions(1);
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {//.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 

@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
-@RequestMapping({"/reimbursement"})
+@RequestMapping({"/reimbursement"})//pengembalian
 public class ReimbursementController {
 
     static String basepathUpload = "/opt/lawfirm/UploadFile/";

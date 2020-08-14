@@ -29,6 +29,7 @@ public class DataEmployee {
     protected String address;
     protected String npwp;
     protected String tax_status;
+    protected String old_password;
     protected String cell_phone;
     protected String user_name;
     protected String role_name;

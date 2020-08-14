@@ -34,6 +34,10 @@ public interface TeamMemberServiceIface {
 
     List<TeamMember> listTeamMember();
 
+    List<TeamMember> generateTeamCaseId(String param1);
+
+    TeamMember findByTeamCaseId(String caseID, String paramY);
+
     List<TeamMember> listActive(Boolean param);
 
     List<TeamMember> byName(Boolean isActive);
