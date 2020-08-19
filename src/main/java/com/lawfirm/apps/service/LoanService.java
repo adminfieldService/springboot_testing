@@ -138,4 +138,9 @@ public class LoanService implements LoanServiceIface {
         return loanRepo.getEntityManager();
     }
 
+    @Override
+    public List<Loan> listDisburse(String type) {
+        return loanRepo.listDisburse(type);
+    }
+
 }

@@ -707,7 +707,7 @@ public class LoanController {
             }
 
             if (process) {
-                dataLoan.setAprovedByAdmin(dataEMploye.getName());
+                dataLoan.setAprovedByAdmin(entityEmp.getIdEmployee().toString());//dataEMploye.getName()
                 dataLoan.setDate_approved(now);
                 if (object.getDecision().contains("r")) {
                     dataLoan.setStatus(object.getDecision());
@@ -847,7 +847,7 @@ public class LoanController {
                 process = false;
             }
             if (process) {
-                dataLoan.setAprovedByFinance(dataEMploye.getName());
+                dataLoan.setAprovedByFinance(entityEmp.getIdEmployee().toString());//dataEMploye.getName()
                 dataLoan.setDate_approved_by_finance(new Date());
                 dataLoan.setStatus("d");
                 dataLoan.setIsActive("4");
@@ -1002,7 +1002,8 @@ public class LoanController {
                 if (entity.getAprovedByAdmin() == null) {
                     jsonobj.put("aproved_by_admin", "");
                 } else {
-                    jsonobj.put("aproved_by_admin", entity.getAprovedByAdmin());
+                    Employee dataAdmin = this.employeeService.findById(Long.parseLong(entity.getAprovedByAdmin()));
+                    jsonobj.put("aproved_by_admin", dataAdmin.getEmployeeId());
                 }
                 if (entity.getDate_approved() == null) {
                     jsonobj.put("date_approve_by_admin", "");
@@ -1012,7 +1013,8 @@ public class LoanController {
                 if (entity.getAprovedByFinance() == null) {
                     jsonobj.put("disburse_by_finance", "");
                 } else {
-                    jsonobj.put("disburse_by_finance", entity.getAprovedByFinance());
+                    Employee dataFinance = this.employeeService.findById(Long.parseLong(entity.getAprovedByFinance()));
+                    jsonobj.put("disburse_by_finance", dataFinance.getEmployeeId());
                 }
                 if (entity.getDate_created() == null) {
                     jsonobj.put("date_created", "");
@@ -1117,7 +1119,8 @@ public class LoanController {
                 if (entity.getAprovedByAdmin() == null) {
                     jsonobj.put("aproved_by_admin", "");
                 } else {
-                    jsonobj.put("aproved_by_admin", entity.getAprovedByAdmin());
+                    Employee dataAdmin = this.employeeService.findById(Long.parseLong(entity.getAprovedByAdmin()));
+                    jsonobj.put("aproved_by_admin", dataAdmin.getEmployeeId());
                 }
                 if (entity.getDate_approved() == null) {
                     jsonobj.put("date_approve_by_admin", "");
@@ -1127,7 +1130,8 @@ public class LoanController {
                 if (entity.getAprovedByFinance() == null) {
                     jsonobj.put("disburse_by_finance", "");
                 } else {
-                    jsonobj.put("disburse_by_finance", entity.getAprovedByFinance());
+                    Employee dataFinance = this.employeeService.findById(Long.parseLong(entity.getAprovedByFinance()));
+                    jsonobj.put("disburse_by_finance", dataFinance.getEmployeeId());
                 }
                 if (entity.getDate_created() == null) {
                     jsonobj.put("date_created", "");
@@ -1233,9 +1237,9 @@ public class LoanController {
                 param = "s";
             }
             if (start == 0) {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "a");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "a");
             } else {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "a");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "a");
             }
 
             JSONArray array = new JSONArray();
@@ -1261,7 +1265,8 @@ public class LoanController {
                 if (entity.getAprovedByAdmin() == null) {
                     jsonobj.put("aproved_by_admin", "");
                 } else {
-                    jsonobj.put("aproved_by_admin", entity.getAprovedByAdmin());
+                    Employee dataAdmin = this.employeeService.findById(Long.parseLong(entity.getAprovedByAdmin()));
+                    jsonobj.put("aproved_by_admin", dataAdmin.getEmployeeId());
                 }
                 if (entity.getDate_approved() == null) {
                     jsonobj.put("date_approve_by_admin", "");
@@ -1384,9 +1389,9 @@ public class LoanController {
                 param = "s";
             }
             if (start == 0) {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "b");
             } else {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "b");
             }
 
             JSONArray array = new JSONArray();
@@ -1783,9 +1788,9 @@ public class LoanController {
                 param = "s";
             }
             if (start == 0) {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "b");
             } else {
-                entityList = this.loanService.listActive(dataEmp.getName(), param, "b");
+                entityList = this.loanService.listActive(dataEmp.getIdEmployee().toString(), param, "b");
             }
 
             JSONArray array = new JSONArray();

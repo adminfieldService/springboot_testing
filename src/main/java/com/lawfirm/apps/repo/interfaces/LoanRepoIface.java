@@ -44,6 +44,8 @@ public interface LoanRepoIface {
 
     List<Loan> byName(Boolean isActive);
 
+    List<Loan> listDisburse(String type);
+
     Integer count();
 
     Double loanEmp(String param1, String param2);

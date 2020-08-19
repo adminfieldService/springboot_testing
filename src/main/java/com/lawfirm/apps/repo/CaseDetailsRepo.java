@@ -263,7 +263,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
                     + " JOIN FETCH c.employee  e"
                     + " JOIN FETCH c.client t "
-                    + " ORDER BY c.engagementId ASC").getResultList();
+                    + " ORDER BY c.engagementId DESC").getResultList();
 //            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "
 //                    + " JOIN FETCH c.employee AS e").getResultList();
             return (List<CaseDetails>) listAcquire;

@@ -516,20 +516,6 @@ public class LoanRepo implements LoanRepoIface {
                         .setParameter("aprovedByFinance", param1)
                         .setParameter("typeLoan", "a")
                         .getResultList();
-//                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
-//                        + " JOIN FETCH l.employee AS e "
-//                        + " LEFT JOIN FETCH l.loantype AS t "
-//                        + " WHERE "
-//                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
-//                        + " l.aprovedByFinance = :aprovedByFinance OR"
-//                        + " l.status = :status AND "
-//                        + " t.typeLoan = :typeLoan "
-//                        + " ORDER BY l.date_created Desc ")
-//                        .setParameter("aprovedByAdmin", param1)
-//                        .setParameter("aprovedByFinance", param1)
-//                        .setParameter("status", param2)
-//                        .setParameter("typeLoan", "a")
-//                        .getResultList();
             }
             if (type.contentEquals("b")) {
                 listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
@@ -545,21 +531,52 @@ public class LoanRepo implements LoanRepoIface {
                         .setParameter("aprovedByFinance", param1)
                         .setParameter("typeLoan", "b")
                         .getResultList();
-//                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
-//                        + " JOIN FETCH l.employee AS e "
-//                        + " LEFT JOIN FETCH l.loantype AS t "
-//                        + " RIGHT JOIN FETCH l.engagement AS n "
-//                        + " WHERE "
-//                        + " l.aprovedByAdmin = :aprovedByAdmin OR "
-//                        + " l.aprovedByFinance = :aprovedByFinance OR"
-//                        + " l.status = :status AND "
-//                        + " t.typeLoan = :typeLoan "
-//                        + " ORDER BY l.date_created Desc ")
-//                        .setParameter("aprovedByAdmin", param1)
-//                        .setParameter("aprovedByFinance", param1)
-//                        .setParameter("status", param2)
-//                        .setParameter("typeLoan", "b")
-//                        .getResultList();
+            }
+            if (listAcquire.isEmpty()) {
+                return listAcquire;
+            } else {
+                return listAcquire;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> listDisburse(String type) {
+        try {
+            List<Loan> listAcquire = null;
+            if (type.contentEquals("a")) {
+
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " t.typeLoan = :typeLoan AND "
+                        + " t.status = :status "
+                        + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "a")
+                        .setParameter("status", "d")
+                        .getResultList();
+            }
+            if (type.contentEquals("b")) {
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " t.typeLoan = :typeLoan AND "
+                        + " t.status = :status "
+                        + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "b")
+                        .setParameter("status", "d")
+                        .getResultList();
             }
             if (listAcquire.isEmpty()) {
                 return listAcquire;

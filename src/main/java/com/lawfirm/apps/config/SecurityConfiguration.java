@@ -124,6 +124,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/engagement/manage-engagement/{engagement_id}/document/").hasAnyRole("admin", "dmp", "lawyer")
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/view-documents/").hasAnyRole("admin", "dmp", "lawyer")
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/{engagement_id}/document/").hasAnyRole("admin", "dmp", "lawyer")
+                .antMatchers(HttpMethod.GET, "/disbursements/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.GET, "/disbursements/loan-a/finance/").hasRole("finance")
+                .antMatchers(HttpMethod.GET, "/disbursements/loan-b/finance/").hasRole("finance")
+                .antMatchers(HttpMethod.GET, "/disbursements/loan-a/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.GET, "/disbursements/loan-b/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -132,7 +137,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .maximumSessions(1);
-         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {//.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
