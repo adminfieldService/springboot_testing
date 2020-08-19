@@ -33,6 +33,7 @@ import com.xss.filter.annotation.XxsFilter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -2162,26 +2163,7 @@ public class EmployeeController { //LawfirmController
                 if (entity.getLinkCv() == null) {
                     obj.put("doc_cv", "");
                 } else {
-//                    obj.put("doc_cv", entity.getLinkCv());
-//                    jsonobj.put("status_employee", "d");
-                    FileOutputStream fop = null;
-
-                    String bytenya = entity.getLinkCv();
-                    byte[] imageInByte = ISOUtil.hex2byte(bytenya);
-                    File file = new File(entity.getLinkCv());
-                    fop = new FileOutputStream(file);
-
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    fop.write(imageInByte);
-                    fop.flush();
-                    fop.close();
-
-                    String baseUrl = FilenameUtils.getPath(file.getPath());
-                    String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
-
-                    obj.put("doc_cv", baseUrl + myFile_1);
+                    obj.put("doc_cv", entity.getLinkCv());
                 }
                 if (entity.getIdEmployee() != null) {
                     List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());
@@ -2259,7 +2241,7 @@ public class EmployeeController { //LawfirmController
                 return ResponseEntity.ok(obj.toString());
             }
 
-        } catch (JSONException | IOException ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "find-by-id");
@@ -2504,7 +2486,7 @@ public class EmployeeController { //LawfirmController
                         HttpStatus.NOT_FOUND);
             }
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
-//            Employee entity = employeeService.findById(idEmployee);
+//          Employee entity = employeeService.findById(idEmployee);
             Boolean process = true;
             if (entity == null) {
                 rs.setResponse_code("05");
@@ -2513,36 +2495,15 @@ public class EmployeeController { //LawfirmController
                 CreateLog.createJson(rs, "download-cv");
                 process = false;
             }
-//            String str = null;
-//            byte[] input_file = new byte[1024];
-//            byte[] encodedBytes = null;
             if (process) {
                 try {
-//                    File folder = new File(basepathUpload + entity.getIdEmployee() + "/");
-//                    File[] listOfFiles = folder.listFiles();
-//                    for (int i = 0; i < listOfFiles.length; i++) {
-//                        if (listOfFiles[i].isFile()) {
-//                            input_file = listOfFiles[i].getName().getBytes();
-//                            System.out.println("File " + listOfFiles[i].getName());
-//                        } else if (listOfFiles[i].isDirectory()) {
-//                            System.out.println("Directory " + listOfFiles[i].getName());
-//                        }
-//                    }
-//                    byte[] input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
-//                    byte[] input_file = entity.getLinkCv().getBytes();
-//                    String linkDoc = new String(Base64.getEncoder().encode(input_file));
-//                    String linkDoc = new String(org.apache.commons.codec.binary.Base64.encodeBase64(input_file));
-//                  String linkDoc = new String(Base64.getEncoder().encode(input_file),"UTF-8");
 
-//                    File file = new File(entity.getLinkCv());
-//                  init array with file length
-//                    byte[] bytesArray = new byte[(int) file.length()];
-//                    String linkDoc = new String(org.apache.commons.codec.binary.Base64.encodeBase64(bytesArray));
-//                    jsonobj.put("response_code", "00");
-//                    jsonobj.put("response", "success");
-//                    jsonobj.put("info", linkDoc);
-
-                } catch (Exception ex) {
+                    byte[] input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
+                    String linkDoc = new String(Base64.getEncoder().encode(input_file));
+                    jsonobj.put("response_code", "00");
+                    jsonobj.put("response", "success");
+                    jsonobj.put("info", linkDoc);
+                } catch (JSONException ex) {
                     Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
                     return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
                             HttpStatus.NOT_FOUND);
@@ -2557,7 +2518,7 @@ public class EmployeeController { //LawfirmController
             CreateLog.createJson(rs, "download-cv");
             return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
                     HttpStatus.NOT_FOUND);
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             rs.setResponse_code("05");
