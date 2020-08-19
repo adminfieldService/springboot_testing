@@ -60,7 +60,10 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jpos.iso.ISOUtil;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -2484,8 +2487,7 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.GET, produces = {"application/json"})//produces = {"application/json"}
     @XxsFilter
-    @ResponseBody
-    public ResponseEntity<?> downloadCv(ServletRequest request, HttpServletResponse response, @PathVariable("id_employee") Long idEmployee, Authentication authentication) {
+    public ResponseEntity<?> downloadCv(ServletRequest request, HttpServletResponse response, @PathVariable("id_employee") Long idEmployee, Authentication authentication) throws IOException {
         try {
             JSONObject jsonobj = new JSONObject();
             String name = authentication.getName();
@@ -2496,62 +2498,58 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("can't acces this feature :");
-                CreateLog.createJson(rs, "view-Loanb");
+                CreateLog.createJson(rs, "download-cv");
 //                process = false;
                 return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
-//                Employee entity = employeeService.findById(entityEmp.getIdEmployee());
-            Employee entity = employeeService.findById(idEmployee);
+            Employee entity = employeeService.findById(entityEmp.getIdEmployee());
+//            Employee entity = employeeService.findById(idEmployee);
             Boolean process = true;
             if (entity == null) {
                 rs.setResponse_code("05");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Null");
-                CreateLog.createJson(rs, "downloadCv");
+                CreateLog.createJson(rs, "download-cv");
                 process = false;
             }
-            String linkDoc = null;
-            String str = null;
-            byte[] input_file = null;
-            byte[] encodedBytes = null;
+//            String str = null;
+//            byte[] input_file = new byte[1024];
+//            byte[] encodedBytes = null;
             if (process) {
+                try {
+//                    File folder = new File(basepathUpload + entity.getIdEmployee() + "/");
+//                    File[] listOfFiles = folder.listFiles();
+//                    for (int i = 0; i < listOfFiles.length; i++) {
+//                        if (listOfFiles[i].isFile()) {
+//                            input_file = listOfFiles[i].getName().getBytes();
+//                            System.out.println("File " + listOfFiles[i].getName());
+//                        } else if (listOfFiles[i].isDirectory()) {
+//                            System.out.println("Directory " + listOfFiles[i].getName());
+//                        }
+//                    }
+//                    byte[] input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
+//                    byte[] input_file = entity.getLinkCv().getBytes();
+//                    String linkDoc = new String(Base64.getEncoder().encode(input_file));
+//                    String linkDoc = new String(org.apache.commons.codec.binary.Base64.encodeBase64(input_file));
+//                  String linkDoc = new String(Base64.getEncoder().encode(input_file),"UTF-8");
 
-//                String bytenya = entity.getLinkCv();
-//                byte[] pdf = ISOUtil.hex2byte(bytenya);
-//                File file = new File(entity.getLinkCv());
-//                String baseUrl = FilenameUtils.getPath(file.getPath());
-//                System.out.println("Chek Size baseUrl" + baseUrl);
-//                String myFile_1 = FilenameUtils.getBaseName(file.getPath()) + "." + FilenameUtils.getExtension(file.getPath());
-//                System.out.println("Chek myFile_1" + myFile_1);
-//                String filename = "cv_" + entity.getEmployeeId() + "_" + entity.getName() + ".pdf";
-//                String filename = myFile_1;
-//                System.out.println("Chek baseUrl" + baseUrl);
-//                HttpHeaders headers = new HttpHeaders();
-//                headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//                headers.add("Pragma", "no-cache");
-//                headers.add("Expires", "0");
-//
-//                Path path = Paths.get(file.getPath());
-//                System.out.println("Chek path" + path);
-//                ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
-//
-//                return ResponseEntity.ok()
-//                        .headers(headers)
-//                        .contentLength(file.length())
-//                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                        .body(resource);
-//                input_file = Files.readAllBytes(Paths.get(file.getPath()));
-                input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
-//                encodedBytes = Base64.getEncoder().encode(input_file);
-                linkDoc = new String(Base64.getEncoder().encode(input_file));
+//                    File file = new File(entity.getLinkCv());
+//                  init array with file length
+//                    byte[] bytesArray = new byte[(int) file.length()];
+//                    String linkDoc = new String(org.apache.commons.codec.binary.Base64.encodeBase64(bytesArray));
+//                    jsonobj.put("response_code", "00");
+//                    jsonobj.put("response", "success");
+//                    jsonobj.put("info", linkDoc);
 
-                jsonobj.put("response_code", "00");
-                jsonobj.put("response", "success");//linkDoc
-                jsonobj.put("info", linkDoc);//linkDoc
-//                return new ResponseEntity(new CustomErrorType("00", "success", linkDoc),
-//                        HttpStatus.ACCEPTED);
+                } catch (Exception ex) {
+                    Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
+                            HttpStatus.NOT_FOUND);
+                }
+
                 return ResponseEntity.ok(jsonobj.toString());
+
             }
             rs.setResponse_code("05");
             rs.setInfo("Error");
@@ -2559,7 +2557,7 @@ public class EmployeeController { //LawfirmController
             CreateLog.createJson(rs, "download-cv");
             return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
                     HttpStatus.NOT_FOUND);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             rs.setResponse_code("05");
@@ -2569,11 +2567,12 @@ public class EmployeeController { //LawfirmController
 //            return null;
             return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
-        } catch (JSONException ex) {
-            Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
-                HttpStatus.NOT_FOUND);
 
+    }
+
+    public ResponseEntity<?> downloadFile() {
+
+        return null;
     }
 }
