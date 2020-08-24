@@ -733,9 +733,11 @@ public class EngagementController {
                 entity.setCaseID(check_caseId);
                 entity.setStatus(object.getDecision());
                 entity.setIsActive("1");
+//                entity.setProfesionalFeeNet(entity.getProfesionalFee() * (0.75));
                 entity.setApproved_date(now);
                 entity.setTahun_input(sdfYear.format(now));
                 entity.setApprovedBy(entityEmp.getIdEmployee().toString());
+//                
                 enHistory.setEngagement(entity);
                 enHistory.setResponse("approve");
                 enHistory.setUserId(entityEmp.getIdEmployee());
@@ -760,7 +762,6 @@ public class EngagementController {
             }
 
             CaseDetails updateEng = caseDetailsService.update(entity);
-
             this.engagementHistoryService.create(enHistory);
             if (updateEng != null) {
                 if (object.getDecision().contains("r")) {

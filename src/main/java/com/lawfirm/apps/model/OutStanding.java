@@ -40,8 +40,8 @@ public class OutStanding implements Serializable {
     @Column(name = "outstanding_id")
     private String outstandingId;
 
-    @Column(name = "disbursement_id")
-    private String disbursementId;
+    @Column(name = "reimburse_id")
+    private Long reimburseId;
 
     @Column(name = "tahun_input", length = 10, nullable = true)
     private String tahun_input;
@@ -64,10 +64,10 @@ public class OutStanding implements Serializable {
     public OutStanding() {
     }
 
-    public OutStanding(String outstandingUUId, String outstandingId, String disbursementId, String tahun_input, Date tgInput, Loan loan) {
+    public OutStanding(String outstandingUUId, String outstandingId, Long reimburseId, Long idLoan, String tahun_input, Date tgInput, Loan loan) {
         this.outstandingUUId = outstandingUUId;
         this.outstandingId = outstandingId;
-        this.disbursementId = disbursementId;
+        this.reimburseId = reimburseId;
         this.tahun_input = tahun_input;
         this.tgInput = tgInput;
         this.loan = loan;
@@ -117,26 +117,12 @@ public class OutStanding implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
-    public String getDisbursementId() {
-        return disbursementId;
+    public Long getReimburseId() {
+        return reimburseId;
     }
 
-    public void setDisbursementId(String disbursementId) {
-        this.disbursementId = disbursementId.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
-                .replaceAll("<script>(.*?)</script>", "")
-                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>", "")
-                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
-                .replaceAll("vbscript", "")
-                .replaceAll("encode", "")
-                .replaceAll("decode", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
-                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
-                .replaceAll("</script>", "")
-                .replaceAll("<script(.*?)>", "")
-                .replaceAll("eval\\((.*?)\\)", "")
-                .replaceAll("expression\\((.*?)\\)", "");
+    public void setReimburseId(Long reimburseId) {
+        this.reimburseId = reimburseId;
     }
 
     public String getTahun_input() {

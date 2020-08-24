@@ -5,8 +5,10 @@
  */
 package com.lawfirm.apps.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +22,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -38,12 +42,25 @@ public class Reimbursement implements Serializable {
     @Column(name = "reimburse_id")
     private Long reimburseId;
 
+    @Column(name = "reimbursement_id", length = 30)
+    private String reimbursementId;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
 
     @Column(name = "status")
     private String status;
+
+//    @Column(name = "expense_date ")
+//    private String expenseDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "expense_date", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date expenseDate;
+
+    @Column(name = "note")
+    private String note;
 
     @Column(name = "reimburse_amount")
     private Double reimburseAmount;
@@ -53,9 +70,16 @@ public class Reimbursement implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reimbursement")
     private Collection<DocumentReimburse> documentReimburseCollection;
 
+//    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id", referencedColumnName = "id")
+//    private Loan loan;
+
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    private Loan loan;
+    @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
+    protected Engagement engagement;
+
+    @OneToMany(mappedBy = "reimbursement", cascade = CascadeType.ALL)
+    private Collection<ReimbursementHistory> reimbursementHistoryCollection;
 
     @Column(name = "signature")
     private String signature;
@@ -63,16 +87,21 @@ public class Reimbursement implements Serializable {
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, Employee employee, String status, Double reimburseAmount, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Collection<DocumentReimburse> documentReimburseCollection, Engagement engagement, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
+        this.reimbursementId = reimbursementId;
         this.employee = employee;
         this.status = status;
+        this.expenseDate = expenseDate;
+        this.note = note;
         this.reimburseAmount = reimburseAmount;
         this.documentReimburseCollection = documentReimburseCollection;
-        this.loan = loan;
+        this.engagement = engagement;
+        this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
 
+    
     public Long getReimburseId() {
         return reimburseId;
     }
@@ -141,12 +170,12 @@ public class Reimbursement implements Serializable {
         this.documentReimburseCollection = documentReimburseCollection;
     }
 
-    public Loan getLoan() {
-        return loan;
+    public Engagement getEngagement() {
+        return engagement;
     }
 
-    public void setLoan(Loan loan) {
-        this.loan = loan;
+    public void setEngagement(Engagement engagement) {
+        this.engagement = engagement;
     }
 
     public Double getReimburseAmount() {
@@ -155,6 +184,66 @@ public class Reimbursement implements Serializable {
 
     public void setReimburseAmount(Double reimburseAmount) {
         this.reimburseAmount = reimburseAmount;
+    }
+
+    public Date getExpenseDate() {
+        return expenseDate;
+    }
+
+    public void setExpenseDate(Date expenseDate) {
+        this.expenseDate = expenseDate;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public String getReimbursementId() {
+        return reimbursementId;
+    }
+
+    public void setReimbursementId(String reimbursementId) {
+        this.reimbursementId = reimbursementId.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public Collection<ReimbursementHistory> getReimbursementHistoryCollection() {
+        return reimbursementHistoryCollection;
+    }
+
+    public void setReimbursementHistoryCollection(Collection<ReimbursementHistory> reimbursementHistoryCollection) {
+        this.reimbursementHistoryCollection = reimbursementHistoryCollection;
     }
 
     @Override

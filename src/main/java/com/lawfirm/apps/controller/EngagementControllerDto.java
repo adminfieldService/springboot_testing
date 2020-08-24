@@ -260,7 +260,6 @@ public class EngagementControllerDto {
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setClient(dataClient);
-                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
                     CaseDetails caseDetails = this.caseDetailsService.create(dataCaseDetails);
 
@@ -345,7 +344,6 @@ public class EngagementControllerDto {
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setEmployee(cekEMP);
                     dataCaseDetails.setClient(dataClient);
-                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
 //                    dataCaseDetails.setClient(newClient);
                     CaseDetails caseDetails = this.caseDetailsService.create(dataCaseDetails);

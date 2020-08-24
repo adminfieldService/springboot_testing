@@ -69,8 +69,8 @@ public class Loan implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
     private Collection<Disbursement> disbursementCollection;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
-    private Collection<Reimbursement> reimbursementCollection;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+//    private Collection<Reimbursement> reimbursementCollection;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
     private Collection<OutStanding> outStandingCollection;
@@ -147,14 +147,13 @@ public class Loan implements Serializable {
     public Loan() {
     }
 
-    public Loan(Long Id, Employee employee, String loanId, LoanType loantype, Collection<Financial> financialCollection, Collection<Disbursement> disbursementCollection, Collection<Reimbursement> reimbursementCollection, Collection<OutStanding> outStandingCollection, Double loanAmount, Double outstanding, Date disburse_date, String isActive, Date repayment_date, Date date_created, Date date_approved, Date date_approved_by_finance, String aprovedByAdmin, String aprovedByFinance, String status, Boolean isDelete, Engagement engagement, String tgl_input, String date_month) {
+    public Loan(Long Id, Employee employee, String loanId, LoanType loantype, Collection<Financial> financialCollection, Collection<Disbursement> disbursementCollection, Collection<OutStanding> outStandingCollection, Double loanAmount, Double outstanding, Date disburse_date, String isActive, Date repayment_date, Date date_created, Date date_approved, Date date_approved_by_finance, String aprovedByAdmin, String aprovedByFinance, String status, Boolean isDelete, Engagement engagement, String tgl_input, String date_month) {
         this.Id = Id;
         this.employee = employee;
         this.loanId = loanId;
         this.loantype = loantype;
         this.financialCollection = financialCollection;
         this.disbursementCollection = disbursementCollection;
-        this.reimbursementCollection = reimbursementCollection;
         this.outStandingCollection = outStandingCollection;
         this.loanAmount = loanAmount;
         this.outstanding = outstanding;
@@ -172,6 +171,8 @@ public class Loan implements Serializable {
         this.tgl_input = tgl_input;
         this.date_month = date_month;
     }
+
+  
 
     public void addFinancial(Financial financial) {
         financial.setLoan(this);
@@ -423,13 +424,13 @@ public class Loan implements Serializable {
         this.outStandingCollection = outStandingCollection;
     }
 
-    public Collection<Reimbursement> getReimbursementCollection() {
-        return reimbursementCollection;
-    }
-
-    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
-        this.reimbursementCollection = reimbursementCollection;
-    }
+//    public Collection<Reimbursement> getReimbursementCollection() {
+//        return reimbursementCollection;
+//    }
+//
+//    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
+//        this.reimbursementCollection = reimbursementCollection;
+//    }
 
     @Override
     public String toString() {

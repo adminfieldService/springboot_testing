@@ -239,7 +239,10 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public CaseDetails findCaseId(String caseID) {
         try {
-            CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+            CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " JOIN FETCH c.employee  e"
+                    + " JOIN FETCH c.client t "
+                    + " WHERE "
                     + " c.caseID = :caseID")
                     .setParameter("caseID", caseID)
                     .getSingleResult();

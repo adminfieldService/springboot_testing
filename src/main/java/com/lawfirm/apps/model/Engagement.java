@@ -79,8 +79,8 @@ public class Engagement implements Serializable {
     @Column(name = "status")
     protected String status;
 
-    @Column(name = "operational_cost")
-    protected Double operational_cost;
+//    @Column(name = "operational_cost")
+//    protected Double operational_cost;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_client", referencedColumnName = "id_client")
@@ -109,6 +109,10 @@ public class Engagement implements Serializable {
 //    protected Collection<LoanType> loanTypeCollection;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
+    protected Collection<Reimbursement> reimbursementCollection;
+    
     @Column(name = "tahun_input", length = 10, nullable = true)
     protected String tahun_input;
 
@@ -122,6 +126,30 @@ public class Engagement implements Serializable {
 
     public Engagement() {
     }
+
+    public Engagement(Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Reimbursement> reimbursementCollection, String tahun_input, String caseID) {
+        this.engagementId = engagementId;
+        this.isActive = isActive;
+        this.approvedBy = approvedBy;
+        this.created_date = created_date;
+        this.approved_date = approved_date;
+        this.signature = signature;
+        this.invoiceNumber = invoiceNumber;
+        this.status = status;
+        this.client = client;
+        this.employee = employee;
+        this.teamMemberCollection = teamMemberCollection;
+        this.engagementHistoryCollection = engagementHistoryCollection;
+        this.financialCollection = financialCollection;
+        this.loanCollection = loanCollection;
+        this.reimbursementCollection = reimbursementCollection;
+        this.tahun_input = tahun_input;
+        this.caseID = caseID;
+    }
+
+    
+    
+    
 
     public String getApprovedBy() {
         return approvedBy;
@@ -392,14 +420,16 @@ public class Engagement implements Serializable {
         this.engagementHistoryCollection = engagementHistoryCollection;
     }
 
-    public Double getOperational_cost() {
-        return operational_cost;
+
+    public Collection<Reimbursement> getReimbursementCollection() {
+        return reimbursementCollection;
     }
 
-    public void setOperational_cost(Double operational_cost) {
-        this.operational_cost = operational_cost;
+    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
+        this.reimbursementCollection = reimbursementCollection;
     }
 
+    
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.Engagement[engagementId=" + this.engagementId + " ]";

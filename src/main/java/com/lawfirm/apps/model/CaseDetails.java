@@ -462,20 +462,20 @@ public class CaseDetails extends Engagement implements Serializable {
 
     }
 
-    public Double getOperational_cost() {
-        return operational_cost;
-    }
-
-    public void setOperational_cost(Double operational_cost) {
-        this.operational_cost = operational_cost;
-    }
-
     public Employee getEmployee() {
         return employee;
     }
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public Collection<Reimbursement> getReimbursementCollection() {
+        return reimbursementCollection;
+    }
+
+    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
+        this.reimbursementCollection = reimbursementCollection;
     }
 
     @Override

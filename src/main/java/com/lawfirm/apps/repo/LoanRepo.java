@@ -142,7 +142,10 @@ public class LoanRepo implements LoanRepoIface {
 //                    + " l.loanId = :loanId")
 //                    .setParameter("loanId", paramLong)
 //                    .getSingleResult();
-            String sql = "SELECT l FROM Loan l JOIN FETCH l.employee AS e WHERE "
+            String sql = "SELECT l FROM Loan l "
+                    + " JOIN FETCH l.employee AS e "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " WHERE "
                     + " l.Id = :Id";
             Query query = entityManager.createQuery(sql);
             query.setParameter("Id", paramLong);
@@ -213,7 +216,7 @@ public class LoanRepo implements LoanRepoIface {
                             + " JOIN FETCH l.employee AS e "
                             + " LEFT JOIN FETCH l.loantype AS t "
                             + " WHERE t.typeLoan = :typeLoan "
-                            + " ORDER BY l.date_created Desc ")
+                            + " ORDER BY l.date_created DESC ")//ASC
                             .setParameter("typeLoan", "a")
                             .getResultList();
                 } else {
@@ -221,7 +224,7 @@ public class LoanRepo implements LoanRepoIface {
                             + " JOIN FETCH l.employee AS e "
                             + " LEFT JOIN FETCH l.loantype AS t"
                             + " WHERE t.typeLoan = :typeLoan "
-                            + " ORDER BY l.date_created Desc")
+                            + " ORDER BY l.date_created DESC ")//ASC
                             .setParameter("typeLoan", "a")
                             .setMaxResults(max)
                             .setFirstResult(start)
@@ -235,7 +238,7 @@ public class LoanRepo implements LoanRepoIface {
                             + " LEFT JOIN FETCH l.loantype AS t "
                             + " RIGHT JOIN FETCH l.engagement AS n"
                             + " WHERE t.typeLoan = :typeLoan "
-                            + " ORDER BY l.date_created Desc ")
+                            + " ORDER BY l.date_created DESC ")//ASC
                             .setParameter("typeLoan", "b")
                             .getResultList();
                 } else {
@@ -244,7 +247,7 @@ public class LoanRepo implements LoanRepoIface {
                             + " LEFT JOIN FETCH l.loantype AS t "
                             + " RIGHT JOIN FETCH l.engagement AS n "
                             + " WHERE t.typeLoan = :typeLoan "
-                            + " ORDER BY l.date_created Desc")
+                            + " ORDER BY l.date_created DESC ")//ASC
                             .setParameter("typeLoan", "b")
                             .setMaxResults(max)
                             .setFirstResult(start)
@@ -334,7 +337,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " WHERE "
                         + " e.idEmployee = :idEmployee  AND "
                         + " t.typeLoan = :typeLoan "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "a")
                         .setParameter("idEmployee", Long.parseLong(param))
                         .getResultList();
@@ -347,7 +350,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " WHERE "
                         + " e.idEmployee = :idEmployee AND "
                         + " t.typeLoan = :typeLoan "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "b")
                         .setParameter("idEmployee", Long.parseLong(param))
                         .getResultList();
@@ -511,7 +514,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " ( l.aprovedByAdmin = :aprovedByAdmin OR "
                         + " l.aprovedByFinance = :aprovedByFinance ) AND"
                         + " t.typeLoan = :typeLoan "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("aprovedByAdmin", param1)
                         .setParameter("aprovedByFinance", param1)
                         .setParameter("typeLoan", "a")
@@ -526,7 +529,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " ( l.aprovedByAdmin = :aprovedByAdmin OR "
                         + " l.aprovedByFinance = :aprovedByFinance ) AND"
                         + " t.typeLoan = :typeLoan "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("aprovedByAdmin", param1)
                         .setParameter("aprovedByFinance", param1)
                         .setParameter("typeLoan", "b")
@@ -553,6 +556,18 @@ public class LoanRepo implements LoanRepoIface {
     public List<Loan> listDisburse(String type) {
         try {
             List<Loan> listAcquire = null;
+            if (type.contentEquals("0")) {
+
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " t.typeLoan = :typeLoan AND "
+                        + " t.status = :status "
+                        + " ORDER BY l.date_created DESC ")
+                        .setParameter("status", "s")
+                        .getResultList();
+            }
             if (type.contentEquals("a")) {
 
                 listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
@@ -561,7 +576,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
                         + " t.status = :status "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "a")
                         .setParameter("status", "d")
                         .getResultList();
@@ -573,7 +588,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
                         + " t.status = :status "
-                        + " ORDER BY l.date_created Desc ")
+                        + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "b")
                         .setParameter("status", "d")
                         .getResultList();

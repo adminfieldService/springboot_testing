@@ -236,4 +236,13 @@ public class Util {
 
         return kata1;
     }
+    
+     public static String changeBCS(final String input) {
+        final String domain = "BCS";
+//        final String[] tokens = input.split("@");
+        String kata1 = input;
+        kata1 = kata1.replaceAll(domain, "RMBCS");
+
+        return kata1;
+    }
 }

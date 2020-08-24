@@ -444,17 +444,23 @@ public class LoanController {
                     String isi_tgl_repayment = null;
                     Date tgl_repayment = null;
 //                    Integer number = 0;
+                    String isi_tgl_pengajuan = null;
+                    Date tgl_pengajuan = null;
                     String year_val = sdfYear.format(now);
                     String load_id = null;
                     if (object.getRepayment_date() != null) {
                         isi_tgl_repayment = dateFormat.format(object.getRepayment_date());
                         tgl_repayment = dateFormat.parse(isi_tgl_repayment);
                     }
+                    isi_tgl_pengajuan = dateFormat.format(new Date());
+                    tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
+
                     dataLoan.setTgl_input(sdfYear.format(now));
                     dataLoan.setRepayment_date(tgl_repayment);
                     dataLoan.setLoanAmount(object.getLoan_amount());
                     dataLoan.setLoantype(typeLoan);
                     dataLoan.setStatus("s");
+                    dataLoan.setDate_created(tgl_pengajuan);
                     entityHistory.setUserId(dataEMploye.getIdEmployee());
                     entityHistory.setResponse(typeLoan + " submit");
                     dataLoan.setEngagement(dataCase);//BCS200101
@@ -586,7 +592,7 @@ public class LoanController {
                 return rs;
             }
             if (process) {
-                dataLoan.setAprovedByAdmin(dataEMploye.getName());
+                dataLoan.setAprovedByAdmin(dataEMploye.getIdEmployee().toString());
                 dataLoan.setDate_approved(now);
                 if (object.getDecision().contains("r")) {
                     dataLoan.setStatus(object.getDecision());
@@ -2026,5 +2032,135 @@ public class LoanController {
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
+    }
+    
+    @RequestMapping(value = "/{id_loan}/find-by-id", method = RequestMethod.GET, produces = {"application/json"})//produces = {"application/json"}
+    @XxsFilter
+    public ResponseEntity<?> finbyId(Authentication authentication, @PathVariable("id_loan") Long id_loan) {
+        try {
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "finbyId-loan");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("05");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "finbyId-loan");
+                process = false;
+
+            }
+            if (process) {
+//                List<Loan> listLoanDisburse = disbursementService.listDisburse("a");
+//                JSONArray array = new JSONArray();
+
+                Loan entity = loanService.findById(id_loan);
+
+                JSONObject jsonobj = new JSONObject();
+                if (entity.getId() == null) {
+                    jsonobj.put("id_loan", "");
+                } else {
+                    jsonobj.put("id_loan", entity.getId());
+                }
+                if (entity.getLoanId() == null) {
+                    jsonobj.put("loan_id", "");
+                } else {
+                    jsonobj.put("loan_id", entity.getLoanId());
+                }
+                if (entity.getLoanAmount() == null) {
+                    jsonobj.put("amount", "");
+                } else {
+                    jsonobj.put("amount", String.format("%.0f", entity.getLoanAmount()));
+                }
+                if (entity.getAprovedByAdmin() == null) {
+                    jsonobj.put("aproved_by_admin", "");
+                } else {
+                    Employee dataAdmin = this.employeeService.findById(Long.parseLong(entity.getAprovedByAdmin()));
+                    jsonobj.put("aproved_by_admin", dataAdmin.getEmployeeId());
+                }
+                if (entity.getDate_approved() == null) {
+                    jsonobj.put("date_approve_by_admin", "");
+                } else {
+                    jsonobj.put("date_approve_by_admin", dateFormat.format(entity.getDate_approved()));
+                }
+                if (entity.getAprovedByFinance() == null) {
+                    jsonobj.put("disburse_by_finance", "");
+                } else {
+                    Employee dataFinance = this.employeeService.findById(Long.parseLong(entity.getAprovedByFinance()));
+                    jsonobj.put("disburse_by_finance", dataFinance.getEmployeeId());
+                }
+                if (entity.getDate_created() == null) {
+                    jsonobj.put("date_created", "");
+                } else {
+                    jsonobj.put("date_created", dateFormat.format(entity.getDate_created()));
+                }
+                if (entity.getDate_approved_by_finance() == null) {
+                    jsonobj.put("date_disburse_by_finance", "");
+                } else {
+                    jsonobj.put("date_disburse_by_finance", dateFormat.format(entity.getDate_approved_by_finance()));
+                }
+                if (entity.getLoantype().getTypeLoan() == null) {
+                    jsonobj.put("loan_type", "");
+                } else {
+                    jsonobj.put("loan_type", entity.getLoantype().getTypeLoan());
+                }
+//           
+                if (entity.getEmployee().getIdEmployee() == null) {
+                    jsonobj.put("id_employee", "");
+                } else {
+                    jsonobj.put("id_employee", entity.getEmployee().getIdEmployee());
+                }
+                if (entity.getEmployee().getEmployeeId() == null) {
+                    jsonobj.put("employee_id", "");
+                } else {
+                    jsonobj.put("employee_id", entity.getEmployee().getEmployeeId());
+                }
+                if (entity.getEmployee().getNik() == null) {
+                    jsonobj.put("nik", "");
+                } else {
+                    jsonobj.put("nik", entity.getEmployee().getNik());
+                }
+                if (entity.getEmployee().getNpwp() == null) {
+                    jsonobj.put("npwp", "");
+                } else {
+                    jsonobj.put("npwp", entity.getEmployee().getNpwp());
+                }
+                if (entity.getEmployee().getName() == null) {
+                    jsonobj.put("nama", "");
+                } else {
+                    jsonobj.put("nama", entity.getEmployee().getName());
+                }
+                if (entity.getStatus() == null) {
+                    jsonobj.put("status_loan", "");
+                } else {
+                    jsonobj.put("status_loan", entity.getStatus());
+                }
+                return ResponseEntity.ok(jsonobj.toString());
+            } else {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Loan Data Null ");
+                CreateLog.createJson(rs, "finbyId-loan");
+                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+                        HttpStatus.NOT_FOUND);
+            }
+        } catch (NumberFormatException | org.json.JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            CreateLog.createJson(ex.getMessage(), "finbyId-loan");
+            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+
     }
 }

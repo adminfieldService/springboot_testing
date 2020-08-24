@@ -31,12 +31,11 @@ import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import javax.annotation.security.PermitAll;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,16 +54,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.FilenameUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.jpos.iso.ISOUtil;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,7 +69,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
@@ -153,7 +146,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "createEmployee");
+                CreateLog.createJson(rs, "create-employee");
                 return rs;
             }
 //            Employee dataEmp = employeeService.findById(id_employee_admin);
@@ -164,14 +157,14 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("05");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "createEmployee");
+                CreateLog.createJson(rs, "create-employee");
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
                 rs.setResponse_code("05");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "createEmployee");
+                CreateLog.createJson(rs, "create-employee");
                 return rs;
             }
             String email = object.getEmail();
@@ -550,7 +543,7 @@ public class EmployeeController { //LawfirmController
                     return approvedByAdmin(obj, authentication);
                 }
             }
-        } catch (Exception ex) {
+        } catch (ParseException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-employee");
