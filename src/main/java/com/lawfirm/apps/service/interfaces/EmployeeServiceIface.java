@@ -36,7 +36,7 @@ public interface EmployeeServiceIface {
 
     Employee findByEmployee(String paramString);
 
-    Employee cekPass(String param);
+    Employee cekPass(String param, Long paramLong);
 //    Employee findByEmployeeId(String paramString, Long Id);
 
     Employee findByEmployeeId(String paramString);
@@ -63,6 +63,6 @@ public interface EmployeeServiceIface {
     Integer generateEmpId(String param);
 
     Optional<Employee> findByUsername(String username);
-    
+
     List<Employee> listEmployeeByRole(String paramString);
 }

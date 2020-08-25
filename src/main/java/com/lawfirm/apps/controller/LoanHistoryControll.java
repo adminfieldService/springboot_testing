@@ -134,11 +134,11 @@ public class LoanHistoryControll {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "loan-a-history-view-by-admin");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "loan-a-history-view-by-admin");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -170,11 +170,11 @@ public class LoanHistoryControll {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "loan-a-history-view-by-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "loan-a-history-view-by-employee");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -206,11 +206,11 @@ public class LoanHistoryControll {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "loan-b-history-view-by-admin");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "loan-b-history-view-by-admin");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -242,11 +242,11 @@ public class LoanHistoryControll {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "loan-b-history-view-by-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "loan-b-history-view-by-employee");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 }

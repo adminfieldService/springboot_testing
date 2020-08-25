@@ -115,9 +115,15 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
     }
 
     @Override
-    public CaseDocument findById(Long paramLong) {
+    public CaseDocument findById(String paramString) {
         try {
-            return (CaseDocument) entityManager.find(CaseDocument.class, paramLong);
+            CaseDocument acquire = (CaseDocument) entityManager.createQuery("SELECT d FROM CaseDocument d "
+                    + " FETCH JOIN c.caseDetails as c"
+                    + " WHERE "
+                    + " d.case_document_id = :case_document_id")
+                    .setParameter("case_document_id", paramString)
+                    .getSingleResult();
+            return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson("ERROR_caseDocumentRepo", ex.getMessage());
@@ -128,15 +134,18 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
                 entityManager.close();
             }
         }
+
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CaseDocument> findByCaseId(String paramString) {
+    public List<CaseDocument> findDocByCaseId(Long paramLong) {
         try {
-            List<CaseDocument> acquire = entityManager.createQuery("SELECT c FROM CaseDocument c WHERE "
-                    + " LOWER(c.caseDetails.caseID) = :caseID")
-                    .setParameter("caseID", paramString)
+            List<CaseDocument> acquire = entityManager.createQuery("SELECT d FROM CaseDocument d "
+                    + " FETCH JOIN c.caseDetails as c"
+                    + " WHERE "
+                    + " c.engagementId = :engagementId")
+                    .setParameter("engagementId", paramLong)
                     .getResultList();
             return acquire;
         } catch (Exception ex) {

@@ -157,7 +157,7 @@ public class EngagementController {
 
 //            Engagement dataEngagement = new Engagement();
             if (object.getClient_name() == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, Client name filed can't be empty");
                 CreateLog.createJson(rs, "createEngagement");
@@ -166,7 +166,7 @@ public class EngagementController {
             }
             if (object.getClient_name().length() > 80) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, Client name filed max 80");
                 process = false;
@@ -175,7 +175,7 @@ public class EngagementController {
             }
             if (object.getAddress() == null) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, ADDRESS filed can't be empty");
                 process = false;
@@ -183,7 +183,7 @@ public class EngagementController {
                 return rs;
             }
             if (object.getAddress().length() > 200) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, ADDRESS  filed max 200");
                 process = false;
@@ -192,7 +192,7 @@ public class EngagementController {
             }
             if (object.getNpwp() == null) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, NPWP filed can't be empty");
                 process = false;
@@ -200,7 +200,7 @@ public class EngagementController {
                 return rs;
             }
             if (object.getNpwp().length() > 30) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, ADDRESS  filed max 20");
                 process = false;
@@ -210,7 +210,7 @@ public class EngagementController {
 
             if (object.getPic() == null) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, PIC filed can't be empty");
                 process = false;
@@ -218,7 +218,7 @@ public class EngagementController {
                 return rs;
             }
             if (object.getPic().length() > 20) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, PIC  filed max 20");
                 process = false;
@@ -227,7 +227,7 @@ public class EngagementController {
             }
             if (object.getProfesional_fee() == null) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, PERSONAL FEE filed can't be empty");
                 process = false;
@@ -236,7 +236,7 @@ public class EngagementController {
             }
             if (object.getCase_over_view() == null) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
                 process = false;
@@ -246,7 +246,7 @@ public class EngagementController {
 
             Employee cekEMP = employeeService.findById(entityEmp.getIdEmployee());
             if (!"dmp".equals(cekEMP.getRoleName())) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
                 process = false;
@@ -367,7 +367,7 @@ public class EngagementController {
 //                        ObjectEngagement.setStrategy();
                         addTeamMember(ObjectEngagement);
                     } else {
-                        rs.setResponse_code("05");
+                        rs.setResponse_code("55");
                         rs.setInfo("failed");
                         rs.setResponse("Create Engagement Failed");
                         CreateLog.createJson(rs, "createEngagement");
@@ -377,13 +377,13 @@ public class EngagementController {
 //                    }
 
                 }
-//                rs.setResponse_code("05");
+//                rs.setResponse_code("55");
 //                rs.setInfo("failed");
 //                rs.setResponse("Create Engagement Failed");
 //                CreateLog.createJson(rs, "createEngagement");
 //                return rs;
             } else {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed");
                 process = false;
@@ -396,12 +396,12 @@ public class EngagementController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "manage-engagement");
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
             return rs;
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
 
@@ -428,7 +428,7 @@ public class EngagementController {
 //        Employee dataEmp = new Employee();
             Engagement dataEngagement = engagementService.findById(object.getEngagement_id());
             if (dataEngagement == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Failed Ad Team Member dataEngagement NULL ");
                 process = false;
@@ -441,7 +441,7 @@ public class EngagementController {
             } else {
                 emp_id = null;
                 log.info("emp_id == null ");
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Employee Not Found emp_id NULL");
                 process = false;
@@ -457,7 +457,7 @@ public class EngagementController {
             } else {
                 emp_name = null;
                 log.info("emp_id == null ");
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Employee Not Found");
                 process = false;
@@ -473,7 +473,7 @@ public class EngagementController {
             } else {
                 fee_share = null;
                 log.info("emp_id == null ");
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Employee Not Found");
                 process = false;
@@ -554,12 +554,12 @@ public class EngagementController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "add-team-member");
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
             return rs;
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
 
@@ -615,7 +615,7 @@ public class EngagementController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "updateEngagement");
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
             return rs;
@@ -675,6 +675,13 @@ public class EngagementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("reject ByAdmin :");
+                CreateLog.createJson(rs, "approval-ByAdmin");
+                return rs;
+            }
+            if (entity.getIsActive().contains("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Status Close :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
                 return rs;
             }
@@ -784,13 +791,13 @@ public class EngagementController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
 
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "approval-ByAdmin");
             return rs;
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
 
@@ -1001,11 +1008,11 @@ public class EngagementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-by-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "view-by-employee");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -1145,7 +1152,7 @@ public class EngagementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "list-of-engagement");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -1347,7 +1354,7 @@ public class EngagementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-by-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -1569,7 +1576,7 @@ public class EngagementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-by-admin");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -1791,7 +1798,7 @@ public class EngagementController {
                 CreateLog.createJson(rs, "view-Event");
                 process = false;
 //                return rs;
-                return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.FORBIDDEN);
             }
 
@@ -1803,7 +1810,7 @@ public class EngagementController {
                 CreateLog.createJson(rs, "view-Event");
                 process = false;
 //                return rs;
-                return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
                         HttpStatus.FORBIDDEN);
             }
 
@@ -1814,7 +1821,7 @@ public class EngagementController {
                 rs.setResponse("CaseID == NULL");
                 CreateLog.createJson(rs, "view-Event");
                 process = false;
-                return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
                         HttpStatus.FORBIDDEN);
 
             }
@@ -1867,7 +1874,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "view-Event");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -1892,187 +1899,194 @@ public class EngagementController {
         return rs;
     }
 
-    @RequestMapping(value = "/manage-engagement/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
-    @XxsFilter
-    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
-        try {
+//    @RequestMapping(value = "/manage-engagement/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
+//    @XxsFilter
+//    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
+//        try {
+//
+//            CaseDocument entCaseDocument = new CaseDocument();
+//
+//            Date todayDate = new Date();
+//            Date now = new Date();
+//            String pathDoc = null;
+//            Boolean process = true;
+//            String name = authentication.getName();
+//            log.info("name : " + name);
+//            Employee entity = employeeService.findByEmployee(name);
+//            log.info("entity : " + entity);
+//            if (entity == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("can't acces this feature :");
+//                process = false;
+//                CreateLog.createJson(rs, "upload-case-document");
+//                return rs;
+//            }
+//            if (!entity.getRoleName().contentEquals("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
+//                process = false;
+//                CreateLog.createJson(rs, "upload-case-document");
+//                return rs;
+//            }
+//
+//            CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
+//            if (caseDetails == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("case Id Not Found ");
+//                process = false;
+//                CreateLog.createJson(rs, "upload-case-document");
+//                return rs;
+//            }
+//            pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
+//
+//            if (process) {
+//                if (!file.isEmpty()) {
+//
+//                    File newFolder = new File(pathDoc);
+//                    boolean created = newFolder.mkdir();
+//                    if (!newFolder.getParentFile().exists()) {
+//                        newFolder.getParentFile().mkdirs();
+//                    } else {
+//                        newFolder.getParentFile().mkdirs();
+//                    }
+//                    if (!newFolder.exists()) {
+//                        if (created) {
+//                            System.out.println("Folder was created !");
+//                        } else {
+//                            System.out.println("Folder exists");
+//                        }
+//                    }
+//
+//                    byte[] bytes = file.getBytes();
+//                    Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+//                    Files.write(path, bytes);
+//                    String fileName = file.getOriginalFilename().replaceAll(" ", "");
+//                    log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
+//                    entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+//                    entCaseDocument.setCaseDetails(caseDetails);
+//                    CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
+//                    if (cerateCaseDocument != null) {
+//                        rs.setResponse_code("00");
+//                        rs.setInfo("Succes");
+//                        rs.setResponse("Upload: Succes : " + fileName);
+//                        CreateLog.createJson(rs, "upload-case-document");
+//                        return rs;
+//                    } else {
+//                        rs.setResponse_code("55");
+//                        rs.setInfo("Error");
+//                        rs.setResponse("Error Upload Document");
+//                        CreateLog.createJson(rs, "upload-case-document");
+//                        return rs;
+//                    }
+//
+//                }
+//            }
+//            return rs;
+//        } catch (JSONException ex) {
+//            // TODO Auto-generated catch block
+////            e.printStackTrace();
+//            rs.setResponse_code("55");
+//            rs.setInfo("Error");
+//            rs.setResponse(ex.getMessage());
+//            CreateLog.createJson(ex.getMessage(), "upload-case-document");
+//            return rs;
+//
+//        }
+//
+//    }
 
-            CaseDocument entCaseDocument = new CaseDocument();
+//    @RequestMapping(value = "/manage-engagement/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
+//    @XxsFilter
+//    public Response listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
+//        Date todayDate = new Date();
+//        Date now = new Date();
+//        String pathDoc = null;
+//        Boolean process = true;
+//        String name = authentication.getName();
+//        log.info("name : " + name);
+//        Employee entity = employeeService.findByEmployee(name);
+//        log.info("entity : " + entity);
+//        if (entity == null) {
+//            rs.setResponse_code("55");
+//            rs.setInfo("Failed");
+//            rs.setResponse("can't acces this feature :");
+//            process = false;
+//            CreateLog.createJson(rs, "upload-case-document");
+//            return rs;
+//        }
+//        return null;
+//    }
 
-            Date todayDate = new Date();
-            Date now = new Date();
-            String pathDoc = null;
-            Boolean process = true;
-            String name = authentication.getName();
-            log.info("name : " + name);
-            Employee entity = employeeService.findByEmployee(name);
-            log.info("entity : " + entity);
-            if (entity == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("can't acces this feature :");
-                process = false;
-                CreateLog.createJson(rs, "upload-case-document");
-                return rs;
-            }
-            if (!entity.getRoleName().contentEquals("dmp")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
-                process = false;
-                CreateLog.createJson(rs, "upload-case-document");
-                return rs;
-            }
-
-            CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
-            if (caseDetails == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("case Id Not Found ");
-                process = false;
-                CreateLog.createJson(rs, "upload-case-document");
-                return rs;
-            }
-            pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
-
-            if (process) {
-                if (!file.isEmpty()) {
-
-                    File newFolder = new File(pathDoc);
-                    boolean created = newFolder.mkdir();
-                    if (!newFolder.getParentFile().exists()) {
-                        newFolder.getParentFile().mkdirs();
-                    } else {
-                        newFolder.getParentFile().mkdirs();
-                    }
-                    if (!newFolder.exists()) {
-                        if (created) {
-                            System.out.println("Folder was created !");
-                        } else {
-                            System.out.println("Folder exists");
-                        }
-                    }
-
-                    byte[] bytes = file.getBytes();
-                    Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
-                    Files.write(path, bytes);
-                    String fileName = file.getOriginalFilename().replaceAll(" ", "");
-                    log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
-                    entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
-                    entCaseDocument.setCaseDetails(caseDetails);
-                    CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
-                    if (cerateCaseDocument != null) {
-                        rs.setResponse_code("00");
-                        rs.setInfo("Succes");
-                        rs.setResponse("Upload: Succes : " + fileName);
-                        CreateLog.createJson(rs, "upload-case-document");
-                        return rs;
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Error");
-                        rs.setResponse("Error Upload Document");
-                        CreateLog.createJson(rs, "upload-case-document");
-                        return rs;
-                    }
-
-                }
-            }
-            return rs;
-        } catch (JSONException ex) {
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-            rs.setResponse_code("55");
-            rs.setInfo("Error");
-            rs.setResponse(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "upload-case-document");
-            return rs;
-
-        }
-
-    }
-
-    @RequestMapping(value = "/manage-engagement/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
-    @XxsFilter
-    public Response listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
-        Date todayDate = new Date();
-        Date now = new Date();
-        String pathDoc = null;
-        Boolean process = true;
-        String name = authentication.getName();
-        log.info("name : " + name);
-        Employee entity = employeeService.findByEmployee(name);
-        log.info("entity : " + entity);
-        if (entity == null) {
-            rs.setResponse_code("55");
-            rs.setInfo("Failed");
-            rs.setResponse("can't acces this feature :");
-            process = false;
-            CreateLog.createJson(rs, "upload-case-document");
-            return rs;
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "/manage-engagement/{engagement_id}/closing", method = RequestMethod.POST, produces = {"application/json"})
-    @XxsFilter
-    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
-        try {
-            Date now = new Date();
-//          Integer number = null;
-            EngagementHistory enHistory = new EngagementHistory();
-            String name = authentication.getName();
-            log.info("name : " + name);
-            Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
-            if (entityEmp == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("can't closing case :");
-                CreateLog.createJson(rs, "closing-Case");
-                return rs;
-            }
-            if (!entityEmp.getRoleName().contentEquals("dmp")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
-                CreateLog.createJson(rs, "closing-Case");
-                return rs;
-            }
-            CaseDetails entity = caseDetailsService.findById(engagement_id);
-            if (entity == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
-                CreateLog.createJson(rs, "closing-Case");
-                return rs;
-            }
-
-            entity.setIsActive("4");
-            entity.setStatus("closed");
-            enHistory.setEngagement(entity);
-            enHistory.setUserId(entityEmp.getIdEmployee());
-            enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
-            CaseDetails closeCase = this.caseDetailsService.update(entity);
-            if (closeCase != null) {
-                this.engagementHistoryService.create(enHistory);
-                rs.setResponse_code("00");
-                rs.setInfo("Success");
-                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
-                CreateLog.createJson(rs, "closing-Case");
-                return rs;
-            }
-
-        } catch (JSONException ex) {
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-            rs.setResponse_code("55");
-            rs.setInfo("Error");
-            rs.setResponse(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "upload-case-document");
-            return rs;
-
-        }
-        return null;
-    }
+//    @RequestMapping(value = "/manage-engagement/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
+//    @XxsFilter
+//    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+//        try {
+//            Date now = new Date();
+////          Integer number = null;
+//            EngagementHistory enHistory = new EngagementHistory();
+//            String name = authentication.getName();
+//            log.info("name : " + name);
+//            Employee entityEmp = employeeService.findByEmployee(name);
+//            log.info("entityEmp : " + entityEmp);
+//            log.info("engagement_id : " + engagement_id);
+//            if (entityEmp == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("can't closing case :");
+//                CreateLog.createJson(rs, "closing-Case");
+//                return rs;
+//            }
+//            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+//                CreateLog.createJson(rs, "closing-Case");
+//                return rs;
+//            }
+//            CaseDetails entity = caseDetailsService.findById(engagement_id);
+//            if (entity == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+//                CreateLog.createJson(rs, "closing-Case");
+//                return rs;
+//            }
+//            if (entity.getStatus().contains("4")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
+//                CreateLog.createJson(rs, "closing-Case");
+//                return rs;
+//            }
+//
+//            entity.setIsActive("4");
+//            entity.setStatus("closed");
+//            enHistory.setEngagement(entity);
+//            enHistory.setUserId(entityEmp.getIdEmployee());
+//            enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
+//            CaseDetails closeCase = this.caseDetailsService.update(entity);
+//            if (closeCase != null) {
+//                this.engagementHistoryService.create(enHistory);
+//                rs.setResponse_code("00");
+//                rs.setInfo("Success");
+//                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
+//                CreateLog.createJson(rs, "closing-Case");
+//                return rs;
+//            }
+//
+//        } catch (JSONException ex) {
+//            // TODO Auto-generated catch block
+////            e.printStackTrace();
+//            rs.setResponse_code("55");
+//            rs.setInfo("Error");
+//            rs.setResponse(ex.getMessage());
+//            CreateLog.createJson(ex.getMessage(), "upload-case-document");
+//            return rs;
+//
+//        }
+//        return null;
+//    }
 }

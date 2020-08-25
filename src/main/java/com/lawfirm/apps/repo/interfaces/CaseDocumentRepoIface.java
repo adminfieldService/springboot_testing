@@ -25,9 +25,9 @@ public interface CaseDocumentRepoIface {
 
     void remove(CaseDocument entity);
 
-    CaseDocument findById(Long paramLong);
+    CaseDocument findById(String paramString);
 
-    List<CaseDocument> findByCaseId(String namaVisit);
+    List<CaseDocument> findDocByCaseId(Long paramLong);
 
     List<CaseDocument> listCaseDocument();
 

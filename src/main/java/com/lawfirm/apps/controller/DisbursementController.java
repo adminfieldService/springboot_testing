@@ -152,7 +152,7 @@ public class DisbursementController {
             }
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursements");
@@ -251,14 +251,14 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursements");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (NumberFormatException | org.json.JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "disbursements");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -282,7 +282,7 @@ public class DisbursementController {
             Disbursement entityDisbursement = new Disbursement();
             Financial dataFinance = new Financial();
 //        if (dataFinance == null) {
-//            rs.setResponse_code("05");
+//            rs.setResponse_code("55");
 //            rs.setInfo("Failed");
 //            rs.setResponse("Finance Id Not found");
 //            CreateLog.createJson(rs, "loan-approve-Byfinance");
@@ -315,7 +315,7 @@ public class DisbursementController {
                 process = false;
             }
 //        if (dataEMploye.getRoleName().contentEquals("finance")) {
-//            rs.setResponse_code("05");
+//            rs.setResponse_code("55");
 //            rs.setInfo("Failed");
 //            rs.setResponse("Cannot Access This feature");
 //            process = false;
@@ -378,7 +378,7 @@ public class DisbursementController {
                     if (object.getOut_standing() != null) {
                         dataFinance.setOutStanding(object.getOut_standing());
                     } else {
-                        rs.setResponse_code("05");
+                        rs.setResponse_code("55");
                         rs.setInfo("Failed");
                         rs.setResponse("out Standing Field can't be null");
                         CreateLog.createJson(rs, "disburse");
@@ -391,13 +391,13 @@ public class DisbursementController {
                         CreateLog.createJson(rs, "disburse");
                         return rs;
                     }
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburse");
                     return rs;
                 } else {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburse");
@@ -408,7 +408,7 @@ public class DisbursementController {
         } catch (org.json.JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburse");
@@ -418,7 +418,7 @@ public class DisbursementController {
         } catch (ParseException ex) {
             Logger.getLogger(LoanController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburse");
@@ -448,7 +448,7 @@ public class DisbursementController {
             }
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
@@ -456,7 +456,7 @@ public class DisbursementController {
 
             }
             if (!dataEMploye.getRoleName().contains("finance")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("YOur Role can't acces this feature : ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
@@ -555,14 +555,14 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (NumberFormatException | org.json.JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "disbursementsFinance-loanA");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -587,7 +587,7 @@ public class DisbursementController {
             }
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
@@ -595,7 +595,7 @@ public class DisbursementController {
 
             }
             if (!dataEMploye.getRoleName().contains("finance")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("YOur Role can't acces this feature : ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
@@ -694,14 +694,14 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (NumberFormatException | org.json.JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "disbursementsFinance-loanB");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -726,7 +726,7 @@ public class DisbursementController {
             }
             Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
             if (dataEMploye == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
@@ -824,14 +824,14 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (NumberFormatException | org.json.JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-disbursements-by-loan");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -856,7 +856,7 @@ public class DisbursementController {
 //            }
 //            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
 //            if (dataEMploye == null) {
-//                rs.setResponse_code("05");
+//                rs.setResponse_code("55");
 //                rs.setInfo("Failed");
 //                rs.setResponse("Employee Id Not found");
 //                CreateLog.createJson(rs, "disbursementsLoanB");
@@ -956,14 +956,14 @@ public class DisbursementController {
 //                rs.setInfo("Failed");
 //                rs.setResponse("Loan Data Null ");
 //                CreateLog.createJson(rs, "disbursementsLoanB");
-//                return new ResponseEntity(new CustomErrorType("05", "Error", "Loan Data Null"),
+//                return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
 //                        HttpStatus.NOT_FOUND);
 //            }
 //        } catch (NumberFormatException | org.json.JSONException ex) {
 //            // TODO Auto-generated catch block
 ////            e.printStackTrace();
 //            CreateLog.createJson(ex.getMessage(), "disbursementsLoanB");
-//            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+//            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
 //                    HttpStatus.NOT_FOUND);
 //        }
 //

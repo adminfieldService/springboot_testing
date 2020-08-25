@@ -5,6 +5,11 @@
  */
 package com.lawfirm.apps.controller;
 
+import static com.lawfirm.apps.controller.EngagementController.basepathUpload;
+import com.lawfirm.apps.model.CaseDetails;
+import com.lawfirm.apps.model.CaseDocument;
+import com.lawfirm.apps.model.Employee;
+import com.lawfirm.apps.model.EngagementHistory;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
@@ -23,12 +28,37 @@ import com.lawfirm.apps.service.interfaces.MemberServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
+import com.lawfirm.apps.support.api.EngagementApi;
+import com.lawfirm.apps.utils.CreateLog;
+import com.lawfirm.apps.utils.CustomErrorType;
+import com.xss.filter.annotation.XxsFilter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -89,5 +119,330 @@ public class CaseControll {
         this.sdfYear = new SimpleDateFormat("yy");
         this.sdfMonth = new SimpleDateFormat("MM");
         this.sdfMY = new SimpleDateFormat("MMyyyy");
+    }
+
+    @RequestMapping(value = "/case/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
+        try {
+
+            CaseDocument entCaseDocument = new CaseDocument();
+
+            Date todayDate = new Date();
+            Date now = new Date();
+            String pathDoc = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                process = false;
+                CreateLog.createJson(rs, "upload-case-document");
+                return rs;
+            }
+            if (!entity.getRoleName().contentEquals("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
+                process = false;
+                CreateLog.createJson(rs, "upload-case-document");
+                return rs;
+            }
+
+            CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
+            if (caseDetails == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Id Not Found ");
+                process = false;
+                CreateLog.createJson(rs, "upload-case-document");
+                return rs;
+            }
+            if (caseDetails.getStatus().contains("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + caseDetails.getCaseID() + " Status Closed ");
+                CreateLog.createJson(rs, "upload-case-document");
+                return rs;
+            }
+            pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
+
+            if (process) {
+                if (!file.isEmpty()) {
+
+                    File newFolder = new File(pathDoc);
+                    boolean created = newFolder.mkdir();
+                    if (!newFolder.getParentFile().exists()) {
+                        newFolder.getParentFile().mkdirs();
+                    } else {
+                        newFolder.getParentFile().mkdirs();
+                    }
+                    if (!newFolder.exists()) {
+                        if (created) {
+                            System.out.println("Folder was created !");
+                        } else {
+                            System.out.println("Folder exists");
+                        }
+                    }
+
+                    byte[] bytes = file.getBytes();
+                    Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+                    Files.write(path, bytes);
+                    String fileName = file.getOriginalFilename().replaceAll(" ", "");
+                    log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
+                    entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+                    entCaseDocument.setCaseDetails(caseDetails);
+                    CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
+                    if (cerateCaseDocument != null) {
+                        rs.setResponse_code("00");
+                        rs.setInfo("Succes");
+                        rs.setResponse("Upload: Succes : " + fileName);
+                        CreateLog.createJson(rs, "upload-case-document");
+                        return rs;
+                    } else {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Error");
+                        rs.setResponse("Error Upload Document");
+                        CreateLog.createJson(rs, "upload-case-document");
+                        return rs;
+                    }
+
+                }
+            }
+            return rs;
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "upload-case-document");
+            return rs;
+
+        }
+
+    }
+
+    @RequestMapping(value = "/case/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+        try {
+            Date todayDate = new Date();
+            Date now = new Date();
+            String pathDoc = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                process = false;
+                CreateLog.createJson(rs, "list-case-document");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            List<CaseDocument> listDoc = caseDocumentService.findDocByCaseId(engagement_id);
+            if (listDoc == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("engagement_id : " + engagement_id + " Not Found");
+                process = false;
+                CreateLog.createJson(rs, "list-case-document");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            JSONArray array = new JSONArray();
+            if (process) {
+
+                for (int i = 0; i < listDoc.size(); i++) {
+                    JSONObject obj = new JSONObject();
+                    CaseDocument data = listDoc.get(i);
+
+                    if (data.getCaseDetails() == null) {
+                        obj.put("engagement_id", "");
+                    } else {
+                        obj.put("engagement_id", data.getCaseDetails().getEngagementId());
+                        obj.put("case_id", data.getCaseDetails().getCaseID());
+                    }
+                    if (data.getCase_document_id() == null) {
+                        obj.put("case_document_id", "");
+                    } else {
+                        obj.put("case_document_id", data.getCase_document_id());
+                    }
+                    if (data.getDate_input() == null) {
+                        obj.put("upload_date", "");
+                    } else {
+                        obj.put("upload_date", data.getDate_input());
+                    }
+                    if (data.getLinkDocument() == null) {
+                        obj.put("link_document", "");
+                    } else {
+                        obj.put("link_document", data.getLinkDocument());
+                    }
+                    array.put(obj);
+                }
+            }
+            return ResponseEntity.ok(array.toString());
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-case-document");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @RequestMapping(value = "/case/document/{case_document_id}/view", method = RequestMethod.GET, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> viewDocument(@PathVariable("case_document_id") String case_document_id, Authentication authentication) throws IOException {
+        try {
+            Date todayDate = new Date();
+            Date now = new Date();
+            String pathDoc = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature");
+                process = false;
+                CreateLog.createJson(rs, "view-Document");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            CaseDocument dataDocument = caseDocumentService.findById(case_document_id);
+            if (dataDocument == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("case_document_id : " + case_document_id + "Not Found");
+                process = false;
+                CreateLog.createJson(rs, "view-Document");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (process) {
+                try {
+
+                    byte[] input_file = Files.readAllBytes(Paths.get(dataDocument.getLinkDocument()));
+                    String linkDoc = new String(Base64.getEncoder().encode(input_file));
+                    rs.setResponse_code("00");
+                    rs.setResponse("success");
+                    rs.setInfo(linkDoc);
+                } catch (JSONException ex) {
+                    Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
+                            HttpStatus.NOT_FOUND);
+                }
+
+                return ResponseEntity.ok(rs.toString());
+            }
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse("case_document_id : " + case_document_id + "Not Found");
+            CreateLog.createJson(rs, "view-Document");
+            return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
+                    HttpStatus.NOT_FOUND);
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "view-Document");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @RequestMapping(value = "/case/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+        try {
+            Date now = new Date();
+//          Integer number = null;
+            EngagementHistory enHistory = new EngagementHistory();
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            log.info("engagement_id : " + engagement_id);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case :");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            CaseDetails entity = caseDetailsService.findById(engagement_id);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            if (entity.getStatus().contains("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+
+            entity.setIsActive("4");
+            entity.setStatus("closed");
+            enHistory.setEngagement(entity);
+            enHistory.setUserId(entityEmp.getIdEmployee());
+            enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
+            CaseDetails closeCase = this.caseDetailsService.update(entity);
+            if (closeCase != null) {
+                this.engagementHistoryService.create(enHistory);
+                rs.setResponse_code("00");
+                rs.setInfo("Success");
+                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            } else {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+
+            }
+
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "closing-Case");
+            return rs;
+
+        }
     }
 }

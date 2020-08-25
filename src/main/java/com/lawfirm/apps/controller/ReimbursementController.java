@@ -128,7 +128,7 @@ public class ReimbursementController {
 
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-reimburse");
@@ -136,7 +136,7 @@ public class ReimbursementController {
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("dmp")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-reimburse");
@@ -145,7 +145,7 @@ public class ReimbursementController {
             }
             CaseDetails entity = caseDetailsService.findCaseId(case_id);
             if (entity == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Case ID : " + case_id + " not Found");
                 CreateLog.createJson(rs, "create-reimburse");
@@ -161,7 +161,7 @@ public class ReimbursementController {
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-reimburse");
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
         return rs;

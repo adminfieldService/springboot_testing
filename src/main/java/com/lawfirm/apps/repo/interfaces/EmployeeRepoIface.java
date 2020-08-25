@@ -31,7 +31,7 @@ public interface EmployeeRepoIface { //extends JpaRepository<Employee, Integer> 
 
     Employee findById(Long paramLong);
 
-    Employee cekPass(String param);
+    Employee cekPass(String param, Long paramLong);
 
     Employee chekUserName(String paramString);
 

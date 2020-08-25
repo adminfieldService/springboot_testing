@@ -42,6 +42,8 @@ public class CaseDocument implements Serializable {
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "casedoc_seq")
     @Column(name = "case_document_id")
     private String case_document_id;
+    @Column(name = "document_type")
+    private String documentType;
     @Column(name = "link_document")
     private String linkDocument;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)// fetch = FetchType.LAZY
@@ -51,9 +53,9 @@ public class CaseDocument implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "date_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    protected Date date_input;
+    private Date date_input;
     @Column(name = "is_active", length = 1, nullable = true)
-    protected String isActive;
+    private String isActive;
 
     @PrePersist
     protected void onCreate() {
@@ -65,12 +67,43 @@ public class CaseDocument implements Serializable {
     public CaseDocument() {
     }
 
+    public CaseDocument(String case_document_id, String documentType, String linkDocument, CaseDetails caseDetails, Date date_input, String isActive) {
+        this.case_document_id = case_document_id;
+        this.documentType = documentType;
+        this.linkDocument = linkDocument;
+        this.caseDetails = caseDetails;
+        this.date_input = date_input;
+        this.isActive = isActive;
+    }
+
     public String getCase_document_id() {
         return case_document_id;
     }
 
     public void setCase_document_id(String case_document_id) {
         this.case_document_id = case_document_id;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public String getLinkDocument() {

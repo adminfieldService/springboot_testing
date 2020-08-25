@@ -49,7 +49,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
@@ -57,10 +56,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.jline.utils.Log;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -124,8 +125,8 @@ public class EmployeeController { //LawfirmController
     @Autowired
     TeamMemberServiceIface teamMemberService;
     @Autowired
-    PasswordEncoder encoder;
-    private static final AtomicInteger count = new AtomicInteger(1);
+    private PasswordEncoder encoder;
+//    private static final AtomicInteger count = new AtomicInteger(1);
 
     public EmployeeController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -154,14 +155,14 @@ public class EmployeeController { //LawfirmController
 
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-employee");
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-employee");
@@ -194,7 +195,7 @@ public class EmployeeController { //LawfirmController
 //            }
             if (cheking.equals(false)) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("You have entered an invalid email address :" + email);
                 rs.setResponse("Create Employee Failed");
                 CreateLog.createJson(rs, "create-employee");
@@ -204,7 +205,7 @@ public class EmployeeController { //LawfirmController
                 Employee cekEMail = employeeService.findByEmployee(email);
                 System.out.println("cekEmail" + cekEMail);
                 if (cekEMail != null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Email :" + email + "already registered ");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -213,70 +214,70 @@ public class EmployeeController { //LawfirmController
                 Employee cekNik = employeeService.findByEmployee(nik);
                 System.out.println("cekNik" + cekNik);
                 if (cekNik != null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Nik :" + nik + "already registered ");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (name.length() > 20) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Name maksimum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (object.getUser_name().isEmpty()) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field USER Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (name.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (npwp.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field NPWP can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (address.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Address can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (nik.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Nik can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (email.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Email can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (tax_status.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Taxt Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (mobile_phone.length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Mobile Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -284,21 +285,21 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (object.getBank_name_p().length() == 0 || object.getBank_name_l().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field BANK NAME Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (object.getAccount_number_p().length() == 0 || object.getAccount_number_l().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field ACCOUNT NUMBER Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (object.getAccount_name_p().length() == 0 || object.getAccount_name_l().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field ACCOUNT NAME Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -306,7 +307,7 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (email.length() > 30) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Email Maximum 30 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -314,14 +315,14 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (mobile_phone.length() > 20) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Mobile  Maximum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (address.length() > 200) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Address Maximum 200 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -329,7 +330,7 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (account_name_l.length() > 20 || account_name_p.length() > 20) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field ACCOUNT NAME Maximum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -337,14 +338,14 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (bank_name_l.length() > 25 || bank_name_p.length() > 25) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field BANK NAME Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
                 if (account_number_l.length() > 25 || account_number_p.length() > 25) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field ACCOUNT NUMBER Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
@@ -352,7 +353,7 @@ public class EmployeeController { //LawfirmController
                 }
                 Account cekAcp = accountService.findAccount(account_number_p);
                 if (cekAcp != null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Account Number : " + account_number_p + " already Registered " + cekAcp.getAccountName());
                     CreateLog.createJson(rs, "create-employee");
@@ -360,7 +361,7 @@ public class EmployeeController { //LawfirmController
                 }
                 Account cekAcl = accountService.findAccount(account_number_l);
                 if (cekAcl != null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Account Number : " + account_number_l + " already Registered " + cekAcl.getAccountName());
                     CreateLog.createJson(rs, "create-employee");
@@ -369,7 +370,7 @@ public class EmployeeController { //LawfirmController
 //                }
                 Employee dataAdmin = this.employeeService.findById(object.getId_employee_admin());
                 if (dataAdmin == null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Your Account : " + dataAdmin + " Not Found");
                     CreateLog.createJson(rs, "create-employee");
@@ -377,7 +378,7 @@ public class EmployeeController { //LawfirmController
                 }
                 EmployeeRole cekRole = this.employeeRoleService.findByName(object.getRole_name());
                 if (cekRole == null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Your Role Name :" + role_name + ", is not registered ");
                     CreateLog.createJson(rs, "create-employee");
@@ -424,7 +425,8 @@ public class EmployeeController { //LawfirmController
                     } else {
                         newEmployee.setSalary(0d);
                     }
-
+                    Log.info("object.getUser_pass() : " + object.getUser_pass());
+                    Log.info("encoder.encode(object.getUser_pass()) : " + encoder.encode(object.getUser_pass()));
                     if (object.getUser_pass() != null) {
                         newEmployee.setPassword(encoder.encode(object.getUser_pass()));
                     } else {
@@ -548,7 +550,7 @@ public class EmployeeController { //LawfirmController
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-employee");
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
         return rs;
@@ -577,14 +579,14 @@ public class EmployeeController { //LawfirmController
 
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "update-employee");
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "update-employee");
@@ -595,7 +597,7 @@ public class EmployeeController { //LawfirmController
             Employee updateEmployee = employeeService.findById(entityEmp.getIdEmployee());
 
             if (updateEmployee == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Data null");
                 rs.setResponse("Employe not Found");
                 CreateLog.createJson(rs, "update-employee");
@@ -610,7 +612,7 @@ public class EmployeeController { //LawfirmController
 
             if (cheking.equals(false)) {
 
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("You have entered an invalid email address :" + object.getEmail());
                 rs.setResponse("Create Employee Failed");
                 CreateLog.createJson(rs, "update-employee");
@@ -618,63 +620,63 @@ public class EmployeeController { //LawfirmController
             } else {
 
                 if (object.getName().length() > 20) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Name maksimum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getName().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getNpwp().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field NPWP can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getNpwp().length() > 30) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("failed");
                     rs.setResponse("Create Employee Failed, NPWP  Field max 20");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getAddress().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Address can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getNik().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Nik can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getEmail().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Email can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getTax_status().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Field Taxt Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getCell_phone().length() == 0) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Create Employee Failed");
                     rs.setResponse("Field Mobile Can't be empty");
                     CreateLog.createJson(rs, "update-employee");
@@ -682,7 +684,7 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (object.getEmail().length() > 30) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Create Employee Failed");
                     rs.setResponse("Field Email Maximum 30 character");
                     CreateLog.createJson(rs, "update-employee");
@@ -690,14 +692,14 @@ public class EmployeeController { //LawfirmController
                 }
 
                 if (object.getCell_phone().length() > 20) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Create Employee Failed");
                     rs.setResponse("Field Mobile  Maximum 20 character");
                     CreateLog.createJson(rs, "update-employee");
                     process = false;
                 }
                 if (object.getAddress().length() > 200) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Create Employee Failed");
                     rs.setResponse("Field Address Maximum 200 character");
                     CreateLog.createJson(rs, "update-employee");
@@ -835,7 +837,7 @@ public class EmployeeController { //LawfirmController
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "update-employee");
         }
-//        rs.setResponse_code("05");
+//        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
         return rs;
@@ -845,7 +847,7 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(path = "/managed-employee/{id_employee}/set-password", produces = {"application/json"}, method = RequestMethod.POST)
     @XxsFilter
-    public Response changePassword(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
+    public Response setPassword(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
         try {
             Boolean process = true;
 
@@ -859,13 +861,13 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't access this feature");
-                CreateLog.createJson(rs, "acreateLoana");
+                CreateLog.createJson(rs, "set-password");
                 return rs;
             }
 //            Employee entity = employeeService.findById(id_employee);
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("Employee not found");
                 CreateLog.createJson(rs, "set-password");
@@ -874,23 +876,23 @@ public class EmployeeController { //LawfirmController
             if (process) {
                 entity.setPassword(encoder.encode(object.getUser_pass()));
 //                entity.setPassword(object.getUser_pass());
-                Employee setPassword = this.employeeService.update(entity);
-                if (setPassword != null) {
-                    rs.setResponse_code("01");
+                Employee empSetPassword = this.employeeService.update(entity);
+                if (empSetPassword != null) {
+                    rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("set password employee Id " + entity.getEmployeeId() + " success");
                     CreateLog.createJson(rs, "set-password");
                     return rs;
                 }
             }
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse("Employee not found");
             CreateLog.createJson(rs, "set-password");
             return rs;
         } catch (Exception ex) {
 //            System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "set-password");
@@ -899,14 +901,15 @@ public class EmployeeController { //LawfirmController
 
     }
 
-    @RequestMapping(path = "/managed-employee/set-password", produces = {"application/json"}, method = RequestMethod.PUT)
+    @RequestMapping(path = "/managed-employee/password", produces = {"application/json"}, method = RequestMethod.PUT)
     @XxsFilter
-    public Response setPassword(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee, Authentication authenticationRequest) {
+    public Response changePassword(@RequestBody final DataEmployee object, Authentication authenticationRequest) {
         try {
             Boolean process = true;
             Date todayDate = new Date();
             Date now = new Date();
             String name = authenticationRequest.getName();
+            String old_password = object.getOld_password();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entityEmp : " + entityEmp);
@@ -914,42 +917,69 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't access this feature");
-                CreateLog.createJson(rs, "set-password");
+                CreateLog.createJson(rs, "changePassword");
                 return rs;
             }
 //            Employee entity = employeeService.findById(id_employee);
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("Employee not found");
-                CreateLog.createJson(rs, "set-password");
+                CreateLog.createJson(rs, "changePassword");
                 process = false;
             }
 //            Employee cekPassword = employeeService.findById(entityEmp.getIdEmployee());
+            log.info("password lama before : " + object.getOld_password());
+            String password_s = entityEmp.getPassword();
+            log.info("password_s lama : " + password_s);
+
+//            PasswordEncoder isiPass = passwordEncoder(object.getOld_password());
+//            log.info("isiPass : " + isiPass.toString());
+//            Employee cekPassword = employeeService.cekPass(isiPass.toString(), entityEmp.getIdEmployee());
+//            if (cekPassword == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Error");
+//                rs.setResponse("old password not macth ");
+//                CreateLog.createJson(rs, "changePassword");
+//                process = false;
+//            }
+            PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
+            if (passwordEnocder.matches(object.getOld_password(), entityEmp.getPassword())) {
+                System.out.println("Matched!");
+                process = true;
+            } else {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("old password not macth ");
+                CreateLog.createJson(rs, "changePassword");
+                process = false;
+                return rs;
+            }
             if (process) {
                 entity.setPassword(encoder.encode(object.getUser_pass()));
 //                entity.setPassword(object.getUser_pass());
+
                 Employee setPassword = this.employeeService.update(entity);
                 if (setPassword != null) {
-                    rs.setResponse_code("01");
+                    rs.setResponse_code("00");
                     rs.setInfo("Success");
-                    rs.setResponse("set password employee Id " + entity.getEmployeeId() + " success");
-                    CreateLog.createJson(rs, "set-password");
+                    rs.setResponse("set password employee Id " + entityEmp.getEmployeeId() + " success");
+                    CreateLog.createJson(rs, "changePassword");
                     return rs;
                 }
             }
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse("Employee not found");
-            CreateLog.createJson(rs, "set-password");
+            CreateLog.createJson(rs, "changePassword");
             return rs;
         } catch (Exception ex) {
 //            System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "set-password");
+            CreateLog.createJson(ex.getMessage(), "changePassword");
             return rs;
         }
 
@@ -980,7 +1010,7 @@ public class EmployeeController { //LawfirmController
 //            Employee entity = employeeService.findById(id_employee);
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
             if (entity == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("Employee not found");
                 CreateLog.createJson(rs, "upload-file");
@@ -1027,7 +1057,7 @@ public class EmployeeController { //LawfirmController
                         obj.setId_employee(newEmp.getIdEmployee());
 //                        return approvedByAdmin(obj);
                     } else {
-                        rs.setResponse_code("05");
+                        rs.setResponse_code("55");
                         rs.setInfo("Error");
                         rs.setResponse("Upload: Failed dataemployee :=>" + newEmp);
                         CreateLog.createJson(rs, "upload-file");
@@ -1036,7 +1066,7 @@ public class EmployeeController { //LawfirmController
                     }
 
                 } else {
-//                rs.setResponse_code("05");
+//                rs.setResponse_code("55");
 //                rs.setInfo("Data null");
 //                rs.setResponse("Create Employee Failed");
 //                CreateLog.createJson(rs, "upload-file");
@@ -1054,7 +1084,7 @@ public class EmployeeController { //LawfirmController
                 CreateLog.createJson(rs, "upload-file");
                 return rs;
             }
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse("Upload: Failed");
             CreateLog.createJson(rs, "upload-file");
@@ -1062,7 +1092,7 @@ public class EmployeeController { //LawfirmController
 //            return demployee;
         } catch (IOException ex) {
 //            System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "upload-file");
@@ -1075,15 +1105,12 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/account/managed-account/{id_employee}", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public Response updateAccount(@RequestBody
-            final DataEmployee object,
-            @PathVariable("id_employee") Long id_employee
-    ) {
+    public Response updateAccount(@RequestBody final DataEmployee object, @PathVariable("id_employee") Long id_employee) {
         try {
             Boolean process = true;
             Employee updateEmployee = employeeService.findById(id_employee);
             if (updateEmployee == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Data Employee not found");
                 process = false;
@@ -1135,12 +1162,12 @@ public class EmployeeController { //LawfirmController
                     }
                 }
                 updateEmployee = employeeService.update(updateEmployee);
-                rs.setResponse_code("01");
+                rs.setResponse_code("00");
                 rs.setInfo("Success");
                 rs.setResponse("update account employee");
                 CreateLog.createJson(rs, "update-account");
             } else {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Data Account can't be update");
                 CreateLog.createJson(rs, "update-account");
@@ -1148,7 +1175,7 @@ public class EmployeeController { //LawfirmController
             return rs;
         } catch (Exception ex) {
 //            System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failes");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "upload-account");
@@ -1261,10 +1288,10 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "acount-find-by-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(new CustomErrorType("05", "Error", "Data Not Found"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "Data Not Found"),
                 HttpStatus.NOT_FOUND);
 
     }
@@ -1288,7 +1315,7 @@ public class EmployeeController { //LawfirmController
             Employee dataEmployee = employeeService.findById(object.getId_employee());
 
             if (dataEmployee == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Warning");
                 rs.setResponse("Employee not Found");
                 CreateLog.createJson(rs, "approved-by-admin");
@@ -1299,7 +1326,7 @@ public class EmployeeController { //LawfirmController
             Employee cekEmployeeId = employeeService.findByEmployee(object.getEmployee_id());
 
             if (cekEmployeeId != null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Warning");
                 rs.setResponse("Employee Id : " + object.getEmployee_id() + " Already Registered at " + cekEmployeeId.getNik() + "-" + cekEmployeeId.getName());
                 CreateLog.createJson(rs, "approved-by-admin");
@@ -1343,13 +1370,13 @@ public class EmployeeController { //LawfirmController
                     upd_account = accountService.update(upd_account);
 
                     if (upd_account != null) {
-                        rs.setResponse_code("01");
+                        rs.setResponse_code("00");
                         rs.setInfo("Succes");
                         rs.setResponse("Employee approved By : " + dataAdmin.getName());//dataAdmin.getName());
                         CreateLog.createJson(rs, "approved-by-admin");
 //                        return rs;
                     } else {
-                        rs.setResponse_code("05");
+                        rs.setResponse_code("55");
                         rs.setInfo("Warning");
                         rs.setResponse("Employee Null");
                         CreateLog.createJson(rs, "approved-by-admin");
@@ -1376,13 +1403,13 @@ public class EmployeeController { //LawfirmController
             this.date_now = timeFormat.format(now);
             Employee dataAdmin = employeeService.findById(object.getId_employee_admin());
 //        if (!dataAdmin.getRoleName().equalsIgnoreCase("admin")) {
-//            rs.setResponse_code("05");
+//            rs.setResponse_code("55");
 //            rs.setInfo("Warning");
 //            rs.setResponse("Your Role can't acces this feature");
 //        }
             Employee dataEmployee = employeeService.findById(id_employee);
             if (dataEmployee == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Warning");
                 rs.setResponse("Employee not Found");
                 CreateLog.createJson(rs, "approved");
@@ -1390,7 +1417,7 @@ public class EmployeeController { //LawfirmController
             }
 
 //        if (dataEmployee.IsActive() == true) {
-//            rs.setResponse_code("05");
+//            rs.setResponse_code("55");
 //            rs.setInfo("Warning");
 //            rs.setResponse("Employee status already approved");
 //            CreateLog.createJson(rs, "approved");
@@ -1400,7 +1427,7 @@ public class EmployeeController { //LawfirmController
                 Employee cekEmployeeId = employeeService.findByEmployee(object.getEmployee_id());
 
                 if (cekEmployeeId != null) {
-                    rs.setResponse_code("05");
+                    rs.setResponse_code("55");
                     rs.setInfo("Warning");
                     rs.setResponse("Employee Id : " + object.getEmployee_id() + " Already Registered at " + cekEmployeeId.getNik() + "-" + cekEmployeeId.getName());
                     CreateLog.createJson(rs, "approved");
@@ -1441,12 +1468,12 @@ public class EmployeeController { //LawfirmController
                     upd_account = accountService.update(upd_account);
 
                     if (upd_account != null) {
-                        rs.setResponse_code("01");
+                        rs.setResponse_code("00");
                         rs.setInfo("Succes");
                         rs.setResponse("Employee approved By : " + dataAdmin.getName());
                         CreateLog.createJson(rs, "approved");
                     } else {
-                        rs.setResponse_code("05");
+                        rs.setResponse_code("55");
                         rs.setInfo("Warning");
                         rs.setResponse("Employee Null");
                         CreateLog.createJson(rs, "approved");
@@ -1478,12 +1505,12 @@ public class EmployeeController { //LawfirmController
                 upd_account = this.accountService.delete(upd_account);
             }
 
-            rs.setResponse_code("01");
+            rs.setResponse_code("00");
             rs.setInfo("Succes");
             rs.setResponse("Employee Deleted");
             CreateLog.createJson(rs, "delete-employee");
         } else {
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse("Employee Null");
             CreateLog.createJson(rs, "delete-employee");
@@ -1507,7 +1534,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
 //            Employee dataEmp = employeeService.findById(id_employee_admin);
@@ -1515,19 +1542,19 @@ public class EmployeeController { //LawfirmController
 
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
             if (!dataEmp.getRoleName().matches("admin")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
 
@@ -1742,7 +1769,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
             CreateLog.createJson(ex.getMessage(), "view-list-by-admin");
             System.out.println("ERROR: " + ex.getMessage());;
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -1761,7 +1788,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
 //            Employee dataEmp = employeeService.findById(id_employee_admin);
@@ -1769,19 +1796,19 @@ public class EmployeeController { //LawfirmController
 
             log.info("dataEmp : " + dataEmp.getRoleName());
             if (dataEmp == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
             if (!dataEmp.getRoleName().matches("admin")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "viewEmployeeByAdmin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Cannot Access This feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
             int max = employeeService.count();
@@ -1983,7 +2010,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
             CreateLog.createJson(ex.getMessage(), "view-list-by-finance");
             System.out.println("ERROR: " + ex.getMessage());
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -2031,7 +2058,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "find-employee");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 //        return new ResponseEntity(ex.getMessage(),
@@ -2042,7 +2069,7 @@ public class EmployeeController { //LawfirmController
     @GetMapping(value = "/employe-dash-board", produces = {"application/json"})
     @XxsFilter
     public ResponseEntity<?> employeDashboard() {
-        return new ResponseEntity(new CustomErrorType("05", "Error", ""),
+        return new ResponseEntity(new CustomErrorType("55", "Error", ""),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -2238,11 +2265,11 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "find-by-id");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
-        CreateLog.createJson("05" + "Error" + "Data Not Found", "find-by-id");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "Data Not Found"),
+        CreateLog.createJson("55" + "Error" + "Data Not Found", "find-by-id");
+        return new ResponseEntity(new CustomErrorType("55", "Error", "Data Not Found"),
                 HttpStatus.NOT_FOUND);
 
     }
@@ -2376,11 +2403,11 @@ public class EmployeeController { //LawfirmController
                 }
                 return ResponseEntity.ok(obj.toString());
             } else {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("EData Eemployee Id Not Found");
                 CreateLog.createJson(rs, "find-by-employee-id");
-                return new ResponseEntity(new CustomErrorType("05", "Error", "Data Eemployee Id Not Found"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Data Eemployee Id Not Found"),
                         HttpStatus.NOT_FOUND);
 
             }
@@ -2389,7 +2416,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "find-by-employee-id");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -2417,7 +2444,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "employe-role_list-role-name");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -2454,7 +2481,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "employe-role_list-role-name");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -2475,14 +2502,14 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "download-cv");
 //                process = false;
-                return new ResponseEntity(new CustomErrorType("05", "Error", "can't acces this feature"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
             Employee entity = employeeService.findById(entityEmp.getIdEmployee());
 //          Employee entity = employeeService.findById(idEmployee);
             Boolean process = true;
             if (entity == null) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Null");
                 CreateLog.createJson(rs, "download-cv");
@@ -2498,28 +2525,28 @@ public class EmployeeController { //LawfirmController
                     jsonobj.put("info", linkDoc);
                 } catch (JSONException ex) {
                     Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
                             HttpStatus.NOT_FOUND);
                 }
 
                 return ResponseEntity.ok(jsonobj.toString());
 
             }
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse("Employee Null");
             CreateLog.createJson(rs, "download-cv");
-            return new ResponseEntity(new CustomErrorType("05", "Error", "Employee Null"),
+            return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
                     HttpStatus.NOT_FOUND);
         } catch (IOException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
-            rs.setResponse_code("05");
+            rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "download-cv");
 //            return null;
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
@@ -2529,4 +2556,5 @@ public class EmployeeController { //LawfirmController
 
         return null;
     }
+
 }

@@ -542,10 +542,13 @@ public class EmployeeRepo implements EmployeeRepoIface {
     }
 
     @Override
-    public Employee cekPass(String param) {
+    public Employee cekPass(String param, Long paramLong) {
         try {
-            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e "
+                    + " WHERE "
+                    + " e.idEmployee = :idEmployee AND "
                     + " e.password = :password")
+                    .setParameter("idEmployee", paramLong)
                     .setParameter("password", param)
                     .getSingleResult();
             if (listAcquire != null) {

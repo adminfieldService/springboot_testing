@@ -135,11 +135,11 @@ public class EngagementHistoryController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "engagement-history-view-by-admin");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "engagement-history-view-by-admin");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -163,11 +163,11 @@ public class EngagementHistoryController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "engagement-history-findByEngagementId");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "engagement-history-findByEngagementId");
-        return new ResponseEntity(new CustomErrorType("05", "Error", "NOT FOUND"),
+        return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
 

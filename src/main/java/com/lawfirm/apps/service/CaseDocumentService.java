@@ -51,14 +51,14 @@ public class CaseDocumentService implements CaseDocumentServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public CaseDocument findById(Long paramLong) {
-        return caseDocumentRepo.findById(paramLong);
+    public CaseDocument findById(String paramString) {
+        return caseDocumentRepo.findById(paramString);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<CaseDocument> findByCaseId(String paramString) {
-        return caseDocumentRepo.findByCaseId(paramString);
+    public List<CaseDocument> findDocByCaseId(Long paramLong) {
+        return caseDocumentRepo.findDocByCaseId(paramLong);
     }
 
     @Override

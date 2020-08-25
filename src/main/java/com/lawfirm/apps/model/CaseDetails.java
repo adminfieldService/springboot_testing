@@ -85,6 +85,24 @@ public class CaseDetails extends Engagement implements Serializable {
     public CaseDetails() {
     }
 
+    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Reimbursement> reimbursementCollection, String tahun_input, String caseID) {
+        super(engagementId, isActive, approvedBy, created_date, approved_date, signature, invoiceNumber, status, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, reimbursementCollection, tahun_input, caseID);
+        this.caseID = caseID;
+        this.profesionalFee = profesionalFee;
+        this.profesionalFeeNet = profesionalFeeNet;
+        this.caseOverview = caseOverview;
+        this.note = note;
+        this.targetAchievement = targetAchievement;
+        this.strategy = strategy;
+        this.panitera = panitera;
+        this.event_date = event_date;
+        this.event_time = event_time;
+        this.caseDocumentCollection = caseDocumentCollection;
+        this.professionalCollection = professionalCollection;
+        this.evenList = evenList;
+    }
+    
+
     public Double getProfesionalFee() {
         return profesionalFee;
     }

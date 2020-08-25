@@ -161,8 +161,8 @@ public class EmployeeService implements EmployeeServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Employee cekPass(String param) {
-        return employeeRepo.cekPass(param);
+    public Employee cekPass(String password, Long idEmployee) {
+        return employeeRepo.cekPass(password,idEmployee);
     }
 
     @Override

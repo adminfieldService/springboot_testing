@@ -34,7 +34,6 @@ public class DataEmployee {
     protected String user_name;
     protected String role_name;
     protected String user_pass;
-    protected String passUser;
     protected Date join_date;
     protected Double salary;
     protected Double loan_limit;
