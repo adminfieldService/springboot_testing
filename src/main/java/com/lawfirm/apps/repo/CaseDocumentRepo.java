@@ -118,7 +118,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
     public CaseDocument findById(String paramString) {
         try {
             CaseDocument acquire = (CaseDocument) entityManager.createQuery("SELECT d FROM CaseDocument d "
-                    + " FETCH JOIN c.caseDetails as c"
+                    + " JOIN FETCH d.caseDetails as c"
                     + " WHERE "
                     + " d.case_document_id = :case_document_id")
                     .setParameter("case_document_id", paramString)
@@ -142,7 +142,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
     public List<CaseDocument> findDocByCaseId(Long paramLong) {
         try {
             List<CaseDocument> acquire = entityManager.createQuery("SELECT d FROM CaseDocument d "
-                    + " FETCH JOIN c.caseDetails as c"
+                    + " JOIN FETCH d.caseDetails as c"
                     + " WHERE "
                     + " c.engagementId = :engagementId")
                     .setParameter("engagementId", paramLong)

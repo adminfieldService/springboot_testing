@@ -5,7 +5,6 @@
  */
 package com.lawfirm.apps.controller;
 
-import static com.lawfirm.apps.controller.EngagementController.basepathUpload;
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.CaseDocument;
 import com.lawfirm.apps.model.Employee;
@@ -38,11 +37,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,8 +71,9 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
-public class CaseControll {
+public class CaseController {
 
+    static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
     SimpleDateFormat sdfYear;
@@ -113,7 +117,7 @@ public class CaseControll {
     @Autowired
     EventServiceIface eventService;
 
-    public CaseControll() {
+    public CaseController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         this.sdfYear = new SimpleDateFormat("yy");
@@ -169,7 +173,7 @@ public class CaseControll {
                 CreateLog.createJson(rs, "upload-case-document");
                 return rs;
             }
-            pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
+            pathDoc = basepathUpload + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
 
             if (process) {
                 if (!file.isEmpty()) {
@@ -212,6 +216,77 @@ public class CaseControll {
                     }
 
                 }
+            }
+            return rs;
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "upload-case-document");
+            return rs;
+
+        }
+
+    }
+
+    @RequestMapping(value = "/case/{engagement_id}/upload", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response uploadMultipleDocument(@RequestPart("case_doc") MultipartFile[] files, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
+        try {
+
+            CaseDocument entCaseDocument = new CaseDocument();
+
+            Date todayDate = new Date();
+            Date now = new Date();
+            String pathDoc = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                process = false;
+                CreateLog.createJson(rs, "uploadMultipleDocument");
+                return rs;
+            }
+            if (!entity.getRoleName().contentEquals("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
+                process = false;
+                CreateLog.createJson(rs, "uploadMultipleDocument");
+                return rs;
+            }
+
+            CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
+            if (caseDetails == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Id Not Found ");
+                process = false;
+                CreateLog.createJson(rs, "uploadMultipleDocument");
+                return rs;
+            }
+            if (caseDetails.getStatus().contains("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + caseDetails.getCaseID() + " Status Closed ");
+                CreateLog.createJson(rs, "uploadMultipleDocument");
+                return rs;
+            }
+            pathDoc = basepathUpload + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
+
+            if (process) {
+//                
+                List<String> fileNames = new ArrayList<>();
+
+                
+
             }
             return rs;
         } catch (JSONException ex) {
@@ -306,8 +381,9 @@ public class CaseControll {
 
     @RequestMapping(value = "/case/document/{case_document_id}/view", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> viewDocument(@PathVariable("case_document_id") String case_document_id, Authentication authentication) throws IOException {
+    public ResponseEntity<?> viewDocument(ServletRequest request, HttpServletResponse response, @PathVariable("case_document_id") String case_document_id, Authentication authentication) throws IOException {
         try {
+            JSONObject jsonobj = new JSONObject();
             Date todayDate = new Date();
             Date now = new Date();
             String pathDoc = null;
@@ -337,19 +413,23 @@ public class CaseControll {
             }
             if (process) {
                 try {
-
+                    log.info("dataDocument.getLinkDocument()" + dataDocument.getLinkDocument());
                     byte[] input_file = Files.readAllBytes(Paths.get(dataDocument.getLinkDocument()));
                     String linkDoc = new String(Base64.getEncoder().encode(input_file));
-                    rs.setResponse_code("00");
-                    rs.setResponse("success");
-                    rs.setInfo(linkDoc);
+
+//                    rs.setResponse_code("00");
+//                    rs.setResponse("success");
+//                    rs.setInfo(linkDoc);
+                    jsonobj.put("response_code", "00");
+                    jsonobj.put("response", "success");
+                    jsonobj.put("info", linkDoc);
                 } catch (JSONException ex) {
-                    Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CaseController.class.getName()).log(Level.SEVERE, null, ex);
                     return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
                             HttpStatus.NOT_FOUND);
                 }
 
-                return ResponseEntity.ok(rs.toString());
+                return ResponseEntity.ok(jsonobj.toString());
             }
             rs.setResponse_code("55");
             rs.setInfo("Error");
