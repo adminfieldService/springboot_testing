@@ -63,7 +63,7 @@ public class Disbursement implements Serializable {
     private String signature;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "id_loan", referencedColumnName = "id")
     private Loan loan;
 
     @PrePersist

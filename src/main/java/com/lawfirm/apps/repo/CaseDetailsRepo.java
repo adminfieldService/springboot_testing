@@ -43,7 +43,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -66,7 +66,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -90,7 +90,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -112,7 +112,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -131,7 +131,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -152,7 +152,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -176,7 +176,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return list_acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -200,7 +200,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -225,7 +225,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -272,7 +272,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -296,7 +296,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -325,7 +325,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -353,7 +353,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_caseDetailsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -416,6 +416,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
             return null;
         } finally {
             if ((entityManager != null) && (entityManager.isOpen())) {

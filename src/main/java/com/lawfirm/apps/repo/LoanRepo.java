@@ -43,7 +43,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -66,7 +66,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -90,7 +90,7 @@ public class LoanRepo implements LoanRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -108,7 +108,7 @@ public class LoanRepo implements LoanRepoIface {
         } catch (Exception ex) {
             // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -124,7 +124,7 @@ public class LoanRepo implements LoanRepoIface {
             return (Loan) entityManager.find(Loan.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -156,7 +156,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -176,7 +176,7 @@ public class LoanRepo implements LoanRepoIface {
             return entity;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -196,7 +196,7 @@ public class LoanRepo implements LoanRepoIface {
             return entity;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -257,7 +257,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -315,7 +315,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -359,7 +359,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -414,7 +414,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -452,7 +452,7 @@ public class LoanRepo implements LoanRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -491,7 +491,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -542,7 +542,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -600,7 +600,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

@@ -202,7 +202,7 @@ public class EngagementController {
             if (object.getNpwp().length() > 30) {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, ADDRESS  filed max 20");
+                rs.setResponse("Create Engagement Failed, ADDRESS  filed max 30");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
                 return rs;
@@ -217,10 +217,10 @@ public class EngagementController {
                 CreateLog.createJson(rs, "createEngagement");
                 return rs;
             }
-            if (object.getPic().length() > 20) {
+            if (object.getPic().length() > 50) {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, PIC  filed max 20");
+                rs.setResponse("Create Engagement Failed, PIC  filed max 50");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
                 return rs;

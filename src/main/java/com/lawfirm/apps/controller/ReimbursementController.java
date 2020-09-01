@@ -7,6 +7,7 @@ package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Employee;
+import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.Reimbursement;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.CaseDocumentService;
@@ -39,7 +40,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -106,12 +111,20 @@ public class ReimbursementController {
         this.sdfMY = new SimpleDateFormat("MMyyyy");
     }
 
-    @PostMapping(path = "/managed-reimbursement/{case_id}", produces = {"application/json"})
+    @RequestMapping(value = "/managed-reimbursement", method = RequestMethod.POST)//{id_loan}
     @XxsFilter
-    public Response createReimburse(@RequestBody final ReimbursementApi object, @PathVariable("case_id") String case_id, Authentication authentication) {
+
+    public Response createReimburse(@RequestParam("name") String name,
+            @RequestParam("employee_id") String employee_id,
+            @RequestParam("case_id") String case_id,
+            @RequestParam("expense_date") String expense_date,
+            @RequestParam("amount") Double amount,
+            @RequestParam("note") String note, @RequestPart("attach") MultipartFile file, Long id_loan, Authentication authentication) {
+//    public Response createReimburse(@RequestParam ReimbursementApi object, @RequestPart("attach") MultipartFile file, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
         try {
             String nama = authentication.getName();
             Boolean process = true;
+            log.info("object value : " + name + employee_id + case_id + expense_date + amount + note);
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
@@ -135,19 +148,28 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
-            if (!dataEmp.getRoleName().matches("dmp")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "create-reimburse");
-                process = false;
-                return rs;
-            }
-            CaseDetails entity = caseDetailsService.findCaseId(case_id);
+//            if (!dataEmp.getRoleName().matches("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("Cannot Access This feature");
+//                CreateLog.createJson(rs, "create-reimburse");
+//                process = false;
+//                return rs;
+//            }
+//            CaseDetails entity = caseDetailsService.findCaseId(case_id);
+//            if (entity == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("Case ID : " + case_id + " not Found");
+//                CreateLog.createJson(rs, "create-reimburse");
+//                process = false;
+//                return rs;
+//            }
+            Loan entity = loanService.findById(1l);
             if (entity == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("Case ID : " + case_id + " not Found");
+                rs.setResponse("id Loan : " + id_loan + " not Found");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
                 return rs;

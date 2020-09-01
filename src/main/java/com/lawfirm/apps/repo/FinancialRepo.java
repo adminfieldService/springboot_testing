@@ -42,7 +42,7 @@ public class FinancialRepo implements FinancialRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -66,7 +66,7 @@ public class FinancialRepo implements FinancialRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -89,7 +89,7 @@ public class FinancialRepo implements FinancialRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -107,7 +107,7 @@ public class FinancialRepo implements FinancialRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -123,7 +123,7 @@ public class FinancialRepo implements FinancialRepoIface {
             return (Financial) entityManager.find(Financial.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -146,7 +146,7 @@ public class FinancialRepo implements FinancialRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -168,7 +168,7 @@ public class FinancialRepo implements FinancialRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -187,7 +187,7 @@ public class FinancialRepo implements FinancialRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_financialRepo", ex.getMessage());
+           CreateLog.createJson(ex.getMessage(),"ERROR_financialRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

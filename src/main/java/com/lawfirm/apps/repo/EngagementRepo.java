@@ -43,7 +43,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -66,7 +66,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -88,7 +88,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -106,7 +106,7 @@ public class EngagementRepo implements EngagementRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -122,7 +122,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return (Engagement) entityManager.find(Engagement.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -142,7 +142,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -162,7 +162,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -181,7 +181,7 @@ public class EngagementRepo implements EngagementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_engagementRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_engagementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

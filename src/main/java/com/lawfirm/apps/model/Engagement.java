@@ -81,7 +81,6 @@ public class Engagement implements Serializable {
 
 //    @Column(name = "operational_cost")
 //    protected Double operational_cost;
-
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_client", referencedColumnName = "id_client")
     protected ClientData client;
@@ -102,17 +101,11 @@ public class Engagement implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Financial> financialCollection;
 
-//    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "loanType", referencedColumnName = "loan_type_Id")
-//    protected LoanType loanType;
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
-//    protected Collection<LoanType> loanTypeCollection;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
-    protected Collection<Reimbursement> reimbursementCollection;
-    
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
+//    protected Collection<Reimbursement> reimbursementCollection;
     @Column(name = "tahun_input", length = 10, nullable = true)
     protected String tahun_input;
 
@@ -127,7 +120,7 @@ public class Engagement implements Serializable {
     public Engagement() {
     }
 
-    public Engagement(Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Reimbursement> reimbursementCollection, String tahun_input, String caseID) {
+    public Engagement(Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, String tahun_input, String caseID) {
         this.engagementId = engagementId;
         this.isActive = isActive;
         this.approvedBy = approvedBy;
@@ -142,14 +135,9 @@ public class Engagement implements Serializable {
         this.engagementHistoryCollection = engagementHistoryCollection;
         this.financialCollection = financialCollection;
         this.loanCollection = loanCollection;
-        this.reimbursementCollection = reimbursementCollection;
         this.tahun_input = tahun_input;
         this.caseID = caseID;
     }
-
-    
-    
-    
 
     public String getApprovedBy() {
         return approvedBy;
@@ -420,16 +408,6 @@ public class Engagement implements Serializable {
         this.engagementHistoryCollection = engagementHistoryCollection;
     }
 
-
-    public Collection<Reimbursement> getReimbursementCollection() {
-        return reimbursementCollection;
-    }
-
-    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
-        this.reimbursementCollection = reimbursementCollection;
-    }
-
-    
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.Engagement[engagementId=" + this.engagementId + " ]";

@@ -132,6 +132,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/disbursements/loan-a/").hasRole("finance")
                 .antMatchers(HttpMethod.GET, "/disbursements/loan-b/").hasRole("finance")
                 .antMatchers(HttpMethod.GET, "/disbursement/{id_loan}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.POST, "/managed-reimbursement/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .anyRequest()
                 .authenticated()
                 .and()

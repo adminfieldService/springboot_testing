@@ -41,7 +41,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -64,7 +64,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,7 +87,7 @@ public class EventsRepo implements EventsRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -105,7 +105,7 @@ public class EventsRepo implements EventsRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -136,7 +136,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -167,7 +167,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_eventsRepo", ex.getMessage());
+             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

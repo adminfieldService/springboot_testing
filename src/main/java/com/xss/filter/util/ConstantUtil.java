@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 /**
  *
  * @author newbiecihuy
+ * https://stackoverflow.com/questions/54398122/cross-site-scripting-when-using-windows-location-href
  */
 public class ConstantUtil {
 
@@ -38,7 +39,12 @@ public class ConstantUtil {
             Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
             Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
             // Avoid vbscript:... expressions
-            Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE),
+            // Avoid window.location :... expressions
+            Pattern.compile("window.location", Pattern.CASE_INSENSITIVE),
+            // Avoid window.location :... expressions
+            Pattern.compile("document(.*?)", Pattern.CASE_INSENSITIVE)
+            
     ));
 
     public static final String EMPTY = "";

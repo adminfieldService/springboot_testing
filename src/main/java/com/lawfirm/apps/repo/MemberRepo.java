@@ -41,7 +41,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -64,7 +64,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,7 +87,7 @@ public class MemberRepo implements MemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -119,7 +119,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -146,7 +146,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -170,7 +170,7 @@ public class MemberRepo implements MemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_memberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

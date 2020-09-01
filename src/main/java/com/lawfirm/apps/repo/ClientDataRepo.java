@@ -42,7 +42,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -65,7 +65,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -87,7 +87,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -105,7 +105,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -121,7 +121,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return (ClientData) entityManager.find(ClientData.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -145,7 +145,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -165,7 +165,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -189,7 +189,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -227,7 +227,7 @@ public class ClientDataRepo implements ClientDataRepoIface {
             return (List<ClientData>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_clientDataRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_clientDataRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

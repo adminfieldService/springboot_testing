@@ -85,8 +85,8 @@ public class CaseDetails extends Engagement implements Serializable {
     public CaseDetails() {
     }
 
-    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Reimbursement> reimbursementCollection, String tahun_input, String caseID) {
-        super(engagementId, isActive, approvedBy, created_date, approved_date, signature, invoiceNumber, status, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, reimbursementCollection, tahun_input, caseID);
+    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, String tahun_input, String caseID) {
+        super(engagementId, isActive, approvedBy, created_date, approved_date, signature, invoiceNumber, status, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, tahun_input, caseID);
         this.caseID = caseID;
         this.profesionalFee = profesionalFee;
         this.profesionalFeeNet = profesionalFeeNet;
@@ -101,6 +101,8 @@ public class CaseDetails extends Engagement implements Serializable {
         this.professionalCollection = professionalCollection;
         this.evenList = evenList;
     }
+
+    
     
 
     public Double getProfesionalFee() {
@@ -488,13 +490,6 @@ public class CaseDetails extends Engagement implements Serializable {
         this.employee = employee;
     }
 
-    public Collection<Reimbursement> getReimbursementCollection() {
-        return reimbursementCollection;
-    }
-
-    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
-        this.reimbursementCollection = reimbursementCollection;
-    }
 
     @Override
     public String toString() {

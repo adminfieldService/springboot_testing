@@ -65,19 +65,36 @@ public class Reimbursement implements Serializable {
     @Column(name = "reimburse_amount")
     private Double reimburseAmount;
 
+    @Column(name = "approved_amount")
+    private Double approvedAmount;
+
+    @Column(name = "approved_by")
+    private Long approvedBy;
+
+    @Column(name = "reimbursed_by")
+    private Long reimbursedBy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @Column(name = "approved_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date approvedDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @Column(name = "reimbursed_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date reimbursedDate;
 //    @Column(name = "approved_by")
 //    private String approvedBy;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reimbursement")
     private Collection<DocumentReimburse> documentReimburseCollection;
 
-//    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id", referencedColumnName = "id")
-//    private Loan loan;
-
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
-    protected Engagement engagement;
+    @JoinColumn(name = "id_loan", referencedColumnName = "id")
+    private Loan loan;
 
+//    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
+//    protected Engagement engagement;
     @OneToMany(mappedBy = "reimbursement", cascade = CascadeType.ALL)
     private Collection<ReimbursementHistory> reimbursementHistoryCollection;
 
@@ -87,7 +104,7 @@ public class Reimbursement implements Serializable {
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Collection<DocumentReimburse> documentReimburseCollection, Engagement engagement, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, Date approvedDate, Date reimbursedDate, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
         this.reimbursementId = reimbursementId;
         this.employee = employee;
@@ -95,13 +112,17 @@ public class Reimbursement implements Serializable {
         this.expenseDate = expenseDate;
         this.note = note;
         this.reimburseAmount = reimburseAmount;
+        this.approvedAmount = approvedAmount;
+        this.approvedBy = approvedBy;
+        this.reimbursedBy = reimbursedBy;
+        this.approvedDate = approvedDate;
+        this.reimbursedDate = reimbursedDate;
         this.documentReimburseCollection = documentReimburseCollection;
-        this.engagement = engagement;
+        this.loan = loan;
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
 
-    
     public Long getReimburseId() {
         return reimburseId;
     }
@@ -170,12 +191,12 @@ public class Reimbursement implements Serializable {
         this.documentReimburseCollection = documentReimburseCollection;
     }
 
-    public Engagement getEngagement() {
-        return engagement;
+    public Loan getLoan() {
+        return loan;
     }
 
-    public void setEngagement(Engagement engagement) {
-        this.engagement = engagement;
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 
     public Double getReimburseAmount() {
@@ -244,6 +265,46 @@ public class Reimbursement implements Serializable {
 
     public void setReimbursementHistoryCollection(Collection<ReimbursementHistory> reimbursementHistoryCollection) {
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
+    }
+
+    public Double getApprovedAmount() {
+        return approvedAmount;
+    }
+
+    public void setApprovedAmount(Double approvedAmount) {
+        this.approvedAmount = approvedAmount;
+    }
+
+    public Long getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(Long approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public Long getReimbursedBy() {
+        return reimbursedBy;
+    }
+
+    public void setReimbursedBy(Long reimbursedBy) {
+        this.reimbursedBy = reimbursedBy;
+    }
+
+    public Date getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Date approvedDate) {
+        this.approvedDate = approvedDate;
+    }
+
+    public Date getReimbursedDate() {
+        return reimbursedDate;
+    }
+
+    public void setReimbursedDate(Date reimbursedDate) {
+        this.reimbursedDate = reimbursedDate;
     }
 
     @Override

@@ -957,7 +957,7 @@ public class EmployeeController { //LawfirmController
                 return rs;
             }
             if (process) {
-                entity.setPassword(encoder.encode(object.getUser_pass()));
+                entity.setPassword(encoder.encode("lawfirm" + object.getUser_pass()));
 //                entity.setPassword(object.getUser_pass());
 
                 Employee setPassword = this.employeeService.update(entity);
@@ -2075,8 +2075,21 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/find-by-id", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> findById(@RequestBody final DataEmployee object) {
+    public ResponseEntity<?> findById(@RequestBody final DataEmployee object, Authentication authentication) {
         try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "download-cv");
+//                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
             Employee entity = this.employeeService.findById(object.getId_employee());
             JSONObject obj = new JSONObject();
 
@@ -2276,8 +2289,21 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/managed-employee/{employee_id}/find-by-employee-id", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> findByEmployeeID(@PathVariable("employee_id") String employeeId) {
+    public ResponseEntity<String> findByEmployeeID(@PathVariable("employee_id") String employeeId, Authentication authentication) {
         try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "download-cv");
+//                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
             Employee entity = this.employeeService.findByEmployeeId(employeeId);
             JSONObject obj = new JSONObject();
             if (entity != null) {
@@ -2452,8 +2478,21 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/role", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> listRoleNameLawyer(@RequestParam("param") String param) {
+    public ResponseEntity<String> listRoleNameLawyer(@RequestParam("param") String param, Authentication authentication) {
         try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "download-cv");
+//                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
             List<Employee> entityList = this.employeeService.listEmployeeByRole(param);
             JSONArray array = new JSONArray();
             for (int i = 0; i < entityList.size(); i++) {
@@ -2505,8 +2544,17 @@ public class EmployeeController { //LawfirmController
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
-            Employee entity = employeeService.findById(entityEmp.getIdEmployee());
-//          Employee entity = employeeService.findById(idEmployee);
+
+            Employee employee = employeeService.findById(idEmployee);
+            Employee entity = null;
+            if (employee != null) {
+                entity = employeeService.findById(employee.getIdEmployee());
+                log.info("employee" + employee.getIdEmployee());
+            } else {
+                entity = employeeService.findById(entityEmp.getIdEmployee());
+                log.info("entityEmp" + entityEmp.getIdEmployee());
+            }
+
             Boolean process = true;
             if (entity == null) {
                 rs.setResponse_code("55");
@@ -2517,7 +2565,8 @@ public class EmployeeController { //LawfirmController
             }
             if (process) {
                 try {
-
+                    log.info("employee-2_" + employee.getIdEmployee());
+                    log.info("entityEmp-2_" + entityEmp.getIdEmployee());
                     byte[] input_file = Files.readAllBytes(Paths.get(entity.getLinkCv()));
                     String linkDoc = new String(Base64.getEncoder().encode(input_file));
                     jsonobj.put("response_code", "00");
@@ -2550,11 +2599,6 @@ public class EmployeeController { //LawfirmController
                     HttpStatus.NOT_FOUND);
         }
 
-    }
-
-    public ResponseEntity<?> downloadFile() {
-
-        return null;
     }
 
 }

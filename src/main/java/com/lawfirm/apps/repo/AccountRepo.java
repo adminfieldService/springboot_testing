@@ -42,7 +42,7 @@ public class AccountRepo implements AccountRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -64,7 +64,7 @@ public class AccountRepo implements AccountRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,7 +87,7 @@ public class AccountRepo implements AccountRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -111,7 +111,7 @@ public class AccountRepo implements AccountRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -129,7 +129,7 @@ public class AccountRepo implements AccountRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -145,7 +145,7 @@ public class AccountRepo implements AccountRepoIface {
             return (Account) entityManager.find(Account.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -175,7 +175,7 @@ public class AccountRepo implements AccountRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -198,7 +198,7 @@ public class AccountRepo implements AccountRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -217,7 +217,7 @@ public class AccountRepo implements AccountRepoIface {
             return (List<Account>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -240,7 +240,7 @@ public class AccountRepo implements AccountRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -262,7 +262,7 @@ public class AccountRepo implements AccountRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_AccountRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_AccountRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

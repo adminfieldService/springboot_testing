@@ -74,6 +74,9 @@ public class Loan implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
     private Collection<OutStanding> outStandingCollection;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+    protected Collection<Reimbursement> reimbursementCollection;
 
     @Column(name = "loan_amount")
     private Double loanAmount;

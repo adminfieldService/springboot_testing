@@ -42,7 +42,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -64,7 +64,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,7 +87,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -105,7 +105,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -121,7 +121,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
             return (DocumentReimburse) entityManager.find(DocumentReimburse.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -143,7 +143,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -166,7 +166,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -187,7 +187,7 @@ public class DocumentReimburseRepo implements DocumentReimburseRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_documentReimburseRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_documentReimburseRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

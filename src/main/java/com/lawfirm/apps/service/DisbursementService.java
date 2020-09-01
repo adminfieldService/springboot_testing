@@ -38,11 +38,13 @@ public class DisbursementService implements DisbursementServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Loan findLoanAById(Long param) {
         return this.disbursementRepo.findLoanAById(param);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Loan findLoanBById(Long param) {
         return this.disbursementRepo.findLoanBById(param);
     }

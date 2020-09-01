@@ -39,7 +39,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("status", "d")
                         .getResultList();
@@ -51,7 +51,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("typeLoan", "a")
                         .setParameter("status", "d")
@@ -63,20 +63,18 @@ public class DisbursementRepo implements DisbursementRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("typeLoan", "b")
                         .setParameter("status", "d")
                         .getResultList();
             }
-            if (listAcquire.isEmpty()) {
-                return listAcquire;
-            } else {
-                return listAcquire;
-            }
+
+            return listAcquire;
+
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -92,41 +90,36 @@ public class DisbursementRepo implements DisbursementRepoIface {
             List<Loan> listAcquire = null;
             if (type.contentEquals("a")) {
 
-                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                listAcquire = entityManager.createQuery("SELECT DISTINCT l FROM Loan l "
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
-                        + " t.aprovedByFinance = :aprovedByFinance AND "
-                        + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.aprovedByFinance = :aprovedByFinance AND "
+                        + " t.typeLoan = :typeLoan "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("aprovedByFinance", empId)
                         .setParameter("typeLoan", "a")
-                        .setParameter("status", "d")
                         .getResultList();
+                //                        .setParameter("status", "d")
+
             }
             if (type.contentEquals("b")) {
-                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                listAcquire = entityManager.createQuery("SELECT DISTINCT l FROM Loan l "
                         + " JOIN FETCH l.employee AS e "
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
-                        + " t.aprovedByFinance = :aprovedByFinance AND "
+                        + " l.aprovedByFinance = :aprovedByFinance AND "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
                         + " ORDER BY l.date_created Desc ")
                         .setParameter("aprovedByFinance", empId)
                         .setParameter("typeLoan", "b")
-                        .setParameter("status", "d")
                         .getResultList();
+                //                        .setParameter("status", "d")
             }
-            if (listAcquire.isEmpty()) {
-                return listAcquire;
-            } else {
-                return listAcquire;
-            }
+            return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_loanRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

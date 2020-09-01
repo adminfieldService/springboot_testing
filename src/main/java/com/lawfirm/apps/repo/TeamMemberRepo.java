@@ -42,7 +42,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -66,7 +66,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -88,7 +88,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -106,7 +106,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -122,7 +122,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return (TeamMember) entityManager.find(TeamMember.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -144,7 +144,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -168,7 +168,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -193,7 +193,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -216,7 +216,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -237,7 +237,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -257,7 +257,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -296,7 +296,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_teamMemberRepo", ex.getMessage());
+            CreateLog.createJson(ex.getMessage(),"ERROR_teamMemberRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

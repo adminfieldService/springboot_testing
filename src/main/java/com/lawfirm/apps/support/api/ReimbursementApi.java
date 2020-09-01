@@ -17,10 +17,11 @@ import lombok.ToString;
 @ToString
 public class ReimbursementApi {
 
-    private Date expense_date;
-    private String note;
-    private Double reimburse_amount;
+    private String name;
+    private String employee_id;
     protected String case_id;
-    protected Long id_loan;
+    private Date expense_date;
+    private Double amount;//reimburse_amount
+    private String note;
     protected String link_document;
 }
