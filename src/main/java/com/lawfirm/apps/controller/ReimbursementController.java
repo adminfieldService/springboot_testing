@@ -35,7 +35,9 @@ import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -274,7 +276,93 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            return null;
+            List<Reimbursement> listReimbursement = this.reimbursementService.listReimbursement();
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < listReimbursement.size(); i++) {
+                JSONObject obj = new JSONObject();
+                Reimbursement reimbursement = (Reimbursement) listReimbursement.get(i);
+
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimburse_id", "");
+                } else {
+                    obj.put("reimburse_id", reimbursement.getReimburseId());
+                }
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimbursement_id", "");
+                } else {
+                    obj.put("reimbursement_id", reimbursement.getReimbursementId());
+                }
+                if (reimbursement.getExpenseDate() == null) {
+                    obj.put("expense_date", "");
+                } else {
+                    obj.put("expense_date", dateFormat.format(reimbursement.getExpenseDate()));
+                }
+                if (reimbursement.getEmployee() == null) {
+                    obj.put("employee_id", "");
+                    obj.put("name", "");
+                } else {
+                    obj.put("employee_id", reimbursement.getEmployee().getEmployeeId());
+                    obj.put("name", reimbursement.getEmployee().getName());
+                }
+                if (reimbursement.getLoan() == null) {
+                    obj.put("loan_id", "");
+                    obj.put("loan_type", "");
+                    obj.put("case_id", "");
+                } else {
+                    obj.put("loan_id", reimbursement.getLoan().getLoanId());
+                    obj.put("loan_type", "b");
+                    obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getReimburseAmount() == null) {
+                    obj.put("amount", "");
+                } else {
+                    obj.put("amount", reimbursement.getNote());
+                }
+                if (reimbursement.getApprovedBy() == null) {
+                    obj.put("approved_by", "");
+                } else {
+                    Employee dataAdmin = this.employeeService.findById(reimbursement.getApprovedBy());
+                    obj.put("approved_by", dataAdmin.getEmployeeId());
+                }
+                if (reimbursement.getApprovedDate() == null) {
+                    obj.put("approval_date", "");
+                } else {
+                    obj.put("approval_date", dateFormat.format(reimbursement.getApprovedDate()));
+                }
+                if (reimbursement.getReimbursedBy() == null) {
+                    obj.put("reimburse_by", "");
+                } else {
+                    Employee dataFinance = this.employeeService.findById(reimbursement.getReimbursedBy());
+                    obj.put("reimburse_by", dataFinance.getEmployeeId());
+                }
+                if (reimbursement.getReimbursedDate() == null) {
+                    obj.put("reimbursed_date", "");
+                } else {
+                    obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
+                }
+                if (reimbursement.getApprovedAmount() == null) {
+                    obj.put("reimbursement_amount", "");
+                } else {
+                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                }
+                if (reimbursement.getStatus() == null) {
+                    obj.put("status", "");
+                } else {
+                    obj.put("status", reimbursement.getStatus());
+                }
+                array.put(obj);
+            }
+            return ResponseEntity.ok(array.toString());
 
         } catch (Exception ex) {
             // TODO Auto-generated catch block
@@ -393,6 +481,11 @@ public class ReimbursementController {
                         obj.put("reimbursement_amount", "");
                     } else {
                         obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                    }
+                    if (reimbursement.getStatus() == null) {
+                        obj.put("status", "");
+                    } else {
+                        obj.put("status", reimbursement.getStatus());
                     }
 
                 }
@@ -658,13 +751,93 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            if (process) {
+            List<Reimbursement> listReimbursement = this.reimbursementService.listBy("finance", dataEmp.getIdEmployee());
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < listReimbursement.size(); i++) {
+                JSONObject obj = new JSONObject();
+                Reimbursement reimbursement = (Reimbursement) listReimbursement.get(i);
 
-            } else {
-
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimburse_id", "");
+                } else {
+                    obj.put("reimburse_id", reimbursement.getReimburseId());
+                }
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimbursement_id", "");
+                } else {
+                    obj.put("reimbursement_id", reimbursement.getReimbursementId());
+                }
+                if (reimbursement.getExpenseDate() == null) {
+                    obj.put("expense_date", "");
+                } else {
+                    obj.put("expense_date", dateFormat.format(reimbursement.getExpenseDate()));
+                }
+                if (reimbursement.getEmployee() == null) {
+                    obj.put("employee_id", "");
+                    obj.put("name", "");
+                } else {
+                    obj.put("employee_id", reimbursement.getEmployee().getEmployeeId());
+                    obj.put("name", reimbursement.getEmployee().getName());
+                }
+                if (reimbursement.getLoan() == null) {
+                    obj.put("loan_id", "");
+                    obj.put("loan_type", "");
+                    obj.put("case_id", "");
+                } else {
+                    obj.put("loan_id", reimbursement.getLoan().getLoanId());
+                    obj.put("loan_type", "b");
+                    obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getReimburseAmount() == null) {
+                    obj.put("amount", "");
+                } else {
+                    obj.put("amount", reimbursement.getNote());
+                }
+                if (reimbursement.getApprovedBy() == null) {
+                    obj.put("approved_by", "");
+                } else {
+                    Employee dataAdmin = this.employeeService.findById(reimbursement.getApprovedBy());
+                    obj.put("approved_by", dataAdmin.getEmployeeId());
+                }
+                if (reimbursement.getApprovedDate() == null) {
+                    obj.put("approval_date", "");
+                } else {
+                    obj.put("approval_date", dateFormat.format(reimbursement.getApprovedDate()));
+                }
+                if (reimbursement.getReimbursedBy() == null) {
+                    obj.put("reimburse_by", "");
+                } else {
+                    Employee dataFinance = this.employeeService.findById(reimbursement.getReimbursedBy());
+                    obj.put("reimburse_by", dataFinance.getEmployeeId());
+                }
+                if (reimbursement.getReimbursedDate() == null) {
+                    obj.put("reimbursed_date", "");
+                } else {
+                    obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
+                }
+                if (reimbursement.getApprovedAmount() == null) {
+                    obj.put("reimbursement_amount", "");
+                } else {
+                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                }
+                if (reimbursement.getStatus() == null) {
+                    obj.put("status", "");
+                } else {
+                    obj.put("status", reimbursement.getStatus());
+                }
+                array.put(obj);
             }
-            return null;
-
+            return ResponseEntity.ok(array.toString());
         } catch (Exception ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
@@ -706,12 +879,93 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            if (process) {
+            List<Reimbursement> listReimbursement = this.reimbursementService.listBy("admin", dataEmp.getIdEmployee());
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < listReimbursement.size(); i++) {
+                JSONObject obj = new JSONObject();
+                Reimbursement reimbursement = (Reimbursement) listReimbursement.get(i);
 
-            } else {
-
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimburse_id", "");
+                } else {
+                    obj.put("reimburse_id", reimbursement.getReimburseId());
+                }
+                if (reimbursement.getReimburseId() == null) {
+                    obj.put("reimbursement_id", "");
+                } else {
+                    obj.put("reimbursement_id", reimbursement.getReimbursementId());
+                }
+                if (reimbursement.getExpenseDate() == null) {
+                    obj.put("expense_date", "");
+                } else {
+                    obj.put("expense_date", dateFormat.format(reimbursement.getExpenseDate()));
+                }
+                if (reimbursement.getEmployee() == null) {
+                    obj.put("employee_id", "");
+                    obj.put("name", "");
+                } else {
+                    obj.put("employee_id", reimbursement.getEmployee().getEmployeeId());
+                    obj.put("name", reimbursement.getEmployee().getName());
+                }
+                if (reimbursement.getLoan() == null) {
+                    obj.put("loan_id", "");
+                    obj.put("loan_type", "");
+                    obj.put("case_id", "");
+                } else {
+                    obj.put("loan_id", reimbursement.getLoan().getLoanId());
+                    obj.put("loan_type", "b");
+                    obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getNote() == null) {
+                    obj.put("note", "");
+                } else {
+                    obj.put("note", reimbursement.getNote());
+                }
+                if (reimbursement.getReimburseAmount() == null) {
+                    obj.put("amount", "");
+                } else {
+                    obj.put("amount", reimbursement.getNote());
+                }
+                if (reimbursement.getApprovedBy() == null) {
+                    obj.put("approved_by", "");
+                } else {
+                    Employee dataAdmin = this.employeeService.findById(reimbursement.getApprovedBy());
+                    obj.put("approved_by", dataAdmin.getEmployeeId());
+                }
+                if (reimbursement.getApprovedDate() == null) {
+                    obj.put("approval_date", "");
+                } else {
+                    obj.put("approval_date", dateFormat.format(reimbursement.getApprovedDate()));
+                }
+                if (reimbursement.getReimbursedBy() == null) {
+                    obj.put("reimburse_by", "");
+                } else {
+                    Employee dataFinance = this.employeeService.findById(reimbursement.getReimbursedBy());
+                    obj.put("reimburse_by", dataFinance.getEmployeeId());
+                }
+                if (reimbursement.getReimbursedDate() == null) {
+                    obj.put("reimbursed_date", "");
+                } else {
+                    obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
+                }
+                if (reimbursement.getApprovedAmount() == null) {
+                    obj.put("reimbursement_amount", "");
+                } else {
+                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                }
+                if (reimbursement.getStatus() == null) {
+                    obj.put("status", "");
+                } else {
+                    obj.put("status", reimbursement.getStatus());
+                }
+                array.put(obj);
             }
-            return null;
+            return ResponseEntity.ok(array.toString());
 
         } catch (Exception ex) {
             // TODO Auto-generated catch block
