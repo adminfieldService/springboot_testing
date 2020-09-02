@@ -1098,7 +1098,6 @@ public class EmployeeController { //LawfirmController
             CreateLog.createJson(ex.getMessage(), "upload-file");
             return rs;
         }
-//            return rs;
         return rs;
 
     }

@@ -1037,6 +1037,7 @@ public class EngagementController {
 //            if (entity != null) {
             List<CaseDetails> listData = caseDetailsService.listCaseDetails();
             JSONArray array = new JSONArray();
+            Long id_team = 0l;
             if (listData != null) {
                 for (int i = 0; i < listData.size(); i++) {
 
@@ -1141,8 +1142,43 @@ public class EngagementController {
                     } else {
                         obj.put("status", data.getStatus());
                     }
+                    List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
+                    for (int j = 0; j < entityTeam.size(); j++) {
+                        JSONObject objTeam = new JSONObject();
+//                      
+                        TeamMember dataTeam = entityTeam.get(j);
+                        if (dataTeam == null) {
+                            obj.put("description", "");
+                        } else {
+                            Employee getDmp = employeeService.findById(dataTeam.getDmpId());
+                            if (getDmp == null) {
+//                                obj.put("employee_id_dmp", "");
+                                obj.put("dmp_name", "");
+//                                obj.put("description", "");
+//                                obj.put("fee_share_dmp", "");
+//                                obj.put("member_name", "");
+//                                obj.put("employee_id", "");
+//                                obj.put("fee_share", "");
+                            } else {
+                                if (dataTeam.getTeamMemberId() != null) {
+                                    id_team = dataTeam.getTeamMemberId();
+                                }
+//                                obj.put("employee_id_dmp", getDmp.getEmployeeId());
+                                obj.put("dmp_name", getDmp.getName());
+//                                obj.put("description", dataTeam.getDescription());
+//                                obj.put("fee_share_dmp", dataTeam.getFeeShare());
 
-//                    obj.put("approved_by", entityTeam.get(i));
+//                            break;
+//                            obj.put("member_name", entityMember.getDescription());
+//                            arrayM.put(objMember);
+                            }
+
+                        }
+//                        arrayM.put(objMember);
+//                        obj.put("team", objTeam);
+//                        obj.put("members", arrayM);
+
+                    }
                     array.put(obj);
                 }
             }
@@ -1997,7 +2033,6 @@ public class EngagementController {
 //        }
 //
 //    }
-
 //    @RequestMapping(value = "/manage-engagement/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
 //    @XxsFilter
 //    public Response listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
@@ -2019,7 +2054,6 @@ public class EngagementController {
 //        }
 //        return null;
 //    }
-
 //    @RequestMapping(value = "/manage-engagement/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
 //    @XxsFilter
 //    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {

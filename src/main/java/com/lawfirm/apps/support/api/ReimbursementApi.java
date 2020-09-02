@@ -23,5 +23,7 @@ public class ReimbursementApi {
     private Date expense_date;
     private Double amount;//reimburse_amount
     private String note;
-    protected String link_document;
+    private String link_document;
+    private String remarks;
+    protected String decision;
 }

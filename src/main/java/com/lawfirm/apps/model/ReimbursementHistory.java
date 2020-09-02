@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Logger;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,7 @@ public class ReimbursementHistory implements Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date tgl_input;
 
     @Column(name = "response", nullable = true)
@@ -55,6 +57,18 @@ public class ReimbursementHistory implements Serializable {
         isActive = "1";
         response = "submit";
         this.setId(UUID.randomUUID().toString());
+    }
+
+    public ReimbursementHistory() {
+    }
+    
+    public ReimbursementHistory(String Id, Reimbursement reimbursement, Long userId, Date tgl_input, String response, String isActive) {
+        this.Id = Id;
+        this.reimbursement = reimbursement;
+        this.userId = userId;
+        this.tgl_input = tgl_input;
+        this.response = response;
+        this.isActive = isActive;
     }
 
     public String getId() {

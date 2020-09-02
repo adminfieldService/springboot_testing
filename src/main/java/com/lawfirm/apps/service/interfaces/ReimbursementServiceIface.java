@@ -29,9 +29,9 @@ public interface ReimbursementServiceIface {
 
     Reimbursement findByName(String namaVisit);
 
-    List<Reimbursement> listClient();
+    List<Reimbursement> listReimbursement();
 
-    List<Reimbursement> listActive();
+    List<Reimbursement> listBy(String paramBy, Long empId);
 
     List<Reimbursement> byName(Boolean isActive);
 

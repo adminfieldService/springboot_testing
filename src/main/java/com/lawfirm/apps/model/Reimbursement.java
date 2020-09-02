@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -74,6 +76,9 @@ public class Reimbursement implements Serializable {
     @Column(name = "reimbursed_by")
     private Long reimbursedBy;
 
+    @Column(name = "is_active", length = 1)
+    private String isActive;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "approved_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -83,8 +88,12 @@ public class Reimbursement implements Serializable {
     @Column(name = "reimbursed_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date reimbursedDate;
-//    @Column(name = "approved_by")
-//    private String approvedBy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @Column(name = "tgl_input", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date tgInput;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reimbursement")
     private Collection<DocumentReimburse> documentReimburseCollection;
 
@@ -101,10 +110,17 @@ public class Reimbursement implements Serializable {
     @Column(name = "signature")
     private String signature;
 
+    @PrePersist
+    public void onCreate() {
+        isActive = "1";
+        status = "s";
+        tgInput = new Date();
+    }
+
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, Date approvedDate, Date reimbursedDate, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
         this.reimbursementId = reimbursementId;
         this.employee = employee;
@@ -115,13 +131,17 @@ public class Reimbursement implements Serializable {
         this.approvedAmount = approvedAmount;
         this.approvedBy = approvedBy;
         this.reimbursedBy = reimbursedBy;
+        this.isActive = isActive;
         this.approvedDate = approvedDate;
         this.reimbursedDate = reimbursedDate;
+        this.tgInput = tgInput;
         this.documentReimburseCollection = documentReimburseCollection;
         this.loan = loan;
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
+
+    
 
     public Long getReimburseId() {
         return reimburseId;
@@ -145,6 +165,28 @@ public class Reimbursement implements Serializable {
 
     public void setStatus(String status) {
         this.status = status.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")
@@ -306,6 +348,15 @@ public class Reimbursement implements Serializable {
     public void setReimbursedDate(Date reimbursedDate) {
         this.reimbursedDate = reimbursedDate;
     }
+
+    public Date getTgInput() {
+        return tgInput;
+    }
+
+    public void setTgInput(Date tgInput) {
+        this.tgInput = tgInput;
+    }
+    
 
     @Override
     public String toString() {
