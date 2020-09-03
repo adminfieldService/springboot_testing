@@ -34,11 +34,14 @@ public interface CaseDetailsRepoIface {
     List<CaseDetails> generateCaseId(String param1);
 
     CaseDetails findByCaseId(String namaVisit, String paramY);
+
     Optional<CaseDetails> checkCaseId(String caseID, String paramY);
 
     CaseDetails findCaseId(String caseID);
 
     List<CaseDetails> findByEmployee(Long paramLong);
+
+    List<CaseDetails> getCaseId();
 
     List<CaseDetails> findByAdmin(Long paramLong);
 

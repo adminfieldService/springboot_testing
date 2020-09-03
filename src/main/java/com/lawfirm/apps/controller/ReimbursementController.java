@@ -185,11 +185,28 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
+            if (findByCaseID.getStatus().contains("r")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Id : " + case_id + " Rejected ");
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
+
             Loan entityLoan = loanService.findById(id_loan);
             if (entityLoan == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature, Loan type : " + entityLoan.getLoantype().getTypeLoan());
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
+            if (entityLoan.getStatus().contentEquals("r")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature,  Loan status : " + "Rejected");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
                 return rs;

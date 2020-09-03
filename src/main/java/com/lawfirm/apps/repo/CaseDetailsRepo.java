@@ -337,6 +337,28 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     }
 
     @Override
+    public List<CaseDetails> getCaseId() {
+        try {
+            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " WHERE "
+                    + " c.status = :status ")
+                    .setParameter("status", "a")
+                    .getResultList();
+            return (List<CaseDetails>) listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+
+    }
+
+    @Override
     public List<CaseDetails> findByAdmin(Long paramLong) {
         try {
             List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "

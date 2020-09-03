@@ -31,12 +31,14 @@ public interface CaseDetailsServiceIface {
     CaseDetails findById(Long paramLong);
 
     CaseDetails findByCaseId(String namaVisit, String paramY);
-    
+
     Optional<CaseDetails> checkCaseId(String caseID, String paramY);
 
     CaseDetails findCaseId(String caseID);
 
     List<CaseDetails> findByEmployee(Long paramLong);
+
+    List<CaseDetails> getCaseId();
 
     List<CaseDetails> listCaseDetails();
 
@@ -50,8 +52,8 @@ public interface CaseDetailsServiceIface {
     List<CaseDetails> generateCaseId(String param1);
 
     EntityManager getEntityManager();
-    
+
     List<CaseDetails> findByEngagementId(Long paramLong);
-    
+
     List<CaseDetails> findByAdmin(Long paramLong);
 }

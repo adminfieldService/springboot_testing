@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
@@ -59,6 +60,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -127,7 +129,8 @@ public class CaseController {
 
     @RequestMapping(value = "/case/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
+    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @RequestParam("title") String title,
+            @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
         try {
 
             CaseDocument entCaseDocument = new CaseDocument();
@@ -166,7 +169,15 @@ public class CaseController {
                 CreateLog.createJson(rs, "upload-case-document");
                 return rs;
             }
-            if (caseDetails.getStatus().contains("4")) {
+            if (!caseDetails.getStatus().contentEquals("a")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Status : " + caseDetails.getStatus());
+                CreateLog.createJson(rs, "create-event");
+                process = false;
+                return rs;
+            }
+            if (caseDetails.getIsActive().contains("4")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + caseDetails.getCaseID() + " Status Closed ");
@@ -199,6 +210,7 @@ public class CaseController {
                     String fileName = file.getOriginalFilename().replaceAll(" ", "");
                     log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
                     entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+                    entCaseDocument.setTitle(title);
                     entCaseDocument.setCaseDetails(caseDetails);
                     CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
                     if (cerateCaseDocument != null) {
@@ -285,8 +297,6 @@ public class CaseController {
 //                
                 List<String> fileNames = new ArrayList<>();
 
-                
-
             }
             return rs;
         } catch (JSONException ex) {
@@ -351,6 +361,11 @@ public class CaseController {
                         obj.put("case_document_id", "");
                     } else {
                         obj.put("case_document_id", data.getCase_document_id());
+                    }
+                    if (data.getTitle() == null) {
+                        obj.put("title", "");
+                    } else {
+                        obj.put("title", data.getTitle());
                     }
                     if (data.getDate_input() == null) {
                         obj.put("upload_date", "");
@@ -524,5 +539,46 @@ public class CaseController {
             return rs;
 
         }
+    }
+
+    @RequestMapping(value = "/case/case-id", method = RequestMethod.GET, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> getCaseId(Authentication authentication) {
+        try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "getCaseId");
+//                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            List<CaseDetails> listCaseId = this.caseDetailsService.getCaseId();
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < listCaseId.size(); i++) {
+                CaseDetails data = listCaseId.get(i);
+                JSONObject obj = new JSONObject();
+                if (data.getCaseID() == null) {
+                    obj.put("cae_id", "");
+                } else {
+                    obj.put("cae_id", data.getCaseID());
+                }
+                array.put(obj);
+            }
+            return ResponseEntity.ok(array.toString());
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            CreateLog.createJson(ex.getMessage(), "find-by-employee-id");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+
+        }
+
     }
 }

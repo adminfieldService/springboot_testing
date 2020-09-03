@@ -128,13 +128,21 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<CaseDetails> findByEngagementId(Long paramLong) {
         return caseDetailsRepo.findByEngagementId(paramLong);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<CaseDetails> findByAdmin(Long paramLong) {
         return caseDetailsRepo.findByAdmin(paramLong);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<CaseDetails> getCaseId() {
+        return caseDetailsRepo.getCaseId();
     }
 
 }

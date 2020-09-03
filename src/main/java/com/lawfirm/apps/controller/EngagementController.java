@@ -6,7 +6,6 @@
 package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
-import com.lawfirm.apps.model.CaseDocument;
 import com.lawfirm.apps.model.ClientData;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Engagement;
@@ -38,16 +37,12 @@ import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
@@ -64,9 +59,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -129,7 +122,7 @@ public class EngagementController {
 
     public EngagementController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         this.sdfYear = new SimpleDateFormat("yy");
         this.sdfMonth = new SimpleDateFormat("MM");
         this.sdfMY = new SimpleDateFormat("MMyyyy");
@@ -1655,10 +1648,29 @@ public class EngagementController {
                 process = false;
                 return rs;
             }
+            if (!dataCase.getStatus().contentEquals("a")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Status : " + dataCase.getStatus());
+                CreateLog.createJson(rs, "create-event");
+                process = false;
+                return rs;
+            }
+            if (dataCase.getIsActive().contentEquals("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + dataCase.getCaseID() + " Status Closed ");
+                CreateLog.createJson(rs, "create-event");
+                return rs;
+            }
             System.out.println("isi : " + object.getSchedule_date());
-            String dt = dateFormat.format(object.getSchedule_date());
-            Date schedule = dateFormat.parse(dt);
-            System.out.println("dateFormat.format(object.getSchedule_date()) : " + schedule);
+//            Date schedule = null;
+
+//            String dt = dateFormat.format(object.getSchedule_date());
+            Date schedule = dateFormat.parse(object.getSchedule_date());
+            System.out.println(schedule);
+
+//            System.out.println("dateFormat.format(object.getSchedule_date()) : " + schedule);
             if (schedule == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -1721,6 +1733,7 @@ public class EngagementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-event");
             return rs;
+
         } catch (ParseException ex) {
             rs.setResponse_code("55");
             rs.setInfo("Error");
@@ -1730,7 +1743,6 @@ public class EngagementController {
             return rs;
 
         }
-
     }
 
     @RequestMapping(value = "/manage-engagement/event/{event_id}", method = RequestMethod.POST, produces = {"application/json"})
@@ -1761,8 +1773,8 @@ public class EngagementController {
                 return rs;
             }
             System.out.println("isi : " + object.getSchedule_date());
-            String dt = dateFormat.format(object.getSchedule_date());
-            Date schedule = dateFormat.parse(dt);
+//            String dt = dateFormat.format(object.getSchedule_date());
+            Date schedule = dateFormat.parse(object.getSchedule_date());
             System.out.println("dateFormat.format(object.getSchedule_date()) : " + schedule);
             if (schedule == null) {
                 rs.setResponse_code("55");

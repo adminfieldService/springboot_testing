@@ -9,19 +9,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,6 +42,8 @@ public class CaseDocument implements Serializable {
     private String documentType;
     @Column(name = "link_document")
     private String linkDocument;
+    @Column(name = "title", length = 150)
+    private String title;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)// fetch = FetchType.LAZY
     @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
     private CaseDetails caseDetails;
@@ -67,10 +65,11 @@ public class CaseDocument implements Serializable {
     public CaseDocument() {
     }
 
-    public CaseDocument(String case_document_id, String documentType, String linkDocument, CaseDetails caseDetails, Date date_input, String isActive) {
+    public CaseDocument(String case_document_id, String documentType, String linkDocument, String title, CaseDetails caseDetails, Date date_input, String isActive) {
         this.case_document_id = case_document_id;
         this.documentType = documentType;
         this.linkDocument = linkDocument;
+        this.title = title;
         this.caseDetails = caseDetails;
         this.date_input = date_input;
         this.isActive = isActive;
@@ -112,6 +111,28 @@ public class CaseDocument implements Serializable {
 
     public void setLinkDocument(String linkDocument) {
         this.linkDocument = linkDocument.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")

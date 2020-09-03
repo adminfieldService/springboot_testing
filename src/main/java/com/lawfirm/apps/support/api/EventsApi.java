@@ -20,7 +20,7 @@ public class EventsApi {
 
     protected String event_type;
     protected String event_name;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
-    protected Date schedule_date;
+//    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    protected String schedule_date;
     protected String schedule_time;
 }
