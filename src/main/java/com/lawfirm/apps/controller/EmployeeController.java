@@ -1187,10 +1187,7 @@ public class EmployeeController { //LawfirmController
 
     @RequestMapping(value = "/acount/find-by-employee", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> findAccountByEmployee(@RequestBody
-            final AccountApi object,
-            @RequestParam("param") String param
-    ) {
+    public ResponseEntity<String> findAccountByEmployee(@RequestBody final AccountApi object, @RequestParam("param") String param) {
         try {
             List<Account> listAct = this.accountService.findByEmployee(param);
 
@@ -2496,7 +2493,7 @@ public class EmployeeController { //LawfirmController
             JSONArray array = new JSONArray();
             for (int i = 0; i < entityList.size(); i++) {
                 Employee data = entityList.get(i);
-                JSONObject obj = new JSONObject();
+                    JSONObject obj = new JSONObject();
                 if (data.getRoleName() == null) {
                     obj.put("role_name", "");
                 } else {

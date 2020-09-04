@@ -11,6 +11,7 @@ import com.lawfirm.apps.model.Financial;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.LoanHistory;
 import com.lawfirm.apps.model.LoanType;
+import com.lawfirm.apps.model.OutStanding;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
@@ -27,6 +28,7 @@ import com.lawfirm.apps.service.interfaces.LoanHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
+import com.lawfirm.apps.service.interfaces.OutStandingServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
@@ -122,6 +124,8 @@ public class DisbursementController {
     DisbursementServiceIface disbursementService;
     @Autowired
     LoanHistoryServiceIface loanHistoryService;
+    @Autowired
+    OutStandingServiceIface OutStandingService;
 
     public DisbursementController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -264,12 +268,13 @@ public class DisbursementController {
 
     }
 
-    @RequestMapping(value = "/disburse/{id_loan}", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/disburse/{id_loan}/loan-a", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public Response disburse(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
+    public Response disburseLoanA(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
         try {
             Date now = new Date();
             Date dateDisburs = new Date();
+
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -281,6 +286,7 @@ public class DisbursementController {
             LoanHistory entityHistory = new LoanHistory();
             Disbursement entityDisbursement = new Disbursement();
             Financial dataFinance = new Financial();
+            OutStanding outStanding = new OutStanding();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("55");
 //            rs.setInfo("Failed");
@@ -292,7 +298,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
 //                process = false;
                 return rs;
             }
@@ -311,7 +317,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
                 process = false;
             }
 //        if (dataEMploye.getRoleName().contentEquals("finance")) {
@@ -326,28 +332,28 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
                 process = false;
             }
             if (dataLoan.getStatus().contentEquals("r")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps are rejected");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("1")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("4")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Already approved by finance ");
-                CreateLog.createJson(rs, "disburse");
+                CreateLog.createJson(rs, "disburseLoanA");
                 process = false;
             }
             if (process) {
@@ -372,6 +378,10 @@ public class DisbursementController {
                 entityHistory.setUserId(entityEmp.getIdEmployee());
                 entityHistory.setResponse("disburse by : " + entityEmp.getEmployeeId());
                 Loan upDataLoan = loanService.update(dataLoan);
+                outStanding.setLoan(dataLoan);
+                outStanding.setTahun_input(date_now);
+                outStanding.setUserId(dataLoan.getEmployee().getIdEmployee());
+                this.OutStandingService.create(outStanding);
                 this.loanHistoryService.create(entityHistory);
                 if (upDataLoan != null) {
                     dataFinance.setDisburse_date(new Date());
@@ -381,26 +391,26 @@ public class DisbursementController {
                         rs.setResponse_code("55");
                         rs.setInfo("Failed");
                         rs.setResponse("out Standing Field can't be null");
-                        CreateLog.createJson(rs, "disburse");
+                        CreateLog.createJson(rs, "disburseLoanA");
                     }
                     Financial upd_finance = financialService.update(dataFinance);
                     if (upd_finance != null) {
                         rs.setResponse_code("01");
                         rs.setInfo("Success");
                         rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
-                        CreateLog.createJson(rs, "disburse");
+                        CreateLog.createJson(rs, "disburseLoanA");
                         return rs;
                     }
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
-                    CreateLog.createJson(rs, "disburse");
+                    CreateLog.createJson(rs, "disburseLoanA");
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
-                    CreateLog.createJson(rs, "disburse");
+                    CreateLog.createJson(rs, "disburseLoanA");
                     return rs;
                 }
             }
@@ -411,8 +421,8 @@ public class DisbursementController {
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
-            CreateLog.createJson(rs, "disburse");
-            CreateLog.createJson(ex.getMessage(), "disburse");
+            CreateLog.createJson(rs, "disburseLoanA");
+            CreateLog.createJson(ex.getMessage(), "disburseLoanA");
             return rs;
 
         } catch (ParseException ex) {
@@ -421,8 +431,179 @@ public class DisbursementController {
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
-            CreateLog.createJson(rs, "disburse");
-            CreateLog.createJson(ex.getMessage(), "disburse");
+            CreateLog.createJson(rs, "disburseLoanA");
+            CreateLog.createJson(ex.getMessage(), "disburseLoanA");
+            return rs;
+        }
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/disburse/{id_loan}/loan-b", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response disburseLoanB(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
+        try {
+            Date now = new Date();
+            Date dateDisburs = new Date();
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+
+            Boolean process = true;
+            Loan dataLoan = new Loan();
+            LoanType typeLoan = new LoanType();
+            LoanHistory entityHistory = new LoanHistory();
+            Disbursement entityDisbursement = new Disbursement();
+            Financial dataFinance = new Financial();
+            OutStanding outStanding = new OutStanding();
+//        if (dataFinance == null) {
+//            rs.setResponse_code("55");
+//            rs.setInfo("Failed");
+//            rs.setResponse("Finance Id Not found");
+//            CreateLog.createJson(rs, "loan-approve-Byfinance");
+//            process = false;
+//        }
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "disburseLoanB");
+//                process = false;
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("finance")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
+                CreateLog.createJson(rs, "disburseLoanB");
+//                process = false;
+                return rs;
+            }
+//             Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "disburseLoanB");
+                process = false;
+            }
+//        if (dataEMploye.getRoleName().contentEquals("finance")) {
+//            rs.setResponse_code("55");
+//            rs.setInfo("Failed");
+//            rs.setResponse("Cannot Access This feature");
+//            process = false;
+//        }
+            dataLoan = loanService.findById(id_loan);
+
+            if (dataLoan == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Loand id null, Cannot Access This feature");
+                CreateLog.createJson(rs, "disburseLoanB");
+                process = false;
+            }
+            if (dataLoan.getStatus().contentEquals("r")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Loan apps are rejected");
+                CreateLog.createJson(rs, "disburseLoanB");
+                process = false;
+            }
+            if (dataLoan.getIsActive().contentEquals("1")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Loan apps Must approve by ADMIN");
+                CreateLog.createJson(rs, "disburseLoanB");
+                process = false;
+            }
+            if (dataLoan.getIsActive().contentEquals("4")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Already approved by finance ");
+                CreateLog.createJson(rs, "disburseLoanB");
+                process = false;
+            }
+            if (process) {
+                
+                dataLoan.setAprovedByFinance(dataEMploye.getIdEmployee().toString());//dataEMploye.getName()
+                dataLoan.setDate_approved_by_finance(new Date());
+                dataLoan.setStatus("d");
+                dataLoan.setIsActive("4");
+                System.out.println("isi : " + object.getDisburse_date());
+                String dt = dateFormat.format(object.getDisburse_date());
+                Date disburse = dateFormat.parse(dt);
+                dataLoan.setDisburse_date(disburse);
+                String disburseM = sdfDisbursM.format(new Date());
+                String disburseMy = sdfDisbursMY.format(new Date());
+                System.out.println("isi disburseM : " + disburseM);
+
+                entityDisbursement.setBulanInput(disburseM);
+                String dsb_id = "DSB" + disburseMy;
+                entityDisbursement.setDisbursementId(dsb_id);
+                entityDisbursement.setDisburse_date(disburse);
+
+                entityHistory.setLoan(dataLoan);
+                entityHistory.setUserId(entityEmp.getIdEmployee());
+                entityHistory.setResponse("disburse by : " + entityEmp.getEmployeeId());
+                Loan upDataLoan = loanService.update(dataLoan);
+                outStanding.setLoan(dataLoan);
+                outStanding.setTahun_input(date_now);
+                outStanding.setUserId(dataLoan.getEmployee().getIdEmployee());
+                this.loanHistoryService.create(entityHistory);
+                
+                if (upDataLoan != null) {
+                    dataFinance.setDisburse_date(new Date());
+                    if (object.getOut_standing() != null) {
+                        dataFinance.setOutStanding(object.getOut_standing());
+                    } else {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("out Standing Field can't be null");
+                        CreateLog.createJson(rs, "disburseLoanB");
+                    }
+                    Financial upd_finance = financialService.update(dataFinance);
+                    if (upd_finance != null) {
+                        rs.setResponse_code("01");
+                        rs.setInfo("Success");
+                        rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
+                        CreateLog.createJson(rs, "disburseLoanB");
+                        return rs;
+                    }
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Loand id null, Cannot Access This feature");
+                    CreateLog.createJson(rs, "disburseLoanB");
+                    return rs;
+                } else {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Loand id null, Cannot Access This feature");
+                    CreateLog.createJson(rs, "disburseLoanB");
+                    return rs;
+                }
+            }
+            return rs;
+        } catch (org.json.JSONException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "disburseLoanB");
+            CreateLog.createJson(ex.getMessage(), "disburseLoanB");
+            return rs;
+
+        } catch (ParseException ex) {
+            Logger.getLogger(LoanController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "disburseLoanB");
+            CreateLog.createJson(ex.getMessage(), "disburseLoanB");
             return rs;
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),

@@ -64,6 +64,9 @@ public class Reimbursement implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "link_document")
+    private String linkDocument;
+
     @Column(name = "reimburse_amount")
     private Double reimburseAmount;
 
@@ -120,13 +123,14 @@ public class Reimbursement implements Serializable {
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, String linkDocument, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
         this.reimbursementId = reimbursementId;
         this.employee = employee;
         this.status = status;
         this.expenseDate = expenseDate;
         this.note = note;
+        this.linkDocument = linkDocument;
         this.reimburseAmount = reimburseAmount;
         this.approvedAmount = approvedAmount;
         this.approvedBy = approvedBy;
@@ -140,8 +144,6 @@ public class Reimbursement implements Serializable {
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
-
-    
 
     public Long getReimburseId() {
         return reimburseId;
@@ -356,7 +358,28 @@ public class Reimbursement implements Serializable {
     public void setTgInput(Date tgInput) {
         this.tgInput = tgInput;
     }
-    
+
+    public String getLinkDocument() {
+        return linkDocument;
+    }
+
+    public void setLinkDocument(String linkDocument) {
+        this.linkDocument = linkDocument.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
 
     @Override
     public String toString() {

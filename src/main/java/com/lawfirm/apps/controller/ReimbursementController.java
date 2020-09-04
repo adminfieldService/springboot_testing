@@ -33,12 +33,18 @@ import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
-import org.json.JSONObject;
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +57,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -119,7 +126,7 @@ public class ReimbursementController {
         this.sdfMY = new SimpleDateFormat("MMyyyy");
     }
 
-    @RequestMapping(value = "/reimbursement/{id_loan}", method = RequestMethod.POST)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursement/{id_loan}", method = RequestMethod.POST, consumes = {"multipart/form-data"}, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
 //     public Response createReimburse(@RequestParam ReimbursementApi object, @RequestPart("attach") MultipartFile file, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
     public Response createReimburse(
@@ -128,7 +135,7 @@ public class ReimbursementController {
             @RequestParam("expense_date") String expense_date,
             @RequestParam("amount") Double amount,
             @RequestParam("note") String note,
-            @RequestPart("attach") MultipartFile file, Authentication authentication) {
+            @RequestPart("attach") MultipartFile file, Authentication authentication) throws IOException {
 
         try {
             Date now = new Date();
@@ -194,7 +201,7 @@ public class ReimbursementController {
                 return rs;
             }
 
-            Loan entityLoan = loanService.findById(id_loan);
+            Loan entityLoan = loanService.findByIdLoan(id_loan);
             if (entityLoan == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -211,6 +218,14 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
+            if (entityLoan.getStatus().contentEquals("s")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature,  Loan Must : " + "Approved");
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
             if (entityLoan.getLoantype().getTypeLoan().contains("a")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -219,10 +234,39 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
+            String pathDoc = basepathUpload + "reimbursement" + "/" + entityLoan.getLoanId() + "/";
+            String fileDownloadUri = null;
+            String fileName = null;
             if (process) {
                 expense_date_value = dateFormat.parse(expense_date);
                 ReimbursementHistory history = new ReimbursementHistory();
                 Reimbursement dataReimbursement = new Reimbursement();
+                if (!file.isEmpty()) {
+                    File newFolder = new File(pathDoc);
+                    boolean created = newFolder.mkdir();
+                    if (!newFolder.getParentFile().exists()) {
+                        newFolder.getParentFile().mkdirs();
+                    } else {
+                        newFolder.getParentFile().mkdirs();
+                    }
+                    if (!newFolder.exists()) {
+                        if (created) {
+                            System.out.println("Folder was created !");
+                        } else {
+                            System.out.println("Folder exists");
+                        }
+                    }
+                }
+                byte[] bytes = file.getBytes();
+                fileName = file.getOriginalFilename().replaceAll(" ", "");
+                Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+                Files.write(path, bytes);
+                log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
+                dataReimbursement.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
+                fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path(pathDoc + file.getOriginalFilename().replaceAll(" ", ""))
+                        .path(fileName)
+                        .toUriString();
                 dataReimbursement.setReimburseAmount(amount);
                 dataReimbursement.setNote(note);
                 dataReimbursement.setStatus("s");
@@ -263,9 +307,9 @@ public class ReimbursementController {
         return rs;
     }
 
-    @RequestMapping(value = "/reimbursements", method = RequestMethod.GET)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursements", method = RequestMethod.GET, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public ResponseEntity<?> listReimbursement(Authentication authentication) {
+    public ResponseEntity<String> listReimbursement(Authentication authentication) {
         try {
             String nama = authentication.getName();
             Boolean process = true;
@@ -293,11 +337,12 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            List<Reimbursement> listReimbursement = this.reimbursementService.listReimbursement();
+            List<Reimbursement> reimbursementList = reimbursementService.listReimbursement();
+            log.info("listReimbursement.size() : " + reimbursementList.size());
             JSONArray array = new JSONArray();
-            for (int i = 0; i < listReimbursement.size(); i++) {
+            for (int i = 0; i < reimbursementList.size(); i++) {
                 JSONObject obj = new JSONObject();
-                Reimbursement reimbursement = (Reimbursement) listReimbursement.get(i);
+                Reimbursement reimbursement = reimbursementList.get(i);
 
                 if (reimbursement.getReimburseId() == null) {
                     obj.put("reimburse_id", "");
@@ -377,21 +422,26 @@ public class ReimbursementController {
                 } else {
                     obj.put("status", reimbursement.getStatus());
                 }
+                if (reimbursement.getLinkDocument() == null) {
+                    obj.put("link_document", "");
+                } else {
+                    obj.put("link_document", reimbursement.getLinkDocument());
+                }
                 array.put(obj);
             }
             return ResponseEntity.ok(array.toString());
 
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "create-reimburse");
+            CreateLog.createJson(ex.getMessage(), "listReimbursement");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 
     }
 
-    @RequestMapping(value = "/reimbursement/{reimburse_id}/find-by-id", method = RequestMethod.POST)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursement/{reimburse_id}/find-by-id", method = RequestMethod.POST, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
     public ResponseEntity<?> reimbursementFindById(@PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
         try {
@@ -504,12 +554,16 @@ public class ReimbursementController {
                     } else {
                         obj.put("status", reimbursement.getStatus());
                     }
-
+                    if (reimbursement.getLinkDocument() == null) {
+                        obj.put("link_document", "");
+                    } else {
+                        obj.put("link_document", reimbursement.getLinkDocument());
+                    }
                 }
                 return ResponseEntity.ok(obj.toString());
             }
 
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "reimbursementFindById");
@@ -520,7 +574,7 @@ public class ReimbursementController {
                 HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(value = "/reimbursement/{reimburse_id}/approval", method = RequestMethod.POST)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursement/{reimburse_id}/approval", method = RequestMethod.POST, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
     public Response approvalReimbursement(@RequestParam ReimbursementApi object, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
         try {
@@ -637,7 +691,7 @@ public class ReimbursementController {
 //        return rs;
     }
 
-    @RequestMapping(value = "/reimbursement/{reimburse_id}", method = RequestMethod.POST)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursement/{reimburse_id}", method = RequestMethod.POST, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
     public Response reimbursement(@RequestParam ReimbursementApi object, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
         try {
@@ -736,9 +790,9 @@ public class ReimbursementController {
 
     }
 
-    @RequestMapping(value = "/reimbursements/finance", method = RequestMethod.GET)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursements/finance", method = RequestMethod.GET, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public ResponseEntity<?> listReimbursementFinace(Authentication authentication) {
+    public ResponseEntity<String> listReimbursementFinace(Authentication authentication) {
         try {
             String nama = authentication.getName();
             Boolean process = true;
@@ -852,10 +906,15 @@ public class ReimbursementController {
                 } else {
                     obj.put("status", reimbursement.getStatus());
                 }
+                if (reimbursement.getLinkDocument() == null) {
+                    obj.put("link_document", "");
+                } else {
+                    obj.put("link_document", reimbursement.getLinkDocument());
+                }
                 array.put(obj);
             }
             return ResponseEntity.ok(array.toString());
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursementFinace");
@@ -864,9 +923,9 @@ public class ReimbursementController {
         }
     }
 
-    @RequestMapping(value = "/reimbursements/admin", method = RequestMethod.GET)//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursements/admin", method = RequestMethod.GET, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public ResponseEntity<?> listReimbursementAdmin(Authentication authentication) {
+    public ResponseEntity<String> listReimbursementAdmin(Authentication authentication) {
         try {
             String nama = authentication.getName();
             Boolean process = true;
@@ -980,11 +1039,16 @@ public class ReimbursementController {
                 } else {
                     obj.put("status", reimbursement.getStatus());
                 }
+                if (reimbursement.getLinkDocument() == null) {
+                    obj.put("link_document", "");
+                } else {
+                    obj.put("link_document", reimbursement.getLinkDocument());
+                }
                 array.put(obj);
             }
             return ResponseEntity.ok(array.toString());
 
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursementAdmin");

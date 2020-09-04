@@ -148,13 +148,13 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
     @Override
     public List<Reimbursement> listReimbursement() {
         try {
-            List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                    + " JOIN FETCH r.employee AS e "
+            List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r "
                     + " LEFT JOIN FETCH r.loan AS l "
+                    + " LEFT JOIN FETCH r.employee AS e "
                     + " RIGHT JOIN FETCH l.engagement AS n "
-                    + " ORDER BY r.tgInput Desc")
+                    + " ORDER BY r.tgInput DESC ")
                     .getResultList();
-            return (List<Reimbursement>) listAcquire;
+            return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
@@ -167,6 +167,25 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
         }
     }
 
+//        try {
+//            List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r "
+//                    + " JOIN FETCH r.employee AS e "
+//                    + " LEFT JOIN FETCH r.loan AS l "
+//                    + " RIGHT JOIN FETCH l.engagement AS n "
+//                    + " ORDER BY r.tgInput Desc")
+//                    .getResultList();
+//            return (List<Reimbursement>) listAcquire;
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
     @Override
     public List<Reimbursement> listBy(String paramBy, Long empId) {
         try {

@@ -43,6 +43,9 @@ public class OutStanding implements Serializable {
     @Column(name = "reimburse_id")
     private Long reimburseId;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "tahun_input", length = 10, nullable = true)
     private String tahun_input;
 
@@ -52,7 +55,7 @@ public class OutStanding implements Serializable {
     private Date tgInput;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "loan_id", referencedColumnName = "id")
     private Loan loan;
 
     @PrePersist
@@ -64,14 +67,17 @@ public class OutStanding implements Serializable {
     public OutStanding() {
     }
 
-    public OutStanding(String outstandingUUId, String outstandingId, Long reimburseId, Long idLoan, String tahun_input, Date tgInput, Loan loan) {
+    public OutStanding(String outstandingUUId, String outstandingId, Long reimburseId, Long userId, String tahun_input, Date tgInput, Loan loan) {
         this.outstandingUUId = outstandingUUId;
         this.outstandingId = outstandingId;
         this.reimburseId = reimburseId;
+        this.userId = userId;
         this.tahun_input = tahun_input;
         this.tgInput = tgInput;
         this.loan = loan;
     }
+
+    
 
     public String getOutstandingUUId() {
         return outstandingUUId;
@@ -163,4 +169,13 @@ public class OutStanding implements Serializable {
         this.loan = loan;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    
 }
