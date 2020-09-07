@@ -39,8 +39,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -1056,4 +1061,83 @@ public class ReimbursementController {
                     HttpStatus.NOT_FOUND);
         }
     }
+
+    @RequestMapping(value = "/reimbursement/{reimburse_id}/document", method = RequestMethod.GET, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
+    @XxsFilter
+    public ResponseEntity<?> viewDocumentReimbursement(ServletRequest request, HttpServletResponse response, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) throws IOException {
+        try {
+            Boolean process = true;
+            JSONObject jsonobj = new JSONObject();
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "viewDocument-reimbursement");
+                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+//            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+//                process = false;
+//                CreateLog.createJson(rs, "uploadMultipleDocument");
+//                return rs;
+//            }
+
+            Employee employee = employeeService.findById(entityEmp.getIdEmployee());
+
+            if (employee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                process = false;
+                CreateLog.createJson(rs, "viewDocument-reimbursement");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (process) {
+
+                Reimbursement rembursement = reimbursementService.findById(reimburse_id);
+                log.info("rembursement : " + rembursement.getReimbursementId());
+                try {
+                    log.info("employee-2_" + employee.getIdEmployee());
+                    log.info("entityEmp-2_" + entityEmp.getIdEmployee());
+                    byte[] input_file = Files.readAllBytes(Paths.get(rembursement.getLinkDocument()));
+                    String linkDoc = new String(Base64.getEncoder().encode(input_file));
+                    jsonobj.put("response_code", "00");
+                    jsonobj.put("response", "success");
+                    jsonobj.put("info", linkDoc);
+                } catch (JSONException ex) {
+                    Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
+                            HttpStatus.NOT_FOUND);
+                }
+
+                return ResponseEntity.ok(jsonobj.toString());
+            }
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse("Employee Null");
+            CreateLog.createJson(rs, "viewDocument-reimbursement");
+            return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
+                    HttpStatus.NOT_FOUND);
+        } catch (IOException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "viewDocument-reimbursement");
+//            return null;
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

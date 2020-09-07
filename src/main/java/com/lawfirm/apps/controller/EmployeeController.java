@@ -2081,7 +2081,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("can't acces this feature :");
-                CreateLog.createJson(rs, "download-cv");
+                CreateLog.createJson(rs, "findById");
 //                process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -2493,7 +2493,7 @@ public class EmployeeController { //LawfirmController
             JSONArray array = new JSONArray();
             for (int i = 0; i < entityList.size(); i++) {
                 Employee data = entityList.get(i);
-                    JSONObject obj = new JSONObject();
+                JSONObject obj = new JSONObject();
                 if (data.getRoleName() == null) {
                     obj.put("role_name", "");
                 } else {
@@ -2526,6 +2526,7 @@ public class EmployeeController { //LawfirmController
     @XxsFilter
     public ResponseEntity<?> downloadCv(ServletRequest request, HttpServletResponse response, @PathVariable("id_employee") Long idEmployee, Authentication authentication) throws IOException {
         try {
+            Boolean process = true;
             JSONObject jsonobj = new JSONObject();
             String name = authentication.getName();
             log.info("name : " + name);
@@ -2551,7 +2552,6 @@ public class EmployeeController { //LawfirmController
                 log.info("entityEmp" + entityEmp.getIdEmployee());
             }
 
-            Boolean process = true;
             if (entity == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
