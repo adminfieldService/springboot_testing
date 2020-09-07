@@ -55,7 +55,6 @@ public class ReimbursementHistory implements Serializable {
     public void onCreate() {
         tgl_input = new Date();
         isActive = "1";
-        response = "submit";
         this.setId(UUID.randomUUID().toString());
     }
 
