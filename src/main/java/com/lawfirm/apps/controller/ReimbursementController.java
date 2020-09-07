@@ -29,7 +29,6 @@ import com.lawfirm.apps.service.interfaces.ReimbursementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
 import com.lawfirm.apps.support.api.AapprovalReimbursementDto;
-import com.lawfirm.apps.support.api.ReimbursementApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.utils.Util;
@@ -660,10 +659,10 @@ public class ReimbursementController {
                 dataReimbursement.setApprovedAmount(object.getApproved_amount());
 
                 history.setResponse("approved by : " + dataEmp.getEmployeeId());
-
+                history.setUserId(dataEmp.getIdEmployee());
                 Reimbursement updateReimbursement = reimbursementService.update(dataReimbursement);
                 if (updateReimbursement != null) {
-                    history.setReimbursement(dataReimbursement);
+                    history.setReimbursement(updateReimbursement);
                     this.reimbursementHistoryService.create(history);
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
@@ -773,10 +772,10 @@ public class ReimbursementController {
                 dataReimbursement.setReimbursedDate(now);
 
                 history.setResponse("reimburse by : " + dataEmp.getEmployeeId());
-
+                history.setUserId(dataEmp.getIdEmployee());
                 Reimbursement updateReimbursement = reimbursementService.update(dataReimbursement);
                 if (updateReimbursement != null) {
-                    history.setReimbursement(dataReimbursement);
+                    history.setReimbursement(updateReimbursement);
                     this.reimbursementHistoryService.create(history);
                     rs.setResponse_code("00");
                     rs.setInfo("Success");

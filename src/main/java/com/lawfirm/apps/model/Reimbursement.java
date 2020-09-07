@@ -116,7 +116,6 @@ public class Reimbursement implements Serializable {
     @PrePersist
     public void onCreate() {
         isActive = "1";
-        status = "s";
         tgInput = new Date();
     }
 
