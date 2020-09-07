@@ -120,8 +120,8 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
     public Reimbursement findById(Long paramLong) {
         try {
             Reimbursement listAcquire = (Reimbursement) entityManager.createQuery("SELECT r FROM Reimbursement r"
-                    + " JOIN FETCH r.employee AS e "
                     + " LEFT JOIN FETCH r.loan AS l "
+                    + " LEFT JOIN FETCH r.employee AS e "
                     + " RIGHT JOIN FETCH l.engagement AS n "
                     + " WHERE "
                     + " r.reimburseId = :reimburseId ")
@@ -192,8 +192,8 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             List<Reimbursement> listAcquire = null;
             if (paramBy.contains("admin")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + " JOIN FETCH r.employee AS e "
                         + " LEFT JOIN FETCH r.loan AS l "
+                        + " LEFT JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
                         + " r.approvedBy = :approvedBy "
@@ -203,8 +203,8 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             }
             if (paramBy.contains("finance")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + " JOIN FETCH r.employee AS e "
                         + " LEFT JOIN FETCH r.loan AS l "
+                        + " LEFT JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
                         + " r.reimbursedBy = :reimbursedBy "

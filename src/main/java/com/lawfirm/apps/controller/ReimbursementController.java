@@ -28,6 +28,7 @@ import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
+import com.lawfirm.apps.support.api.AapprovalReimbursementDto;
 import com.lawfirm.apps.support.api.ReimbursementApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
@@ -56,6 +57,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -278,6 +280,7 @@ public class ReimbursementController {
                 dataReimbursement.setLoan(entityLoan);
                 dataReimbursement.setReimbursementId(Util.changeBCS(entityLoan.getLoanId()));
                 dataReimbursement.setExpenseDate(expense_date_value);
+                dataReimbursement.setEmployee(entityEmp);
                 history.setReimbursement(dataReimbursement);
                 history.setTgl_input(now);
                 history.setResponse("submited by : " + entityEmp.getEmployeeId());
@@ -385,15 +388,10 @@ public class ReimbursementController {
                 } else {
                     obj.put("note", reimbursement.getNote());
                 }
-                if (reimbursement.getNote() == null) {
-                    obj.put("note", "");
-                } else {
-                    obj.put("note", reimbursement.getNote());
-                }
                 if (reimbursement.getReimburseAmount() == null) {
-                    obj.put("amount", "");
+                    obj.put("reimburse_amount", "");
                 } else {
-                    obj.put("amount", reimbursement.getNote());
+                    obj.put("reimburse_amount", String.format("%.0f", reimbursement.getReimburseAmount()));
                 }
                 if (reimbursement.getApprovedBy() == null) {
                     obj.put("approved_by", "");
@@ -418,9 +416,9 @@ public class ReimbursementController {
                     obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
                 }
                 if (reimbursement.getApprovedAmount() == null) {
-                    obj.put("reimbursement_amount", "");
+                    obj.put("approved_amount", "");
                 } else {
-                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                    obj.put("approved_amount", String.format("%.0f", reimbursement.getApprovedAmount()));
                 }
                 if (reimbursement.getStatus() == null) {
                     obj.put("status", "");
@@ -517,15 +515,10 @@ public class ReimbursementController {
                     } else {
                         obj.put("note", reimbursement.getNote());
                     }
-                    if (reimbursement.getNote() == null) {
-                        obj.put("note", "");
-                    } else {
-                        obj.put("note", reimbursement.getNote());
-                    }
                     if (reimbursement.getReimburseAmount() == null) {
-                        obj.put("amount", "");
+                        obj.put("reimburse_amount", "");
                     } else {
-                        obj.put("amount", reimbursement.getNote());
+                        obj.put("reimburse_amount", String.format("%.0f", reimbursement.getReimburseAmount()));
                     }
                     if (reimbursement.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -550,9 +543,9 @@ public class ReimbursementController {
                         obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
                     }
                     if (reimbursement.getApprovedAmount() == null) {
-                        obj.put("reimbursement_amount", "");
+                        obj.put("approved_amount", "");
                     } else {
-                        obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                        obj.put("approved_amount", String.format("%.0f", reimbursement.getApprovedAmount()));
                     }
                     if (reimbursement.getStatus() == null) {
                         obj.put("status", "");
@@ -581,7 +574,7 @@ public class ReimbursementController {
 
     @RequestMapping(value = "/reimbursement/{reimburse_id}/approval", method = RequestMethod.POST, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public Response approvalReimbursement(@RequestParam ReimbursementApi object, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
+    public Response approvalReimbursement(@RequestBody AapprovalReimbursementDto object, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
         try {
             Date now = new Date();
             String nama = authentication.getName();
@@ -619,7 +612,7 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
-            Reimbursement dataReimbursement = this.reimbursementService.findById(reimburse_id);
+            Reimbursement dataReimbursement = reimbursementService.findById(reimburse_id);
             if (dataReimbursement == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -654,30 +647,41 @@ public class ReimbursementController {
             }
             if (process) {
                 ReimbursementHistory history = new ReimbursementHistory();
-                if (object.getDecision().contentEquals("r")) {
-                    dataReimbursement.setApprovedBy(dataEmp.getIdEmployee());
-                    dataReimbursement.setStatus("r");
+//                if (object.getDecision().contentEquals("r")) {
+//                    dataReimbursement.setApprovedBy(dataEmp.getIdEmployee());
+//                    dataReimbursement.setStatus("r");
+//                    history.setReimbursement(dataReimbursement);
+//                    history.setResponse("reject by : " + dataEmp.getEmployeeId());
+//                }
+//                if (object.getDecision().contentEquals("a")) {
+                dataReimbursement.setApprovedBy(dataEmp.getIdEmployee());
+                dataReimbursement.setStatus("a");
+                dataReimbursement.setApprovedDate(now);
+                dataReimbursement.setApprovedAmount(object.getApproved_amount());
+
+                history.setResponse("approved by : " + dataEmp.getEmployeeId());
+
+                Reimbursement updateReimbursement = reimbursementService.update(dataReimbursement);
+                if (updateReimbursement != null) {
                     history.setReimbursement(dataReimbursement);
-                    history.setResponse("reject by : " + dataEmp.getEmployeeId());
+                    this.reimbursementHistoryService.create(history);
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("data reimbursement approved by admin " + entityEmp.getEmployeeId());
+                    return rs;
                 }
-                if (object.getDecision().contentEquals("a")) {
-                    dataReimbursement.setApprovedBy(dataEmp.getIdEmployee());
-                    dataReimbursement.setStatus("a");
-                    dataReimbursement.setApprovedDate(now);
-                    dataReimbursement.setApprovedAmount(object.getAmount());
-                    history.setReimbursement(dataReimbursement);
-                    history.setResponse("approved by : " + dataEmp.getEmployeeId());
-                }
+
+//                }
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("reimburse id : " + reimburse_id + " not Found");
+                rs.setResponse("data reimbursement not Found");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 return rs;
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
-            rs.setResponse("reimburse id : " + reimburse_id + " not Found");
+            rs.setResponse("data id : " + reimburse_id + " not Found");
             CreateLog.createJson(rs, "reimbursement");
             return rs;
         } catch (Exception ex) {
@@ -698,13 +702,13 @@ public class ReimbursementController {
 
     @RequestMapping(value = "/reimbursement/{reimburse_id}", method = RequestMethod.POST, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public Response reimbursement(@RequestParam ReimbursementApi object, @PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {
+    public Response reimbursement(@PathVariable("reimburse_id") Long reimburse_id, Authentication authentication) {//@RequestBody ReimbursementApi object, 
         try {
             Date now = new Date();
             String nama = authentication.getName();
             Boolean process = true;
             Date expense_date_value = null;
-            log.info("object value : " + object.toString());
+//            log.info("object value : " + object.toString());
 
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
@@ -763,13 +767,23 @@ public class ReimbursementController {
             }
             if (process) {
                 ReimbursementHistory history = new ReimbursementHistory();
-                if (object.getDecision().contentEquals("reimburse")) {
-                    dataReimbursement.setReimbursedBy(dataEmp.getIdEmployee());
-                    dataReimbursement.setStatus("reimburse");
-                    dataReimbursement.setReimbursedDate(now);
+//                if (object.getDecision().contentEquals("reimburse")) {
+                dataReimbursement.setReimbursedBy(dataEmp.getIdEmployee());
+                dataReimbursement.setStatus("reimburse");
+                dataReimbursement.setReimbursedDate(now);
+
+                history.setResponse("reimburse by : " + dataEmp.getEmployeeId());
+
+                Reimbursement updateReimbursement = reimbursementService.update(dataReimbursement);
+                if (updateReimbursement != null) {
                     history.setReimbursement(dataReimbursement);
-                    history.setResponse("reimburse by : " + dataEmp.getEmployeeId());
+                    this.reimbursementHistoryService.create(history);
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("data reimbursement reimburse by : " + entityEmp.getEmployeeId());
+                    return rs;
                 }
+//                }
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -827,6 +841,15 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
+            if (!dataEmp.getRoleName().contains("finance")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
+                CreateLog.createJson(rs, "listReimbursementFinace");
+                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
+                        HttpStatus.NOT_FOUND);
+            }
             List<Reimbursement> listReimbursement = this.reimbursementService.listBy("finance", dataEmp.getIdEmployee());
             JSONArray array = new JSONArray();
             for (int i = 0; i < listReimbursement.size(); i++) {
@@ -852,6 +875,7 @@ public class ReimbursementController {
                     obj.put("employee_id", "");
                     obj.put("name", "");
                 } else {
+
                     obj.put("employee_id", reimbursement.getEmployee().getEmployeeId());
                     obj.put("name", reimbursement.getEmployee().getName());
                 }
@@ -869,15 +893,10 @@ public class ReimbursementController {
                 } else {
                     obj.put("note", reimbursement.getNote());
                 }
-                if (reimbursement.getNote() == null) {
-                    obj.put("note", "");
-                } else {
-                    obj.put("note", reimbursement.getNote());
-                }
                 if (reimbursement.getReimburseAmount() == null) {
-                    obj.put("amount", "");
+                    obj.put("reimburse_amount", "");
                 } else {
-                    obj.put("amount", reimbursement.getNote());
+                    obj.put("reimburse_amount", String.format("%.0f", reimbursement.getReimburseAmount()));
                 }
                 if (reimbursement.getApprovedBy() == null) {
                     obj.put("approved_by", "");
@@ -902,9 +921,9 @@ public class ReimbursementController {
                     obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
                 }
                 if (reimbursement.getApprovedAmount() == null) {
-                    obj.put("reimbursement_amount", "");
+                    obj.put("approved_amount", "");
                 } else {
-                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                    obj.put("approved_amount", String.format("%.0f", reimbursement.getApprovedAmount()));
                 }
                 if (reimbursement.getStatus() == null) {
                     obj.put("status", "");
@@ -960,6 +979,15 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
+            if (!dataEmp.getRoleName().contains("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
+                CreateLog.createJson(rs, "listReimbursementAdmin");
+                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
+                        HttpStatus.NOT_FOUND);
+            }
             List<Reimbursement> listReimbursement = this.reimbursementService.listBy("admin", dataEmp.getIdEmployee());
             JSONArray array = new JSONArray();
             for (int i = 0; i < listReimbursement.size(); i++) {
@@ -1002,15 +1030,10 @@ public class ReimbursementController {
                 } else {
                     obj.put("note", reimbursement.getNote());
                 }
-                if (reimbursement.getNote() == null) {
-                    obj.put("note", "");
-                } else {
-                    obj.put("note", reimbursement.getNote());
-                }
                 if (reimbursement.getReimburseAmount() == null) {
-                    obj.put("amount", "");
+                    obj.put("reimburse_amount", "");
                 } else {
-                    obj.put("amount", reimbursement.getNote());
+                    obj.put("reimburse_amount", String.format("%.0f", reimbursement.getReimburseAmount()));
                 }
                 if (reimbursement.getApprovedBy() == null) {
                     obj.put("approved_by", "");
@@ -1035,9 +1058,9 @@ public class ReimbursementController {
                     obj.put("reimbursed_date", dateFormat.format(reimbursement.getReimbursedDate()));
                 }
                 if (reimbursement.getApprovedAmount() == null) {
-                    obj.put("reimbursement_amount", "");
+                    obj.put("approved_amount", "");
                 } else {
-                    obj.put("reimbursement_amount", reimbursement.getApprovedAmount());
+                    obj.put("approved_amount", String.format("%.0f", reimbursement.getApprovedAmount()));
                 }
                 if (reimbursement.getStatus() == null) {
                     obj.put("status", "");
