@@ -43,6 +43,17 @@ public class OutStanding implements Serializable {
     @Column(name = "reimburse_id")
     private Long reimburseId;
 
+//    @Column(name = "loan_id")
+//    private Long LoanId;
+    @Column(name = "reimburse_amount")
+    private Double reimburseAmount;
+
+    @Column(name = "case_id")
+    private String caseId;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Column(name = "user_id")
     private Long userId;
 
@@ -61,23 +72,25 @@ public class OutStanding implements Serializable {
     @PrePersist
     public void onCreate() {
         tgInput = new Date();
+        isActive = true;
         this.setOutstandingUUId(UUID.randomUUID().toString());
     }
 
     public OutStanding() {
     }
 
-    public OutStanding(String outstandingUUId, String outstandingId, Long reimburseId, Long userId, String tahun_input, Date tgInput, Loan loan) {
+    public OutStanding(String outstandingUUId, String outstandingId, Long reimburseId, Double reimburseAmount, String caseId, Boolean isActive, Long userId, String tahun_input, Date tgInput, Loan loan) {
         this.outstandingUUId = outstandingUUId;
         this.outstandingId = outstandingId;
         this.reimburseId = reimburseId;
+        this.reimburseAmount = reimburseAmount;
+        this.caseId = caseId;
+        this.isActive = isActive;
         this.userId = userId;
         this.tahun_input = tahun_input;
         this.tgInput = tgInput;
         this.loan = loan;
     }
-
-    
 
     public String getOutstandingUUId() {
         return outstandingUUId;
@@ -177,5 +190,28 @@ public class OutStanding implements Serializable {
         this.userId = userId;
     }
 
-    
+    public Double getReimburseAmount() {
+        return reimburseAmount;
+    }
+
+    public void setReimburseAmount(Double reimburseAmount) {
+        this.reimburseAmount = reimburseAmount;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(String caseId) {
+        this.caseId = caseId;
+    }
+
 }

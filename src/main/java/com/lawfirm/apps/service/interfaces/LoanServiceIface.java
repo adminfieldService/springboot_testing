@@ -28,13 +28,12 @@ public interface LoanServiceIface {
     Loan findById(Long paramLong);
 
     Loan findByLoanId(String param);
-    
-     Loan findByLoanIdB(String param);
+
+    Loan findByLoanIdB(String param);
 
     List<Loan> listLoan(int max, int start, String type);
 
 //    List<Loan> listLoanB(int max, int start);
-
     List<Loan> listLoanPaging(int max, int start);
 
     List<Loan> findByEmployee(String param, String type);
@@ -42,10 +41,14 @@ public interface LoanServiceIface {
     List<Loan> listActive(String param1, String param2, String type);
 
     List<Loan> byName(Boolean isActive);
-    
+
     List<Loan> listDisburse(String type);
 
     Integer count();
+
+    List<Loan> getLoanB(String param);
+    
+    List<Loan> getListLoanB();
 
     Loan findByIdLoan(Long paramLong);
 
@@ -53,7 +56,7 @@ public interface LoanServiceIface {
 
 //    Integer generateLoanId(String param1, String param2, String param3);
     List<Loan> generateLoanId(String param1, String param2, String param3);
-    
+
     List<Loan> generateLoanIdB(String param1, String param2, String param3);
 
     EntityManager getEntityManager();

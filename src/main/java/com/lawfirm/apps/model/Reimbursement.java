@@ -47,7 +47,7 @@ public class Reimbursement implements Serializable {
     @Column(name = "reimbursement_id", length = 30)
     private String reimbursementId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
 
@@ -63,6 +63,9 @@ public class Reimbursement implements Serializable {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "remarks")
+    private String remarks;
 
     @Column(name = "link_document")
     private String linkDocument;
@@ -123,13 +126,14 @@ public class Reimbursement implements Serializable {
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, String linkDocument, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, String remarks, String linkDocument, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
         this.reimbursementId = reimbursementId;
         this.employee = employee;
         this.status = status;
         this.expenseDate = expenseDate;
         this.note = note;
+        this.remarks = remarks;
         this.linkDocument = linkDocument;
         this.reimburseAmount = reimburseAmount;
         this.approvedAmount = approvedAmount;
@@ -144,6 +148,8 @@ public class Reimbursement implements Serializable {
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
+
+   
 
     public Long getReimburseId() {
         return reimburseId;
@@ -226,6 +232,30 @@ public class Reimbursement implements Serializable {
                 .replaceAll("eval\\((.*?)\\)", "")
                 .replaceAll("expression\\((.*?)\\)", "");
     }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+   
 
     public Collection<DocumentReimburse> getDocumentReimburseCollection() {
         return documentReimburseCollection;

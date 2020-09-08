@@ -143,4 +143,14 @@ public class LoanService implements LoanServiceIface {
         return loanRepo.listDisburse(type);
     }
 
+    @Override
+    public List<Loan> getLoanB(String param) {
+        return loanRepo.getLoanB(param);
+    }
+
+    @Override
+    public List<Loan> getListLoanB() {
+        return loanRepo.getListLoanB();
+    }
+
 }

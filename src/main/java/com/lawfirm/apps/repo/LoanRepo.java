@@ -43,7 +43,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -66,7 +66,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -90,7 +90,7 @@ public class LoanRepo implements LoanRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -108,7 +108,7 @@ public class LoanRepo implements LoanRepoIface {
         } catch (Exception ex) {
             // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -124,7 +124,7 @@ public class LoanRepo implements LoanRepoIface {
             return (Loan) entityManager.find(Loan.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -156,7 +156,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -176,7 +176,7 @@ public class LoanRepo implements LoanRepoIface {
             return entity;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -196,7 +196,7 @@ public class LoanRepo implements LoanRepoIface {
             return entity;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -257,7 +257,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -315,7 +315,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -359,7 +359,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -414,7 +414,7 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -452,7 +452,7 @@ public class LoanRepo implements LoanRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -491,7 +491,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -542,7 +542,7 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -563,7 +563,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created DESC ")
                         .setParameter("status", "s")
                         .getResultList();
@@ -575,7 +575,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "a")
                         .setParameter("status", "d")
@@ -587,7 +587,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " t.status = :status "
+                        + " l.status = :status "
                         + " ORDER BY l.date_created DESC ")//ASC
                         .setParameter("typeLoan", "b")
                         .setParameter("status", "d")
@@ -600,7 +600,70 @@ public class LoanRepo implements LoanRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> getLoanB(String caseID) {
+        try {
+            List<Loan> listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
+                    + " JOIN FETCH l.employee AS e "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " t.typeLoan = :typeLoan AND "
+                    + " n.caseID = :caseID AND "
+                    + " ( l.status <> :status OR "
+                    + " l.status <> :status2 ) "
+                    + " ORDER BY l.date_created DESC ")//ASC
+                    .setParameter("caseID", caseID)
+                    .setParameter("typeLoan", "b")
+                    .setParameter("status", "s")
+                    .setParameter("status2", "r")
+                    .getResultList();
+            return listAcquire;
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+    
+     @Override
+    public List<Loan> getListLoanB() {
+        try {
+            List<Loan> listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
+                    + " JOIN FETCH l.employee AS e "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " t.typeLoan = :typeLoan AND "
+                    + " n.caseID = :caseID AND "
+                    + " ( l.status <> :status OR "
+                    + " l.status <> :status2 ) "
+                    + " ORDER BY l.date_created DESC ")
+                    .setParameter("typeLoan", "b")
+                    .setParameter("status", "s")
+                    .setParameter("status2", "r")
+                    .getResultList();
+            return listAcquire;
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

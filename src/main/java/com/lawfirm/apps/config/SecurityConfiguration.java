@@ -8,6 +8,7 @@ package com.lawfirm.apps.config;
 import com.lawfirm.apps.security.jwt.AuthEntryPointJwt;
 import com.lawfirm.apps.security.jwt.AuthTokenFilter;
 import com.lawfirm.apps.service.UserServiceImpl;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  *
@@ -111,6 +115,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/loan/view/{id_employee}/loans-b/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/loan/view/list-of-loan-b/by-admin/").hasAnyRole("admin", "sysadmin")//.hasRole("admin")//.permitAll()
                 .antMatchers(HttpMethod.GET, "/loan/{id_loan}/find-by-id/").hasAnyRole("lawyer", "admin", "dmp", "finance", "support")//.permitAll()
+                .antMatchers(HttpMethod.POST, "/loan/loan-b/case-id/").hasAnyRole("lawyer", "admin", "dmp", "finance", "support")//.permitAll()
                 .antMatchers(HttpMethod.POST, "/engagement/manage-engagement/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/list-of-engagement/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
                 .antMatchers(HttpMethod.GET, "/engagement/manage-engagement/view/by-employee/").hasAnyRole("admin", "sysadmin", "lawyer", "sup")
@@ -127,6 +132,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/case/{engagement_id}/documents/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/case/{engagement_id}/done").hasRole("dmp")
                 .antMatchers(HttpMethod.GET, "/case/document/{case_document_id}/view/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.GET, "/case/case-id/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/disburse/{id_loan}/loan-a").hasRole("finance")
                 .antMatchers(HttpMethod.POST, "/disburse/{id_loan}/loan-b").hasRole("finance")
                 .antMatchers(HttpMethod.GET, "/disbursements/loans/").hasAnyRole("admin", "dmp", "lawyer", "finance")
@@ -135,9 +141,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/disbursement/{id_loan}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/reimbursement/{id_loan}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.GET, "/reimbursements/").hasAnyRole("admin", "dmp", "lawyer", "finance")
-                .antMatchers(HttpMethod.POST, "/reimbursement/{reimburse_id}/find-by-id/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.POST, "/reimbursement/find-by-id/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/reimbursement/{reimburse_id}/approval/").hasRole("admin")
-                .antMatchers(HttpMethod.POST, "/reimbursement/{reimburse_id}/").hasRole("finance")
+                .antMatchers(HttpMethod.POST, "/reimbursement/{reimburse_id}/reject/").hasRole("admin")
+                .antMatchers(HttpMethod.POST, "/reimbursement/{reimburse_id}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.GET, "/reimbursements/finance/").hasRole("finance")
                 .antMatchers(HttpMethod.GET, "/reimbursements/admin/").hasRole("admin")
                 .antMatchers(HttpMethod.GET, "/reimbursements/dmp/").hasRole("dmp")
@@ -181,15 +188,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
 //https://stackoverflow.com/questions/51719889/spring-boot-cors-issue
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-//        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-//        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 }

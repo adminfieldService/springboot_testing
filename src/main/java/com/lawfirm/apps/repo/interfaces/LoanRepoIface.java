@@ -50,6 +50,10 @@ public interface LoanRepoIface {
 
     Double loanEmp(String param1, String param2);
 
+    List<Loan> getLoanB(String param);
+
+    List<Loan> getListLoanB();
+
 //    Integer generateLoanId(String param1, String param2, String param3);
     List<Loan> generateLoanId(String param1, String param2, String param3);
 

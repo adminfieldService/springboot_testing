@@ -215,12 +215,12 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             if (paramBy.contains("dmp")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
                         + " LEFT JOIN FETCH r.loan AS l "
-                        + " LEFT JOIN FETCH r.employee AS e "
+                        + " JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
                         + " e.idEmployee = :idEmployee "
                         + " ORDER BY r.tgInput Desc")
-                        .setParameter("reimbursedBy", empId)
+                        .setParameter("idEmployee", empId)
                         .getResultList();
             }
 

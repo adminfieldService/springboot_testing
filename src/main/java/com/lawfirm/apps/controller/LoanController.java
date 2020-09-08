@@ -6,6 +6,7 @@
 package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
+import com.lawfirm.apps.model.ClientData;
 import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Financial;
@@ -29,6 +30,7 @@ import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
 import com.lawfirm.apps.support.api.LoanApi;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.interfaces.LoanHistoryServiceIface;
+import com.lawfirm.apps.support.api.LoanBDto;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.utils.Util;
@@ -2033,7 +2035,7 @@ public class LoanController {
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
     }
-    
+
     @RequestMapping(value = "/{id_loan}/find-by-id", method = RequestMethod.GET, produces = {"application/json"})//produces = {"application/json"}
     @XxsFilter
     public ResponseEntity<?> finbyId(Authentication authentication, @PathVariable("id_loan") Long id_loan) {
@@ -2163,4 +2165,141 @@ public class LoanController {
         }
 
     }
+
+    @RequestMapping(value = "/loan-b/case-id", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<String> listLoanb(@RequestBody LoanBDto object, Authentication authentication) {
+
+        try {
+
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "listLoanb");
+//                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+//            int max = loanService.count();
+            int max = 0;
+            int start = 0;
+
+            List<Loan> entityList = this.loanService.getLoanB(object.getCase_id());
+
+            JSONArray array = new JSONArray();
+            for (int i = 0; i < entityList.size(); i++) {
+                JSONObject jsonobj = new JSONObject();
+                Loan entity = (Loan) entityList.get(i);
+                if (entity.getId() == null) {
+                    jsonobj.put("id_loan", "");
+                } else {
+                    jsonobj.put("id_loan", entity.getId());
+                }
+                 if (entity.getLoanId()== null) {
+                    jsonobj.put("loan_id", "");
+                } else {
+                    jsonobj.put("loan_id", entity.getLoanId());
+                }
+                if (entity.getLoantype().getTypeLoan() == null) {
+                    jsonobj.put("loan_type", "");
+                } else {
+                    jsonobj.put("loan_type", entity.getLoantype().getTypeLoan());
+                }
+                if (entity.getLoantype().getTypeLoan().equalsIgnoreCase("B")) {
+
+                    if (entity.getEngagement().getCaseID() == null) {
+                        jsonobj.put("case_id", "");
+                    } else {
+                        jsonobj.put("case_id", entity.getEngagement().getCaseID());
+                    }
+                }
+
+                array.put(jsonobj);
+            }
+            return ResponseEntity.ok(array.toString());
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+            CreateLog.createJson(ex.getMessage(), "listLoanb");
+            System.out.println("ERROR: " + ex.getMessage());
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+//        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+//                HttpStatus.NOT_FOUND);
+    }
+
+//    @RequestMapping(value = "/loan-b", method = RequestMethod.GET, produces = {"application/json"})
+//    @XxsFilter
+//    public ResponseEntity<String> getListLoanB(Authentication authentication) {
+//
+//        try {
+//
+//            String name = authentication.getName();
+//            log.info("name : " + name);
+//            Employee entityEmp = employeeService.findByEmployee(name);
+//            log.info("entity : " + entityEmp);
+//            if (entityEmp == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("can't acces this feature :");
+//                CreateLog.createJson(rs, "getListLoanB");
+////                process = false;
+//                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+//                        HttpStatus.NOT_FOUND);
+//            }
+////            int max = loanService.count();
+//            int max = 0;
+//            int start = 0;
+//
+//            List<Loan> entityList = this.loanService.getListLoanB();
+//
+//            JSONArray array = new JSONArray();
+//            for (int i = 0; i < entityList.size(); i++) {
+//                JSONObject jsonobj = new JSONObject();
+//                Loan entity = (Loan) entityList.get(i);
+//                if (entity.getId() == null) {
+//                    jsonobj.put("id_loan", "");
+//                } else {
+//                    jsonobj.put("id_loan", entity.getId());
+//                }
+//                if (entity.getLoantype().getTypeLoan() == null) {
+//                    jsonobj.put("loan_type", "");
+//                } else {
+//                    jsonobj.put("loan_type", entity.getLoantype().getTypeLoan());
+//                }
+//                if (entity.getLoantype().getTypeLoan().equalsIgnoreCase("B")) {
+//
+//                    if (entity.getEngagement().getCaseID() == null) {
+//                        jsonobj.put("case_id", "");
+//                    } else {
+//                        jsonobj.put("case_id", entity.getEngagement().getCaseID());
+//                    }
+//                    if (entity.getEngagement().getClient() == null) {
+//                        jsonobj.put("client_id", "");
+//                    } else {
+//                        ClientData clientData = clientDataService.findById(entity.getEngagement().getClient().getIdClient());
+//                        jsonobj.put("client_id", clientData.getClientId());
+//                        jsonobj.put("client_name", clientData.getClientName());
+//                    }
+//                }
+//
+//                array.put(jsonobj);
+//            }
+//            return ResponseEntity.ok(array.toString());
+//        } catch (JSONException ex) {
+//            // TODO Auto-generated catch block
+//            CreateLog.createJson(ex.getMessage(), "getListLoanB");
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+//                    HttpStatus.NOT_FOUND);
+//        }
+////        return new ResponseEntity(new CustomErrorType("Data Not Found "),
+////                HttpStatus.NOT_FOUND);
+//    }
 }

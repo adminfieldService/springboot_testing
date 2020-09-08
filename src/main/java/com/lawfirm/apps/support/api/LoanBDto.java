@@ -14,6 +14,6 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class AapprovalReimbursementDto {
-     private Double approved_amount;//reimburse_amount
+public class LoanBDto {
+    String case_id;
 }

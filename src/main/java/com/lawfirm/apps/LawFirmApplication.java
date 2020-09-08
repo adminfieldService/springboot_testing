@@ -35,6 +35,8 @@ public class LawFirmApplication extends SpringBootServletInitializer {
                 registry.addMapping("/employee").allowedOrigins("http://localhost:8080");
                 registry.addMapping("/engagement").allowedOrigins("http://localhost:8080");
                 registry.addMapping("/loan").allowedOrigins("http://localhost:8080");
+                 registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+                
             }
         };
     }
