@@ -5,13 +5,16 @@
  */
 package com.lawfirm.apps.controller;
 
+import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Financial;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.LoanHistory;
 import com.lawfirm.apps.model.LoanType;
+import com.lawfirm.apps.model.Member;
 import com.lawfirm.apps.model.OutStanding;
+import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
@@ -32,9 +35,11 @@ import com.lawfirm.apps.service.interfaces.OutStandingServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
+import com.lawfirm.apps.support.api.DisbursementCaseIdDto;
 import com.lawfirm.apps.support.api.LoanApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
+import com.sun.tools.sjavac.Log;
 import com.xss.filter.annotation.XxsFilter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -122,6 +128,8 @@ public class DisbursementController {
     LoanHistoryServiceIface loanHistoryService;
     @Autowired
     OutStandingServiceIface OutStandingService;
+    @Autowired
+    MemberServiceIface memberService;
 
     public DisbursementController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -523,7 +531,7 @@ public class DisbursementController {
                 process = false;
             }
             if (process) {
-                
+
                 dataLoan.setAprovedByFinance(dataEMploye.getIdEmployee().toString());//dataEMploye.getName()
                 dataLoan.setDate_approved_by_finance(new Date());
                 dataLoan.setStatus("d");
@@ -549,7 +557,7 @@ public class DisbursementController {
                 outStanding.setTahun_input(date_now);
                 outStanding.setUserId(dataLoan.getEmployee().getIdEmployee());
                 this.loanHistoryService.create(entityHistory);
-                
+
                 if (upDataLoan != null) {
                     dataFinance.setDisburse_date(new Date());
                     if (object.getOut_standing() != null) {
@@ -1145,4 +1153,145 @@ public class DisbursementController {
 //        }
 //
 //    }
+    @RequestMapping(value = "/disbursement/case-id", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> disbursementbyCaseId(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
+        try {
+            Date now = new Date();
+            Date dateDisburs = new Date();
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "disbursementbyCaseId");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "disbursementbyCaseId");
+                process = false;
+
+            }
+            if (process) {
+                String param = null;
+                JSONArray array = new JSONArray();
+                log.info("case_id : " + object.getCase_id());
+                List<Loan> loanlist = disbursementService.disbursementbyCaseId(object.getCase_id());
+                log.info("loan : " + loanlist);
+                if (loanlist.size() > 0) {
+                    for (int d = 0; d < loanlist.size(); d++) {
+                        Loan dataLoan = loanlist.get(d);
+                        JSONObject obj = new JSONObject();
+                        JSONObject objMember = new JSONObject();
+                        JSONArray arrayM = new JSONArray();
+                        Long EngagementId = 0l;
+                        Long idLoanB = 0l;
+                        Long id_team = 0l;
+                        Double dmpPortion = 0d;
+                        if (dataLoan.getEngagement() == null) {
+                            obj.put("case_id", "");
+                        } else {
+                            obj.put("case_id", object.getCase_id());// disbursements.getLoan().getEngagement().getCaseID()
+                            EngagementId = dataLoan.getEngagement().getEngagementId();
+                            idLoanB = dataLoan.getId();
+                        }
+                        CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
+                        if (caseDetails != null) {
+//                        obj.put("professionalFee", caseDetails.getProfesionalFee());
+                            obj.put("dmp_portion_case_id", caseDetails.getDmpPortion());
+                            dmpPortion = caseDetails.getDmpPortion();
+                        } else {
+//                        obj.put("professionalFee", "");
+                            obj.put("dmp_portion_case_id", "");
+                            dmpPortion = 0d;
+                        }
+                        Double total = OutStandingService.sumLoan(idLoanB);
+
+                        List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);
+                        if (entityTeam != null) {
+                            for (int j = 0; j < entityTeam.size(); j++) {
+                                JSONObject objTeam = new JSONObject();
+                                TeamMember dataTeam = entityTeam.get(j);
+                                Employee getDmp = employeeService.findById(dataTeam.getDmpId());
+                                if (getDmp == null) {
+                                    obj.put("employee_id_dmp", "");
+                                    obj.put("employee_id_dmp", "");
+                                    obj.put("fee_share_dmp", "");
+                                    obj.put("dmp_portion", "");
+                                    obj.put("masa_kerja_dmp", "");
+                                    obj.put("jabatan_dmp_per_bulan", "");
+                                    obj.put("jabatan_dmp_per_tahun", "");
+                                    obj.put("ptkp_dmp", "");
+
+                                } else {
+                                    if (dataTeam.getTeamMemberId() != null) {
+                                        id_team = dataTeam.getTeamMemberId();
+                                    }
+                                    obj.put("employee_id_dmp", getDmp.getEmployeeId());
+                                    obj.put("fee_share_dmp", dataTeam.getFeeShare());
+                                    obj.put("dmp_portion", (dmpPortion * dataTeam.getFeeShare()) / 100);
+                                    obj.put("masa_kerja_dmp", "");
+                                    obj.put("jabatan_per_bulan", "");
+                                    obj.put("jabatan_dmp_per_bulan", "");
+                                    obj.put("jabatan_dmp_per_tahun", "");
+                                    obj.put("ptkp_dmp", getDmp.getTaxStatus());
+
+                                }
+                            }
+                            if (id_team != null) {
+                                List<Member> entityMember = memberService.findByIdTeam(id_team);
+                                for (int k = 0; k < entityMember.size(); k++) {
+                                    Member dataMember = entityMember.get(k);
+                                    if (dataMember == null) {
+                                        objMember.put("member_name", "");
+                                        objMember.put("employee_id", "");
+                                        objMember.put("fee_share", "");
+                                        obj.put("team_member_portion", "");
+                                        objMember.put("masa_kerja", "");
+                                        objMember.put("jabatan_per_bulan", "");
+                                        objMember.put("jabatan_per_tahun", "");
+                                        objMember.put("ptkp", "");
+                                    } else {
+                                        objMember.put("member_name", dataMember.getEmployee().getName());
+                                        objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
+                                        objMember.put("fee_share", dataMember.getFeeShare());
+                                        obj.put("team_member_portion", (dmpPortion * dataMember.getFeeShare()) / 100);
+                                        objMember.put("masa_kerja", "");
+                                        objMember.put("jabatan_per_bulan", "");
+                                        objMember.put("jabatan_per_tahun", "");
+                                        objMember.put("ptkp", dataMember.getEmployee().getTaxStatus());
+                                    }
+                                    arrayM.put(objMember);
+                                }
+                            } else {
+                                objMember.put("member_name", "");
+                                objMember.put("employee_id", "");
+                                objMember.put("fee_share", "");
+                            }
+                            obj.put("members", arrayM);
+                            array.put(obj);
+                        }
+                    }
+                    return ResponseEntity.ok(array.toString());
+                }
+            }
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            CreateLog.createJson(ex.getMessage(), "disbursementbyCaseId");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+//
+        return null;
+    }
 }

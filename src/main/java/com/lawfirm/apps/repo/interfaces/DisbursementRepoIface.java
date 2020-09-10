@@ -5,6 +5,7 @@
  */
 package com.lawfirm.apps.repo.interfaces;
 
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Loan;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,7 @@ public interface DisbursementRepoIface {
     Loan findLoanAById(Long param);
 
     Loan findLoanBById(Long param);
+
+    List<Loan> disbursementbyCaseId(String param);
+//    Disbursement disbursementbyCaseId(String param);
 }

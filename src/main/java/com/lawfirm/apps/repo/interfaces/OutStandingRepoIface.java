@@ -6,6 +6,7 @@
 package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.OutStanding;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -25,7 +26,9 @@ public interface OutStandingRepoIface {
 
     void remove(OutStanding entity);
 
-    OutStanding findByIdLoan(Long paramLong);
-    
-    OutStanding findByCaseId(Long paramLong);
+    List<OutStanding> findByIdLoan(Long paramLong);
+
+    Double sumLoan(Long paramLong);
+
+    List<OutStanding> findByCaseId(Long paramLong);
 }

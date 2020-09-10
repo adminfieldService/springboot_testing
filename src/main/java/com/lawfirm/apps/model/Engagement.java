@@ -79,6 +79,12 @@ public class Engagement implements Serializable {
     @Column(name = "status")
     protected String status;
 
+    @Column(name = "dmp_portion")
+    protected Double dmpPortion;
+
+    @Column(name = "dmp_percent")
+    protected Integer dmPercent;
+
 //    @Column(name = "operational_cost")
 //    protected Double operational_cost;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
@@ -115,6 +121,7 @@ public class Engagement implements Serializable {
     protected void onCreate() {
         created_date = new Date();
         isActive = "0";
+//        dmPercent = 40;
     }
 
     public Engagement() {
@@ -406,6 +413,22 @@ public class Engagement implements Serializable {
 
     public void setEngagementHistoryCollection(Collection<EngagementHistory> engagementHistoryCollection) {
         this.engagementHistoryCollection = engagementHistoryCollection;
+    }
+
+    public Double getDmpPortion() {
+        return dmpPortion;
+    }
+
+    public void setDmpPortion(Double dmpPortion) {
+        this.dmpPortion = dmpPortion;
+    }
+
+    public Integer getDmPercent() {
+        return dmPercent;
+    }
+
+    public void setDmPercent(Integer dmPercent) {
+        this.dmPercent = dmPercent;
     }
 
     @Override

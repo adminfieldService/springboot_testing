@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.OutStanding;
 import com.lawfirm.apps.repo.interfaces.OutStandingRepoIface;
 import com.lawfirm.apps.service.interfaces.OutStandingServiceIface;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,14 +56,19 @@ public class OutStandingService implements OutStandingServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public OutStanding findByIdLoan(Long paramLong) {
+    public List<OutStanding> findByIdLoan(Long paramLong) {
         return outStandingRepo.findByIdLoan(paramLong);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public OutStanding findByCaseId(Long paramLong) {
+    public List<OutStanding> findByCaseId(Long paramLong) {
         return outStandingRepo.findByCaseId(paramLong);
+    }
+
+    @Override
+    public Double sumLoan(Long paramLong) {
+        return outStandingRepo.sumLoan(paramLong);
     }
 
 }

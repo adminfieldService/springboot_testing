@@ -5,6 +5,7 @@
  */
 package com.lawfirm.apps.service.interfaces;
 
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Loan;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -23,4 +24,7 @@ public interface DisbursementServiceIface {
     Loan findLoanAById(Long param);
 
     Loan findLoanBById(Long param);
+
+//    Disbursement disbursementbyCaseId(String param);    
+     List<Loan> disbursementbyCaseId(String param);
 }

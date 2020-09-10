@@ -6,6 +6,7 @@
 package com.lawfirm.apps.repo;
 
 import com.lawfirm.apps.config.Constants;
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.repo.interfaces.DisbursementRepoIface;
 import com.lawfirm.apps.utils.CreateLog;
@@ -116,6 +117,60 @@ public class DisbursementRepo implements DisbursementRepoIface {
                         .getResultList();
                 //                        .setParameter("status", "d")
             }
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+//    @Override
+//    public Disbursement disbursementbyCaseId(String param) {
+//        try {
+//            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d FROM Disbursement d "
+//                    + " JOIN FETCH d.loan AS l "
+//                    + " LEFT JOIN FETCH l.loantype AS t "
+//                    + " JOIN FETCH l.engagement AS e "
+//                    + " WHERE "
+//                    + " e.caseID = :caseID AND "
+//                    + " e.status = :status")
+//                    .setParameter("caseID", param)
+//                    .setParameter("status", "closed")
+//                    .getSingleResult();
+//            //                        .setParameter("status", "d")
+//
+//            return listAcquire;
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
+    @Override
+    public List<Loan> disbursementbyCaseId(String param) {
+        try {
+            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " JOIN FETCH l.engagement AS e "
+                    + " WHERE "
+                    + " e.caseID = :caseID AND "
+                    + " e.status = :status")
+                    .setParameter("caseID", param)
+                    .setParameter("status", "closed")
+                    .getResultList();
+            //                        .setParameter("status", "d")
+
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());

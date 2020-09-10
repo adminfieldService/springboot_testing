@@ -45,6 +45,8 @@ public class TeamMember implements Serializable {
     private String description;
     @Column(name = "dmp_id")
     private Long dmpId;
+//    @Column(name = "dmp_portion")
+//    private Double dmpPortion;
     @Column(name = "fee_share")
     private Double feeShare;
     @Column(name = "tahun_input", length = 10, nullable = true)

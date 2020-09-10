@@ -70,6 +70,9 @@ public class Reimbursement implements Serializable {
     @Column(name = "link_document")
     private String linkDocument;
 
+    @Column(name = "mime_type", length = 10, nullable = true)
+    private String mimeType;
+
     @Column(name = "reimburse_amount")
     private Double reimburseAmount;
 
@@ -126,7 +129,7 @@ public class Reimbursement implements Serializable {
     public Reimbursement() {
     }
 
-    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, String remarks, String linkDocument, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
+    public Reimbursement(Long reimburseId, String reimbursementId, Employee employee, String status, Date expenseDate, String note, String remarks, String linkDocument, String mimeType, Double reimburseAmount, Double approvedAmount, Long approvedBy, Long reimbursedBy, String isActive, Date approvedDate, Date reimbursedDate, Date tgInput, Collection<DocumentReimburse> documentReimburseCollection, Loan loan, Collection<ReimbursementHistory> reimbursementHistoryCollection, String signature) {
         this.reimburseId = reimburseId;
         this.reimbursementId = reimbursementId;
         this.employee = employee;
@@ -135,6 +138,7 @@ public class Reimbursement implements Serializable {
         this.note = note;
         this.remarks = remarks;
         this.linkDocument = linkDocument;
+        this.mimeType = mimeType;
         this.reimburseAmount = reimburseAmount;
         this.approvedAmount = approvedAmount;
         this.approvedBy = approvedBy;
@@ -149,7 +153,6 @@ public class Reimbursement implements Serializable {
         this.signature = signature;
     }
 
-   
 
     public Long getReimburseId() {
         return reimburseId;
@@ -254,8 +257,6 @@ public class Reimbursement implements Serializable {
                 .replaceAll("eval\\((.*?)\\)", "")
                 .replaceAll("expression\\((.*?)\\)", "");
     }
-
-   
 
     public Collection<DocumentReimburse> getDocumentReimburseCollection() {
         return documentReimburseCollection;
@@ -395,6 +396,28 @@ public class Reimbursement implements Serializable {
 
     public void setLinkDocument(String linkDocument) {
         this.linkDocument = linkDocument.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")

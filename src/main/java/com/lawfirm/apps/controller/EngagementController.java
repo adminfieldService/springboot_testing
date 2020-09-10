@@ -237,8 +237,8 @@ public class EngagementController {
                 return rs;
             }
 
-            Employee cekEMP = employeeService.findById(entityEmp.getIdEmployee());
-            if (!"dmp".equals(cekEMP.getRoleName())) {
+            Employee cekDMP = employeeService.findById(entityEmp.getIdEmployee());
+            if (!"dmp".equals(cekDMP.getRoleName())) {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
@@ -254,6 +254,7 @@ public class EngagementController {
 //                Integer numberClient = 0;
                 String client_id = "CLIENT";
                 if (dataClient != null) {
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
                     log.info("dataClient : " + dataClient);
                     Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
                     if (numberClient == 0) {
@@ -269,6 +270,7 @@ public class EngagementController {
                         dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
                     }
                     this.clientDataService.update(dataClient);
+
 //                    
                     CaseDetails dataCaseDetails = new CaseDetails();
                     dataCaseDetails.setProfesionalFee(object.getProfesional_fee());
@@ -276,8 +278,11 @@ public class EngagementController {
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setStrategy(object.getStrategy());
                     dataCaseDetails.setPanitera(object.getPanitera());
+
 //                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
-                    dataCaseDetails.setEmployee(cekEMP);
+                    dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
+                    dataCaseDetails.setDmpPortion(dmpProtion);
+                    dataCaseDetails.setEmployee(cekDMP);
                     dataCaseDetails.setClient(dataClient);
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
                     dataCaseDetails.setStatus("s");
@@ -290,7 +295,7 @@ public class EngagementController {
                         EngagementApi ObjectEngagement = new EngagementApi();
                         ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
                         ObjectEngagement.setDescription(object.getDescription());
-                        ObjectEngagement.setId_employee(cekEMP.getIdEmployee());
+                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
                         ObjectEngagement.setEmployee_id(object.getEmployee_id());
                         ObjectEngagement.setEmployee_name(object.getEmployee_name());
                         ObjectEngagement.setDmp_fee(object.getDmp_fee());
@@ -301,7 +306,7 @@ public class EngagementController {
                         addTeamMember(ObjectEngagement);
                     }
                 } else {
-
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
                     log.info("dataClient nulls");
                     ClientData newClient = new ClientData();
                     newClient.setClientName(object.getClient_name());
@@ -333,8 +338,9 @@ public class EngagementController {
                     dataCaseDetails.setPanitera(object.getPanitera());
 //                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
+                    dataCaseDetails.setDmpPortion(dmpProtion);
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
-                    dataCaseDetails.setEmployee(cekEMP);
+                    dataCaseDetails.setEmployee(cekDMP);
                     dataCaseDetails.setStatus("s");
 //                    dataCaseDetails.setClient(newClient);
 //                    dataCaseDetails = this.caseDetailsService.create(dataCaseDetails);
@@ -351,11 +357,12 @@ public class EngagementController {
                         EngagementApi ObjectEngagement = new EngagementApi();
                         ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
                         ObjectEngagement.setDescription(object.getDescription());
-                        ObjectEngagement.setId_employee(cekEMP.getIdEmployee());
+                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
                         ObjectEngagement.setEmployee_id(object.getEmployee_id());
                         ObjectEngagement.setEmployee_name(object.getEmployee_name());
                         ObjectEngagement.setDmp_fee(object.getDmp_fee());
                         ObjectEngagement.setFee_share(object.getFee_share());
+                        ObjectEngagement.setProfesional_fee_net(dataCaseDetails.getProfesionalFeeNet());
 //                        ObjectEngagement.setPanitera(object.getPanitera());
 //                        ObjectEngagement.setStrategy();
                         addTeamMember(ObjectEngagement);
@@ -481,6 +488,7 @@ public class EngagementController {
                 dataTeam.setDmpId(object.getId_employee());
                 dataTeam.setFeeShare(object.getDmp_fee());
                 dataTeam.setTahun_input(sdfYear.format(now));
+//                dataTeam.setDmpPortion((object.getProfesional_fee_net()*object.getDmp_fee())/100);
                 dataTeam.setDescription("TMCS" + sdfYear.format(now));
 //                if (!object.getDescription().isEmpty()) {
 //                    dataTeam.setDescription(object.getDescription());
@@ -882,7 +890,16 @@ public class EngagementController {
                             obj.put("professional_fee_net", "");
                         } else {
                             obj.put("professional_fee_net", data.getProfesionalFeeNet());
-
+                        }
+                        if (data.getDmPercent() == null) {
+                            obj.put("dmp_percent", "");
+                        } else {
+                            obj.put("dmp_percent", data.getDmPercent());
+                        }
+                        if (data.getDmpPortion() == null) {
+                            obj.put("dmp_portion", "");
+                        } else {
+                            obj.put("dmp_portion", data.getDmpPortion());
                         }
                         if (data.getApproved_date() == null) {
                             obj.put("approved_date", "");
@@ -938,6 +955,7 @@ public class EngagementController {
                             if (dataTeam == null) {
                                 obj.put("description", "");
                             } else {
+//                                Employee getDmp = employeeService.findById(dataTeam.getDmpId());
                                 Employee getDmp = employeeService.findById(dataTeam.getDmpId());
                                 if (getDmp == null) {
                                     obj.put("employee_id_dmp", "");
@@ -1070,6 +1088,16 @@ public class EngagementController {
                     } else {
                         obj.put("professional_fee_net", data.getProfesionalFeeNet());
 
+                    }
+                    if (data.getDmPercent() == null) {
+                        obj.put("dmp_percent", "");
+                    } else {
+                        obj.put("dmp_percent", data.getDmPercent());
+                    }
+                    if (data.getDmpPortion() == null) {
+                        obj.put("dmp_portion", "");
+                    } else {
+                        obj.put("dmp_portion", data.getDmpPortion());
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1237,6 +1265,16 @@ public class EngagementController {
                     } else {
                         obj.put("professional_fee_net", data.getProfesionalFeeNet());
 
+                    }
+                    if (data.getDmPercent() == null) {
+                        obj.put("dmp_percent", "");
+                    } else {
+                        obj.put("dmp_percent", data.getDmPercent());
+                    }
+                    if (data.getDmpPortion() == null) {
+                        obj.put("dmp_portion", "");
+                    } else {
+                        obj.put("dmp_portion", data.getDmpPortion());
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1461,6 +1499,16 @@ public class EngagementController {
                     } else {
                         obj.put("professional_fee_net", data.getProfesionalFeeNet());
 
+                    }
+                    if (data.getDmPercent() == null) {
+                        obj.put("dmp_percent", "");
+                    } else {
+                        obj.put("dmp_percent", data.getDmPercent());
+                    }
+                    if (data.getDmpPortion() == null) {
+                        obj.put("dmp_portion", "");
+                    } else {
+                        obj.put("dmp_portion", data.getDmpPortion());
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1708,10 +1756,10 @@ public class EngagementController {
                 enEvent.setScheduleDate(schedule);
                 enEvent.setScheduleTime(object.getSchedule_time());
                 enEvent.setEventName(object.getEvent_name());
-                if (object.getEvent_type().equalsIgnoreCase("trial") || object.getEvent_type().equalsIgnoreCase("Trial")) {
+                if (object.getEvent_type().equalsIgnoreCase("trial") || object.getEvent_type().equalsIgnoreCase("Trial") || object.getEvent_type().equalsIgnoreCase("t")) {
                     enEvent.setEventType("t");
                 }
-                if (object.getEvent_type().equalsIgnoreCase("meeting") || object.getEvent_type().equalsIgnoreCase("Meeting")) {
+                if (object.getEvent_type().equalsIgnoreCase("meeting") || object.getEvent_type().equalsIgnoreCase("Meeting") || object.getEvent_type().equalsIgnoreCase("m")) {
                     enEvent.setEventType("m");
                 }
 
@@ -1791,10 +1839,10 @@ public class EngagementController {
                 enEvent.setScheduleDate(schedule);
                 enEvent.setScheduleTime(object.getSchedule_time());
                 enEvent.setEventName(object.getEvent_name());
-                if (object.getEvent_type().equalsIgnoreCase("trial") || object.getEvent_type().equalsIgnoreCase("Trial")) {
+                if (object.getEvent_type().equalsIgnoreCase("trial") || object.getEvent_type().equalsIgnoreCase("Trial") || object.getEvent_type().equalsIgnoreCase("t")) {
                     enEvent.setEventType("t");
                 }
-                if (object.getEvent_type().equalsIgnoreCase("meeting") || object.getEvent_type().equalsIgnoreCase("Meeting")) {
+                if (object.getEvent_type().equalsIgnoreCase("meeting") || object.getEvent_type().equalsIgnoreCase("Meeting") || object.getEvent_type().equalsIgnoreCase("m")) {
                     enEvent.setEventType("m");
                 }
 
@@ -1828,7 +1876,7 @@ public class EngagementController {
 
     }
 
-    @RequestMapping(value = "/manage-engagement/{engagement_id}/view-event", method = RequestMethod.GET, produces = {"application/json"})
+    @RequestMapping(value = "/manage-engagement/{engagement_id}/events", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
     public ResponseEntity<?> viewEvent(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
@@ -1901,6 +1949,11 @@ public class EngagementController {
                     } else {
                         obj.put("schedule_date", dateFormat.format(events.getScheduleDate()));
                     }
+                    if (events.getScheduleTime() == null) {
+                        obj.put("schedule_time", "");
+                    } else {
+                        obj.put("schedule_time", events.getScheduleTime());
+                    }
                     if ("0".equals(events.getIsActive())) {
                         obj.put("status", "done");
                     } else {
@@ -1930,21 +1983,90 @@ public class EngagementController {
 
     @RequestMapping(value = "/manage-engagement/events", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public Response listEvents(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
-        Boolean process = true;
-        String name = authentication.getName();
-        log.info("name : " + name);
-        Employee entity = employeeService.findByEmployee(name);
-        log.info("entity : " + entity);
-        if (entity == null) {
+    public ResponseEntity<?> listEvents(Authentication authentication) {
+        try {
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "listEvents");
+                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature "),
+                        HttpStatus.FORBIDDEN);
+            }
+            List<Events> listEvent = eventService.listEvents("0");
+//            if (listEvent == null) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("entity.getIdEmployee() not found");
+//                CreateLog.createJson(rs, "listEvents");
+//                process = false;
+//                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature "),
+//                        HttpStatus.FORBIDDEN);
+//            }
+            JSONArray array = new JSONArray();
+            if (process) {
+
+                for (int i = 0; i < listEvent.size(); i++) {
+                    JSONObject obj = new JSONObject();
+                    Events events = listEvent.get(i);
+
+                    if (events.getEventId() == null) {
+                        obj.put("event_id", "");
+                    } else {
+                        obj.put("event_id", events.getEventId());
+                    }
+                    if (events.getEventName() == null) {
+                        obj.put("event_name", "");
+                    } else {
+                        obj.put("event_name", events.getEventName());
+                    }
+                    if (events.getEventType() == null) {
+                        obj.put("event_type", "");
+                    } else {
+                        obj.put("event_type", events.getEventType());
+                    }
+                    if (events.getScheduleDate() == null) {
+                        obj.put("schedule_date", "");
+                    } else {
+                        obj.put("schedule_date", dateFormat.format(events.getScheduleDate()));
+                    }
+                    if (events.getScheduleTime() == null) {
+                        obj.put("schedule_time", "");
+                    } else {
+                        obj.put("schedule_time", events.getScheduleTime());
+                    }
+                    if ("0".equals(events.getIsActive())) {
+                        obj.put("status", "done");
+                    } else {
+                        obj.put("status", "active");
+                    }
+                    if (events.getCaseDetails() == null) {
+                        obj.put("case_id", "");
+                    } else {
+                        obj.put("case_id", events.getCaseDetails().getCaseID());
+                    }
+                    array.put(obj);
+                }
+            }
+            return ResponseEntity.ok(array.toString());
+
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
             rs.setResponse_code("55");
-            rs.setInfo("Failed");
-            rs.setResponse("can't acces this feature :");
-            CreateLog.createJson(rs, "listEvents");
-            process = false;
-            return rs;
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "listEvents");
+            return new ResponseEntity(new CustomErrorType("55", "Error", null),
+                    HttpStatus.NOT_FOUND);
         }
-        return rs;
+
     }
 
 //    @RequestMapping(value = "/manage-engagement/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})

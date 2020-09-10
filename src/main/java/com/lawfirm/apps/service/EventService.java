@@ -56,8 +56,8 @@ public class EventService implements EventServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Events> findByActive(String is_active) {
-        return eventsRepo.findByActive(is_active);
+    public List<Events> listEvents(String param) {
+        return eventsRepo.listEvents(param);
     }
 
     @Override

@@ -26,7 +26,7 @@ public interface EventsRepoIface {
 
     List<Events> findByCaseId(String param);
 
-    List<Events> findByActive(String is_active);
+    List<Events> listEvents(String is_active);
     
     public Events findById(String param);
 

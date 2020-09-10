@@ -47,32 +47,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Slf4j
 public class AuthController {
-    
+
     @Autowired
     AuthenticationManager authenticationManager;
-    
+
     @Autowired
     PasswordEncoder encoder;
-    
+
     @Autowired
     JwtUtils jwtTokenUtil;
-    
+
     @Autowired
     EmployeeService empRepository;
     @Autowired
     UserServiceImpl userRepository;
-    
+
     @Autowired
     EmployeeRoleService roleRepository;
-    
+
     final Response rs = new Response();
-    
+
     @RequestMapping("/")
     public String home() {
 //        return "redirect:/login";
         return login();
     }
-    
+
     @RequestMapping("/login")
     public String login() {
         return "createAuthenticationToken";
@@ -83,6 +83,7 @@ public class AuthController {
     public String logout() {
         return "createAuthenticationToken";
     }
+
     @PostMapping("/sign-in")
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
@@ -92,7 +93,8 @@ public class AuthController {
 //            Authentication authenticate = authenticationManager.authenticate(
 //                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), "lawfirm" + cekEmp.getEmail() + authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
 //            );
-//            log.info("getPassword : " + authenticationRequest.getPassword());
+            log.info("getPassword : " + authenticationRequest.getUsername());
+            log.info("getPassword : " + authenticationRequest.getPassword());
             Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
             );
@@ -105,7 +107,7 @@ public class AuthController {
             if (userDetails == null) {
                 response.setUsername(null);
 //                CreateLog.createJson(rs, "signin");
-                return new ResponseEntity(new CustomErrorType("05", "Error", " Login Failed For User"),
+                return new ResponseEntity(new CustomErrorType("55", "Error", " Login Failed For User"),
                         HttpStatus.NOT_FOUND);
             }
             final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
@@ -120,24 +122,24 @@ public class AuthController {
             userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
             response.setRoles(roles);
             return new ResponseEntity(response, responseHeaders, HttpStatus.OK);
-            
+
         } catch (AuthenticationException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.toString());
             CreateLog.createJson(ex.toString(), "signin");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", "Invalid username or password"),
                     HttpStatus.NOT_FOUND);
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupApi signUpRequest) {
         try {
             Employee entity = new Employee();
             if (!signUpRequest.getUserName().equalsIgnoreCase("sysadmin")) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("ca'nt acces this feature");
                 rs.setResponse("Create Employee Failed");
                 return ResponseEntity
@@ -145,16 +147,16 @@ public class AuthController {
                         .body(rs);
             }
             if (empRepository.existsByUsername(signUpRequest.getUserName())) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("You  username :" + signUpRequest.getUserName() + " already Exist");
                 rs.setResponse("Create Employee Failed");
                 return ResponseEntity
                         .badRequest()
                         .body(rs);
             }
-            
+
             if (empRepository.existsByEmail(signUpRequest.getEmail())) {
-                rs.setResponse_code("05");
+                rs.setResponse_code("55");
                 rs.setInfo("You have entered an invalid email address :" + signUpRequest.getEmail() + " already Exist");
                 rs.setResponse("Create Employee Failed");
                 return ResponseEntity
@@ -172,11 +174,11 @@ public class AuthController {
             entity.setApproved_date(new Date());
             entity.setPassword(encoder.encode(signUpRequest.getEmail() + signUpRequest.getEmail()));
             entity.setRoleName("sysadmin");
-            
+
             Employee dataEmp = this.empRepository.create(entity);
-            
+
             if (dataEmp == null) {
-                return new ResponseEntity(new CustomErrorType("05", "Fail", "User registered Failed"),
+                return new ResponseEntity(new CustomErrorType("55", "Fail", "User registered Failed"),
                         HttpStatus.NOT_FOUND);
             } else {
                 return new ResponseEntity(new CustomErrorType("00", "Success", "User registered successfully"),
@@ -186,7 +188,7 @@ public class AuthController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "signup");
-            return new ResponseEntity(new CustomErrorType("05", "Error", ex.getMessage()),
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),

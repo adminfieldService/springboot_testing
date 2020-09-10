@@ -41,7 +41,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -64,7 +64,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -87,7 +87,7 @@ public class EventsRepo implements EventsRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -105,7 +105,7 @@ public class EventsRepo implements EventsRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -136,7 +136,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -167,7 +167,7 @@ public class EventsRepo implements EventsRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_eventsRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -178,8 +178,38 @@ public class EventsRepo implements EventsRepoIface {
     }
 
     @Override
-    public List<Events> findByActive(String is_active) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Events> listEvents(String param) {
+        try {
+            Query query = null;
+            if (!param.equals("0")) {
+                String sql = "SELECT e FROM Events e "
+                        + " JOIN FETCH e.caseDetails AS c "
+                        + " LEFT JOIN FETCH c.employee AS m "
+                        + " WHERE "
+                        + " m.idEmployee = :idEmployee";
+                query = entityManager.createQuery(sql);
+                query.setParameter("idEmployee", Long.parseLong(param));
+            }
+            if (param.equals("0")) {
+                String sql = "SELECT e FROM Events e "
+                        + " JOIN FETCH e.caseDetails AS c ";
+                query = entityManager.createQuery(sql);
+            }
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_eventsRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
 }

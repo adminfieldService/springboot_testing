@@ -26,7 +26,7 @@ public interface EventServiceIface {
 
     List<Events> findByCaseId(String param);
 
-    List<Events> findByActive(String is_active);
+    List<Events> listEvents(String param);
 
     Events findById(String param);
 }

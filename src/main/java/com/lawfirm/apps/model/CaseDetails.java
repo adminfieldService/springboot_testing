@@ -80,6 +80,7 @@ public class CaseDetails extends Engagement implements Serializable {
     protected void onCreate() {
         isActive = "0";
         created_date = new Date();
+        dmPercent = 40;
     }
 
     public CaseDetails() {
@@ -101,9 +102,6 @@ public class CaseDetails extends Engagement implements Serializable {
         this.professionalCollection = professionalCollection;
         this.evenList = evenList;
     }
-
-    
-    
 
     public Double getProfesionalFee() {
         return profesionalFee;
@@ -482,15 +480,37 @@ public class CaseDetails extends Engagement implements Serializable {
 
     }
 
+    @Override
     public Employee getEmployee() {
         return employee;
     }
 
+    @Override
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 
+    @Override
+    public Double getDmpPortion() {
+        return dmpPortion;
+    }
 
+    @Override
+    public void setDmpPortion(Double dmpPortion) {
+        this.dmpPortion = dmpPortion;
+    }
+
+    @Override
+    public Integer getDmPercent() {
+        return dmPercent;
+    }
+
+    @Override
+    public void setDmPercent(Integer dmPercent) {
+        this.dmPercent = dmPercent;
+    }
+
+    
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.CaseDetails[engagementId=" + this.engagementId + " ]";

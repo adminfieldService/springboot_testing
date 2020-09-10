@@ -6,6 +6,7 @@
 package com.lawfirm.apps.service;
 
 import com.lawfirm.apps.config.Constants;
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.repo.interfaces.DisbursementRepoIface;
 import com.lawfirm.apps.repo.interfaces.LoanRepoIface;
@@ -47,6 +48,12 @@ public class DisbursementService implements DisbursementServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Loan findLoanBById(Long param) {
         return this.disbursementRepo.findLoanBById(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> disbursementbyCaseId(String param) {
+        return this.disbursementRepo.disbursementbyCaseId(param);
     }
 
 }

@@ -42,7 +42,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -65,7 +65,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -104,7 +104,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -126,7 +126,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -141,16 +141,25 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
     @SuppressWarnings("unchecked")
     public List<CaseDocument> findDocByCaseId(Long paramLong) {
         try {
-            List<CaseDocument> acquire = entityManager.createQuery("SELECT d FROM CaseDocument d "
-                    + " JOIN FETCH d.caseDetails as c"
-                    + " WHERE "
-                    + " c.engagementId = :engagementId")
-                    .setParameter("engagementId", paramLong)
-                    .getResultList();
+            List<CaseDocument> acquire = null;
+            if (paramLong != 0l) {
+                acquire = entityManager.createQuery("SELECT d FROM CaseDocument d "
+                        + " JOIN FETCH d.caseDetails as c"
+                        + " WHERE "
+                        + " c.engagementId = :engagementId"
+                        + " ORDER BY d.date_input Desc  ")
+                        .setParameter("engagementId", paramLong)
+                        .getResultList();
+            } else {
+                acquire = entityManager.createQuery("SELECT d FROM CaseDocument d "
+                        + " JOIN FETCH d.caseDetails as c"
+                        + " ORDER BY d.date_input Desc  ")
+                        .getResultList();
+            }
             return acquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -169,7 +178,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
             return (List<CaseDocument>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -191,7 +200,7 @@ public class CaseDocumentRepo implements CaseDocumentRepoIface {
             return (List<CaseDocument>) listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-             CreateLog.createJson(ex.getMessage(),"ERROR_caseDocumentRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDocumentRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

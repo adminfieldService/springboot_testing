@@ -1285,8 +1285,7 @@ public class ReimbursementController {
                 Reimbursement rembursement = reimbursementService.findById(reimburse_id);
                 log.info("rembursement : " + rembursement.getReimbursementId());
                 try {
-                    log.info("employee-2_" + employee.getIdEmployee());
-                    log.info("entityEmp-2_" + entityEmp.getIdEmployee());
+                   String mime= rembursement.getMimeType();
                     byte[] input_file = Files.readAllBytes(Paths.get(rembursement.getLinkDocument()));
                     String linkDoc = new String(Base64.getEncoder().encode(input_file));
                     jsonobj.put("response_code", "00");

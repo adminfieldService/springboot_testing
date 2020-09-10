@@ -312,9 +312,9 @@ public class CaseController {
 
     }
 
-    @RequestMapping(value = "/case/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
+    @RequestMapping(value = "/case/documents", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+    public ResponseEntity<?> listDocument(Authentication authentication) {
         try {
             Date todayDate = new Date();
             Date now = new Date();
@@ -334,11 +334,11 @@ public class CaseController {
                         HttpStatus.NOT_FOUND);
             }
 
-            List<CaseDocument> listDoc = caseDocumentService.findDocByCaseId(engagement_id);
+            List<CaseDocument> listDoc = caseDocumentService.findDocByCaseId(0l);
             if (listDoc == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Error");
-                rs.setResponse("engagement_id : " + engagement_id + " Not Found");
+                rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "list-case-document");
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
@@ -388,6 +388,88 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "list-case-document");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @RequestMapping(value = "/case/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> listDocumentByEngId(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+        try {
+            Date todayDate = new Date();
+            Date now = new Date();
+            String pathDoc = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("can't acces this feature :");
+                process = false;
+                CreateLog.createJson(rs, "list-case-document-by-engagement_id");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            List<CaseDocument> listDoc = caseDocumentService.findDocByCaseId(engagement_id);
+            if (listDoc == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Error");
+                rs.setResponse("engagement_id : " + engagement_id + " Not Found");
+                process = false;
+                CreateLog.createJson(rs, "list-case-document-by-engagement_id");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            JSONArray array = new JSONArray();
+            if (process) {
+
+                for (int i = 0; i < listDoc.size(); i++) {
+                    JSONObject obj = new JSONObject();
+                    CaseDocument data = listDoc.get(i);
+
+                    if (data.getCaseDetails() == null) {
+                        obj.put("engagement_id", "");
+                    } else {
+                        obj.put("engagement_id", data.getCaseDetails().getEngagementId());
+                        obj.put("case_id", data.getCaseDetails().getCaseID());
+                    }
+                    if (data.getCase_document_id() == null) {
+                        obj.put("case_document_id", "");
+                    } else {
+                        obj.put("case_document_id", data.getCase_document_id());
+                    }
+                    if (data.getTitle() == null) {
+                        obj.put("title", "");
+                    } else {
+                        obj.put("title", data.getTitle());
+                    }
+                    if (data.getDate_input() == null) {
+                        obj.put("upload_date", "");
+                    } else {
+                        obj.put("upload_date", data.getDate_input());
+                    }
+                    if (data.getLinkDocument() == null) {
+                        obj.put("link_document", "");
+                    } else {
+                        obj.put("link_document", data.getLinkDocument());
+                    }
+                    array.put(obj);
+                }
+            }
+            return ResponseEntity.ok(array.toString());
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "list-case-document-by-engagement_id");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -467,7 +549,7 @@ public class CaseController {
 
     @RequestMapping(value = "/case/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+    public Response closingCase(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {//@RequestBody final EngagementApi object, 
         try {
             Date now = new Date();
 //          Integer number = null;
@@ -484,7 +566,7 @@ public class CaseController {
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
-            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+            if (!entityEmp.getRoleName().contentEquals("admin")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
