@@ -9,6 +9,11 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -227,7 +232,7 @@ public class Util {
 
         return kata1;
     }
-    
+
     public static String changeCase(final String input) {
         final String domain = "CASE";
 //        final String[] tokens = input.split("@");
@@ -236,13 +241,69 @@ public class Util {
 
         return kata1;
     }
-    
-     public static String changeBCS(final String input) {
+
+    public static String changeBCS(final String input) {
         final String domain = "BCS";
 //        final String[] tokens = input.split("@");
         String kata1 = input;
         kata1 = kata1.replaceAll(domain, "RMBCS");
 
         return kata1;
+    }
+
+    public static Double hitungPajak(final Double input) {
+        Double hasil = 0d;
+        if (input <= 50000000) {
+            hasil = (input * 5) / 100;
+        }
+
+        if (input >= 50000001 && input <= 250000000) {
+            hasil = (input * 15) / 100;
+        }
+        if (input >= 250000001 && input <= 500000000) {
+            hasil = (input * 25) / 100;
+        }
+        if (input >= 500000001) {
+            hasil = (input * 35) / 100;
+        }
+
+        return hasil;
+    }
+
+    public static Integer hitungMasakerja(Date input) {
+        Integer hasil = 0;
+        Date currentDate = new Date();
+        DateFormat dateInput = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateAkhir = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            String isi_tglInput = dateInput.format(input);
+            Date tglInput = dateAkhir.parse(isi_tglInput);
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(tglInput);
+            Calendar tanggalAwal = cal1;
+//            
+            String isi_tglAkhir = dateAkhir.format(currentDate);
+            Date tglAkhir = dateAkhir.parse(isi_tglAkhir);
+            Calendar cal2 = Calendar.getInstance();
+            cal2.setTime(tglAkhir);
+            Calendar tanggalAkhir = cal2;
+
+//          Date TGLInput = tglInput;
+//          Date tanggalAkhir = tglAkhir;
+//
+            Calendar tanggal = (Calendar) tanggalAwal.clone();
+            while (tanggal.before(tanggalAkhir)) {
+                tanggal.add(Calendar.MONTH, 1);
+                hasil++;
+            }
+            if (hasil >= 12) {
+                return 12;
+            } else {
+                return hasil;
+            }
+
+        } catch (ParseException e) {
+        }
+        return hasil;
     }
 }

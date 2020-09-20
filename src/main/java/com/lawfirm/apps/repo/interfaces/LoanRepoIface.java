@@ -40,7 +40,7 @@ public interface LoanRepoIface {
 
     List<Loan> findByEmployee(String param, String type);
 
-    List<Loan> listActive(String param1, String param2, String type);
+    List<Loan> listBy(String param1, String param2, String type);
 
     List<Loan> byName(Boolean isActive);
 
@@ -53,6 +53,8 @@ public interface LoanRepoIface {
     List<Loan> getLoanB(String param);
 
     List<Loan> getListLoanB();
+
+    Double sumLoan(Long paramLong);
 
 //    Integer generateLoanId(String param1, String param2, String param3);
     List<Loan> generateLoanId(String param1, String param2, String param3);

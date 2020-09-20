@@ -7,6 +7,7 @@ package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.CaseDocument;
+import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.EngagementHistory;
 import com.lawfirm.apps.response.Response;
@@ -14,6 +15,7 @@ import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
 import com.lawfirm.apps.service.interfaces.CaseDetailsServiceIface;
 import com.lawfirm.apps.service.interfaces.ClientDataServiceIface;
+import com.lawfirm.apps.service.interfaces.DisbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.DocumentReimburseServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeRoleServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
@@ -27,7 +29,6 @@ import com.lawfirm.apps.service.interfaces.MemberServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
-import com.lawfirm.apps.support.api.EngagementApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.xss.filter.annotation.XxsFilter;
@@ -36,13 +37,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
@@ -57,7 +57,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,6 +80,8 @@ public class CaseController {
     SimpleDateFormat sdfYear;
     SimpleDateFormat sdfMonth;
     SimpleDateFormat sdfMY;
+    SimpleDateFormat sdfDisbursM;
+    SimpleDateFormat sdfDisbursMY;
     Date now;
     String date_now;
     final Response rs = new Response();
@@ -118,13 +119,17 @@ public class CaseController {
     MemberServiceIface memberService;
     @Autowired
     EventServiceIface eventService;
+    @Autowired
+    DisbursementServiceIface disbursementService;
 
     public CaseController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        this.sdfYear = new SimpleDateFormat("yy");
-        this.sdfMonth = new SimpleDateFormat("MM");
+        this.sdfYear = new SimpleDateFormat("yyyy");
+        this.sdfMonth = new SimpleDateFormat("MMMM");
         this.sdfMY = new SimpleDateFormat("MMyyyy");
+        this.sdfDisbursM = new SimpleDateFormat("MMM");
+        this.sdfDisbursMY = new SimpleDateFormat("MMMyyyy");
     }
 
     @RequestMapping(value = "/case/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
@@ -132,7 +137,10 @@ public class CaseController {
     public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @RequestParam("title") String title,
             @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
         try {
-
+            rs.setResponse_code("00");
+            rs.setInfo("uploadCaseDocument Acces by : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id);
+            CreateLog.createJson(rs, "upload-case-document");
             CaseDocument entCaseDocument = new CaseDocument();
 
             Date todayDate = new Date();
@@ -247,7 +255,10 @@ public class CaseController {
     @XxsFilter
     public Response uploadMultipleDocument(@RequestPart("case_doc") MultipartFile[] files, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
         try {
-
+            rs.setResponse_code("00");
+            rs.setInfo("uploadMultipleDocument Acces by : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id);
+            CreateLog.createJson(rs, "uploadMultipleDocument");
             CaseDocument entCaseDocument = new CaseDocument();
 
             Date todayDate = new Date();
@@ -316,6 +327,10 @@ public class CaseController {
     @XxsFilter
     public ResponseEntity<?> listDocument(Authentication authentication) {
         try {
+            rs.setResponse_code("00");
+            rs.setInfo("listDocument Acces by : " + authentication.getName());
+            rs.setResponse("");
+            CreateLog.createJson(rs, "list-case-document");
             Date todayDate = new Date();
             Date now = new Date();
             String pathDoc = null;
@@ -398,6 +413,10 @@ public class CaseController {
     @XxsFilter
     public ResponseEntity<?> listDocumentByEngId(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
+            rs.setResponse_code("00");
+            rs.setInfo("listDocumentByEngId Acces by : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id);
+            CreateLog.createJson(rs, "list-case-document-by-engagement_id");
             Date todayDate = new Date();
             Date now = new Date();
             String pathDoc = null;
@@ -480,6 +499,10 @@ public class CaseController {
     @XxsFilter
     public ResponseEntity<?> viewDocument(ServletRequest request, HttpServletResponse response, @PathVariable("case_document_id") String case_document_id, Authentication authentication) throws IOException {
         try {
+            rs.setResponse_code("00");
+            rs.setInfo("viewDocument access By : " + authentication.getName());
+            rs.setResponse("case_document_id : " + case_document_id);
+            CreateLog.createJson(rs, "view-Document");
             JSONObject jsonobj = new JSONObject();
             Date todayDate = new Date();
             Date now = new Date();
@@ -551,9 +574,15 @@ public class CaseController {
     @XxsFilter
     public Response closingCase(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {//@RequestBody final EngagementApi object, 
         try {
+            rs.setResponse_code("00");
+            rs.setInfo("closingCase access By : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id.toString());
+            CreateLog.createJson(rs, "closing-Case");
             Date now = new Date();
 //          Integer number = null;
+            Integer number = 0;
             EngagementHistory enHistory = new EngagementHistory();
+            Disbursement disbursement = new Disbursement();
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -581,7 +610,14 @@ public class CaseController {
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
-            if (entity.getStatus().contains("4")) {
+            if (entity.getStatus().contains("closed")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
+                CreateLog.createJson(rs, "closing-Case");
+                return rs;
+            }
+            if (entity.getIsActive().contains("4")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
@@ -591,12 +627,36 @@ public class CaseController {
 
             entity.setIsActive("4");
             entity.setStatus("closed");
+            entity.setClosedBy(entityEmp.getEmployeeId());
+            entity.setClosed_date(now);
             enHistory.setEngagement(entity);
             enHistory.setUserId(entityEmp.getIdEmployee());
+            disbursement.setEngagement(entity);
+            List<Disbursement> disburseList = this.disbursementService.numOfDisbursement(sdfYear.format(now));
+            if (disburseList == null || disburseList.isEmpty()) {
+                number = 1;
+            } else {
+                number = disburseList.size() + 1;
+            }
+//            System.out.println("isi : " + object.getDisburse_date());
+            String dt = dateFormat.format(new Date());
+            Date disburse = dateFormat.parse(dt);
+//            dataLoan.setDisburse_date(disburse);
+            String disburseM = sdfDisbursM.format(new Date());
+            String disburseMy = sdfDisbursMY.format(new Date());
+            System.out.println("isi disburseM : " + disburseM);
+            disbursement.setBulanInput(disburseM);
+            String dsb_id = "DSB" + disburseMy;
+            disbursement.setDisbursementId(dsb_id);
+            disbursement.setDisburse_date(disburse);
+            disbursement.setNumberOfDisbursement(number);
+            disbursement.setBulanInput(sdfMonth.format(now));
+            disbursement.setTahunInput(sdfYear.format(now));
             enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
             CaseDetails closeCase = this.caseDetailsService.update(entity);
             if (closeCase != null) {
                 this.engagementHistoryService.create(enHistory);
+                this.disbursementService.create(disbursement);
                 rs.setResponse_code("00");
                 rs.setInfo("Success");
                 rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
@@ -620,13 +680,24 @@ public class CaseController {
             CreateLog.createJson(ex.getMessage(), "closing-Case");
             return rs;
 
+        } catch (ParseException ex) {
+            Logger.getLogger(CaseController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        rs.setResponse_code("55");
+        rs.setInfo("Failed");
+        rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+        CreateLog.createJson(rs, "closing-Case");
+        return rs;
     }
 
     @RequestMapping(value = "/case/case-id", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
     public ResponseEntity<?> getCaseId(Authentication authentication) {
         try {
+            rs.setResponse_code("00");
+            rs.setInfo("getCaseId acces By : " + authentication.getName());
+            rs.setResponse("");
+            CreateLog.createJson(rs, "getCaseId");
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);

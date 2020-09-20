@@ -1,10 +1,8 @@
 package com.lawfirm.apps;
 
-import javax.servlet.MultipartConfigElement;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -35,12 +33,17 @@ public class LawFirmApplication extends SpringBootServletInitializer {
                 registry.addMapping("/employee").allowedOrigins("http://localhost:8080");
                 registry.addMapping("/engagement").allowedOrigins("http://localhost:8080");
                 registry.addMapping("/loan").allowedOrigins("http://localhost:8080");
-                 registry.addMapping("/**").allowedOrigins("http://localhost:8080");
-                
+                registry.addMapping("/reimbursement").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/reimbursements").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/case").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/disburse").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/disbursement").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+
             }
         };
     }
-    
+
 //        @Bean
 //    	public MultipartConfigElement multipartConfigElement() {
 //    	  MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -50,5 +53,4 @@ public class LawFirmApplication extends SpringBootServletInitializer {
 //    	  factory.setMaxRequestSize("100MB");
 //    	  return factory.createMultipartConfig();
 //    	}
-
 }

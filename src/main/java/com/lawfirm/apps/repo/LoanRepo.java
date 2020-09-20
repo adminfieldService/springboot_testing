@@ -502,7 +502,7 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
-    public List<Loan> listActive(String param1, String param2, String type) {
+    public List<Loan> listBy(String param1, String param2, String type) {
         try {
             List<Loan> listAcquire = null;
             if (type.contentEquals("a")) {
@@ -563,7 +563,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " l.status = :status "
+                        + " l.status = :status "    
                         + " ORDER BY l.date_created DESC ")
                         .setParameter("status", "s")
                         .getResultList();
@@ -641,8 +641,8 @@ public class LoanRepo implements LoanRepoIface {
             }
         }
     }
-    
-     @Override
+
+    @Override
     public List<Loan> getListLoanB() {
         try {
             List<Loan> listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l "
@@ -662,6 +662,33 @@ public class LoanRepo implements LoanRepoIface {
             return listAcquire;
 
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double sumLoan(Long paramLong) {
+        try {
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l "
+                    + " WHERE "
+                    + " l.Id = :Id";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("Id", paramLong);
+//            if (query != null) {
+                log.info("isi" + String.format("%.0f", query.getSingleResult()));
+                return Double.parseDouble(query.getSingleResult().toString());
+//            } else {
+//                log.info("isi" + query.getSingleResult().toString());
+//                return 0d;
+//            }
+        } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
             System.out.println("ERROR: " + ex.getMessage());

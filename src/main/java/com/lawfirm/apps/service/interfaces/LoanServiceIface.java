@@ -38,7 +38,7 @@ public interface LoanServiceIface {
 
     List<Loan> findByEmployee(String param, String type);
 
-    List<Loan> listActive(String param1, String param2, String type);
+    List<Loan> listBy(String param1, String param2, String type);
 
     List<Loan> byName(Boolean isActive);
 
@@ -47,14 +47,16 @@ public interface LoanServiceIface {
     Integer count();
 
     List<Loan> getLoanB(String param);
-    
+
     List<Loan> getListLoanB();
 
     Loan findByIdLoan(Long paramLong);
 
     Double loanEmp(String param1, String param2);
 
+    Double sumLoan(Long paramLong);
 //    Integer generateLoanId(String param1, String param2, String param3);
+
     List<Loan> generateLoanId(String param1, String param2, String param3);
 
     List<Loan> generateLoanIdB(String param1, String param2, String param3);

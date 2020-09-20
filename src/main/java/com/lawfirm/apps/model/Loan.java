@@ -48,14 +48,16 @@ public class Loan implements Serializable {
     @Column(name = "id")
     private Long Id;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
     private Employee employee;
 
     @Column(name = "loan_id", unique = true)
     private String loanId;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    @Column(name = "tahun_input")
+//    private String tahunInput;
+    @ManyToOne(optional = true, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_type_id", referencedColumnName = "loan_type_id")
     private LoanType loantype;
 
@@ -67,14 +69,13 @@ public class Loan implements Serializable {
     private List<LoanHistory> loanHistoryCollection = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
-    private Collection<Disbursement> disbursementCollection;
+    private Collection<DisbursementLoan> disbursementLoanCollection;
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
 //    private Collection<Reimbursement> reimbursementCollection;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
-    private Collection<OutStanding> outStandingCollection;
-    
+    private Collection<OutStandingLoanB> outStandingCollection;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
     protected Collection<Reimbursement> reimbursementCollection;
 
@@ -126,6 +127,9 @@ public class Loan implements Serializable {
     @Column(name = "status", length = 1)
     private String status;
 
+    @Column(name = "signature")
+    private String signature;
+
     @Column(name = "is_delete")
     private Boolean isDelete;
 
@@ -134,7 +138,7 @@ public class Loan implements Serializable {
     protected Engagement engagement;
 
 //    @Basic(optional = false)
-    @Column(name = "tgl_input", length = 10, nullable = true)
+    @Column(name = "tgl_input", length = 10, nullable = true)//tahunInput YY
     private String tgl_input;
 
     @Column(name = "date_month", nullable = true)
@@ -150,14 +154,15 @@ public class Loan implements Serializable {
     public Loan() {
     }
 
-    public Loan(Long Id, Employee employee, String loanId, LoanType loantype, Collection<Financial> financialCollection, Collection<Disbursement> disbursementCollection, Collection<OutStanding> outStandingCollection, Double loanAmount, Double outstanding, Date disburse_date, String isActive, Date repayment_date, Date date_created, Date date_approved, Date date_approved_by_finance, String aprovedByAdmin, String aprovedByFinance, String status, Boolean isDelete, Engagement engagement, String tgl_input, String date_month) {
+    public Loan(Long Id, Employee employee, String loanId, LoanType loantype, Collection<Financial> financialCollection, Collection<DisbursementLoan> disbursementLoanCollection, Collection<OutStandingLoanB> outStandingCollection, Collection<Reimbursement> reimbursementCollection, Double loanAmount, Double outstanding, Date disburse_date, String isActive, Date repayment_date, Date date_created, Date date_approved, Date date_approved_by_finance, String aprovedByAdmin, String aprovedByFinance, String status, String signature, Boolean isDelete, Engagement engagement, String tgl_input, String date_month) {
         this.Id = Id;
         this.employee = employee;
         this.loanId = loanId;
         this.loantype = loantype;
         this.financialCollection = financialCollection;
-        this.disbursementCollection = disbursementCollection;
+        this.disbursementLoanCollection = disbursementLoanCollection;
         this.outStandingCollection = outStandingCollection;
+        this.reimbursementCollection = reimbursementCollection;
         this.loanAmount = loanAmount;
         this.outstanding = outstanding;
         this.disburse_date = disburse_date;
@@ -169,13 +174,12 @@ public class Loan implements Serializable {
         this.aprovedByAdmin = aprovedByAdmin;
         this.aprovedByFinance = aprovedByFinance;
         this.status = status;
+        this.signature = signature;
         this.isDelete = isDelete;
         this.engagement = engagement;
         this.tgl_input = tgl_input;
         this.date_month = date_month;
     }
-
-  
 
     public void addFinancial(Financial financial) {
         financial.setLoan(this);
@@ -411,29 +415,51 @@ public class Loan implements Serializable {
         this.loanHistoryCollection = loanHistoryCollection;
     }
 
-    public Collection<Disbursement> getDisbursementCollection() {
-        return disbursementCollection;
+    public Collection<DisbursementLoan> getDisbursementLoanCollection() {
+        return disbursementLoanCollection;
     }
 
-    public void setDisbursementCollection(Collection<Disbursement> disbursementCollection) {
-        this.disbursementCollection = disbursementCollection;
+    public void setDisbursementLoanCollection(Collection<DisbursementLoan> disbursementLoanCollection) {
+        this.disbursementLoanCollection = disbursementLoanCollection;
     }
 
-    public Collection<OutStanding> getOutStandingCollection() {
+    public Collection<Reimbursement> getReimbursementCollection() {
+        return reimbursementCollection;
+    }
+
+    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
+        this.reimbursementCollection = reimbursementCollection;
+    }
+
+    public Collection<OutStandingLoanB> getOutStandingCollection() {
         return outStandingCollection;
     }
 
-    public void setOutStandingCollection(Collection<OutStanding> outStandingCollection) {
+    public void setOutStandingCollection(Collection<OutStandingLoanB> outStandingCollection) {
         this.outStandingCollection = outStandingCollection;
     }
 
-//    public Collection<Reimbursement> getReimbursementCollection() {
-//        return reimbursementCollection;
-//    }
-//
-//    public void setReimbursementCollection(Collection<Reimbursement> reimbursementCollection) {
-//        this.reimbursementCollection = reimbursementCollection;
-//    }
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
 
     @Override
     public String toString() {

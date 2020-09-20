@@ -120,7 +120,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
     public Reimbursement findById(Long paramLong) {
         try {
             Reimbursement listAcquire = (Reimbursement) entityManager.createQuery("SELECT r FROM Reimbursement r"
-                    + " LEFT JOIN FETCH r.loan AS l "
+                    + " JOIN FETCH r.loan AS l "
                     + " LEFT JOIN FETCH r.employee AS e "
                     + " RIGHT JOIN FETCH l.engagement AS n "
                     + " WHERE "
@@ -149,10 +149,11 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
     public List<Reimbursement> listReimbursement() {
         try {
             List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r "
-                    + " LEFT JOIN FETCH r.loan AS l "
+                    + " JOIN FETCH r.loan AS l "
                     + " LEFT JOIN FETCH r.employee AS e "
-                    + " RIGHT JOIN FETCH l.engagement AS n "
-                    + " ORDER BY r.tgInput DESC ")
+                    + " RIGHT JOIN FETCH l.engagement AS n"
+                    + " WHERE r.loan IS Not Null"
+                    + " ORDER BY r.tgInput Desc")
                     .getResultList();
             return listAcquire;
         } catch (Exception ex) {
@@ -192,7 +193,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             List<Reimbursement> listAcquire = null;
             if (paramBy.contains("admin")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + " LEFT JOIN FETCH r.loan AS l "
+                        + "  JOIN FETCH r.loan AS l "
                         + " LEFT JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
@@ -203,7 +204,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             }
             if (paramBy.contains("finance")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + " LEFT JOIN FETCH r.loan AS l "
+                        + "  JOIN FETCH r.loan AS l "
                         + " LEFT JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
@@ -214,7 +215,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             }
             if (paramBy.contains("dmp")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + " LEFT JOIN FETCH r.loan AS l "
+                        + "  JOIN FETCH r.loan AS l "
                         + " JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "

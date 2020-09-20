@@ -34,7 +34,7 @@ import javax.persistence.TemporalType;
 public class CaseDetails extends Engagement implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Column(name = "case_id", unique = true)
+    @Column(name = "case_id", length = 20, unique = true)
     protected String caseID;
     @Column(name = "profesional_fee")
     private Double profesionalFee;
@@ -86,8 +86,8 @@ public class CaseDetails extends Engagement implements Serializable {
     public CaseDetails() {
     }
 
-    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, String tahun_input, String caseID) {
-        super(engagementId, isActive, approvedBy, created_date, approved_date, signature, invoiceNumber, status, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, tahun_input, caseID);
+    public CaseDetails(String caseID, Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input) {
+        super(engagementId, isActive, approvedBy, closedBy, created_date, approved_date, closed_date, signature, invoiceNumber, status, dmpPortion, dmPercent, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, disbursementCollection, tahun_input);
         this.caseID = caseID;
         this.profesionalFee = profesionalFee;
         this.profesionalFeeNet = profesionalFeeNet;
@@ -102,6 +102,9 @@ public class CaseDetails extends Engagement implements Serializable {
         this.professionalCollection = professionalCollection;
         this.evenList = evenList;
     }
+
+    
+
 
     public Double getProfesionalFee() {
         return profesionalFee;
@@ -510,6 +513,31 @@ public class CaseDetails extends Engagement implements Serializable {
         this.dmPercent = dmPercent;
     }
 
+    public Collection<Disbursement> getDisbursementCollection() {
+        return disbursementCollection;
+    }
+
+    public void setDisbursementCollection(Collection<Disbursement> disbursementCollection) {
+        this.disbursementCollection = disbursementCollection;
+    }
+
+    public String getClosedBy() {
+        return closedBy;
+    }
+
+    public void setClosedBy(String closedBy) {
+        this.closedBy = closedBy;
+    }
+
+    public Date getClosed_date() {
+        return closed_date;
+    }
+
+    public void setClosed_date(Date closed_date) {
+        this.closed_date = closed_date;
+    }
+
+    
     
     @Override
     public String toString() {

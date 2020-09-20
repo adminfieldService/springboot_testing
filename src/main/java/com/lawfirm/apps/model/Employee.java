@@ -86,6 +86,11 @@ public class Employee implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateRegister;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "date_resign", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date dateResign;
+
     @Column(name = "salary")
     private Double salary;
     @Column(name = "loan_amount")//loan_limit
@@ -112,7 +117,7 @@ public class Employee implements Serializable {
     private String signTtd;
     @Column(name = "cell_phone")
     private String mobilePhone;
-    @Column(name = "status", length = 1)
+    @Column(name = "status", length = 8)
     private String status;
 
 //    @Column(name = "number", length = 4)
@@ -680,4 +685,13 @@ public class Employee implements Serializable {
         this.engagementCollection = engagementCollection;
     }
 
+    public Date getDateResign() {
+        return dateResign;
+    }
+
+    public void setDateResign(Date dateResign) {
+        this.dateResign = dateResign;
+    }
+
+    
 }

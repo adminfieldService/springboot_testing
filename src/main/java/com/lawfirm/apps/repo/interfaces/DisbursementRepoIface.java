@@ -17,7 +17,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DisbursementRepoIface {
 
-    List<Loan> listDisburse(String type);
+    Disbursement create(Disbursement entity);
+
+    Disbursement update(Disbursement entity);
+
+    Disbursement delete(Disbursement entity);
+
+    List<Disbursement> numOfDisbursement(String param);
+
+    void remove(Disbursement entity);
+
+    List<Disbursement> listDisburse();
+
+    List<Loan> listDisburseByloan(String type);
 
     List<Loan> viewDisburseByFinance(String empId, String type);
 
@@ -25,6 +37,10 @@ public interface DisbursementRepoIface {
 
     Loan findLoanBById(Long param);
 
-    List<Loan> disbursementbyCaseId(String param);
+    List<Disbursement> disbursementbyCaseId(String param);
+    
+    Disbursement  disbursementFindbyCaseId(String param);
+
+//    List<Loan> disbursementbyCaseId(String param);
 //    Disbursement disbursementbyCaseId(String param);
 }

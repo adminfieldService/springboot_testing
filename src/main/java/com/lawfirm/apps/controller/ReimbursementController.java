@@ -9,7 +9,7 @@ import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Engagement;
 import com.lawfirm.apps.model.Loan;
-import com.lawfirm.apps.model.OutStanding;
+import com.lawfirm.apps.model.OutStandingLoanB;
 import com.lawfirm.apps.model.Reimbursement;
 import com.lawfirm.apps.model.ReimbursementHistory;
 import com.lawfirm.apps.response.Response;
@@ -26,7 +26,6 @@ import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
-import com.lawfirm.apps.service.interfaces.OutStandingServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
@@ -69,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 
 /**
  *
@@ -129,7 +129,7 @@ public class ReimbursementController {
     @Autowired
     EventServiceIface eventServiceIface;
     @Autowired
-    OutStandingServiceIface outStandingService;
+    OutStandingLoanBServiceIface outStandingLoanBService;
 
     public ReimbursementController() {
         this.timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -139,7 +139,7 @@ public class ReimbursementController {
         this.sdfMY = new SimpleDateFormat("MMyyyy");
     }
 
-    @RequestMapping(value = "/reimbursement/{id_loan}", method = RequestMethod.POST, consumes = {"multipart/form-data"}, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
+    @RequestMapping(value = "/reimbursement/{id_loan}", method = RequestMethod.POST, consumes = {"multipart/form-data"}, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}, produces = {"application/json"}
     @XxsFilter
 //     public Response createReimburse(@RequestParam ReimbursementApi object, @RequestPart("attach") MultipartFile file, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
     public Response createReimburse(
@@ -179,14 +179,14 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
-            if (!dataEmp.getRoleName().matches("dmp")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "create-reimburse");
-                process = false;
-                return rs;
-            }
+//            if (!dataEmp.getRoleName().matches("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("Cannot Access This feature");
+//                CreateLog.createJson(rs, "create-reimburse");
+//                process = false;
+//                return rs;
+//            }
 //            CaseDetails entity = caseDetailsService.findCaseId(case_id);
 //            if (entity == null) {
 //                rs.setResponse_code("55");
@@ -351,19 +351,20 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            List<Reimbursement> reimbursementList = reimbursementService.listReimbursement();
-            log.info("listReimbursement.size() : " + reimbursementList.size());
+            List<Reimbursement> listReimbursement = reimbursementService.listReimbursement();
+            log.info("listReimbursement.size() : " + listReimbursement.size());
             JSONArray array = new JSONArray();
-            for (int i = 0; i < reimbursementList.size(); i++) {
+            for (int i = 0; i < listReimbursement.size(); i++) {
+
                 JSONObject obj = new JSONObject();
-                Reimbursement reimbursement = reimbursementList.get(i);
+                Reimbursement reimbursement = (Reimbursement) listReimbursement.get(i);
 
                 if (reimbursement.getReimburseId() == null) {
                     obj.put("reimburse_id", "");
                 } else {
                     obj.put("reimburse_id", reimbursement.getReimburseId());
                 }
-                if (reimbursement.getReimburseId() == null) {
+                if (reimbursement.getReimbursementId() == null) {
                     obj.put("reimbursement_id", "");
                 } else {
                     obj.put("reimbursement_id", reimbursement.getReimbursementId());
@@ -383,10 +384,12 @@ public class ReimbursementController {
                 if (reimbursement.getLoan() == null) {
                     obj.put("loan_id", "");
                     obj.put("loan_type", "");
+                    obj.put("loan_amount", "");
                     obj.put("case_id", "");
                 } else {
                     obj.put("loan_id", reimbursement.getLoan().getLoanId());
                     obj.put("loan_type", "b");
+                    obj.put("loan_amount", reimbursement.getLoan().getLoanAmount());
                     obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
                 }
                 if (reimbursement.getNote() == null) {
@@ -491,7 +494,7 @@ public class ReimbursementController {
                     } else {
                         obj.put("reimburse_id", reimbursement.getReimburseId());
                     }
-                    if (reimbursement.getReimburseId() == null) {
+                    if (reimbursement.getReimbursementId() == null) {
                         obj.put("reimbursement_id", "");
                     } else {
                         obj.put("reimbursement_id", reimbursement.getReimbursementId());
@@ -511,10 +514,12 @@ public class ReimbursementController {
                     if (reimbursement.getLoan() == null) {
                         obj.put("loan_id", "");
                         obj.put("loan_type", "");
+                        obj.put("loan_amount", "");
                         obj.put("case_id", "");
                     } else {
                         obj.put("loan_id", reimbursement.getLoan().getLoanId());
                         obj.put("loan_type", "b");
+                        obj.put("loan_amount", reimbursement.getLoan().getLoanAmount());
                         obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
                     }
                     if (reimbursement.getNote() == null) {
@@ -911,7 +916,7 @@ public class ReimbursementController {
             }
             if (process) {
                 ReimbursementHistory history = new ReimbursementHistory();
-                OutStanding outStanding = new OutStanding();
+                OutStandingLoanB outStanding = new OutStandingLoanB();
 //                if (object.getDecision().contentEquals("reimburse")) {
                 dataReimbursement.setReimbursedBy(dataEmp.getIdEmployee());
                 dataReimbursement.setStatus("reimburse");
@@ -933,7 +938,7 @@ public class ReimbursementController {
                 if (updateReimbursement != null) {
                     history.setReimbursement(updateReimbursement);
                     this.reimbursementHistoryService.create(history);
-                    this.outStandingService.create(outStanding);
+//                    this.outStandingService.create(outStanding);
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("data reimbursement reimburse by : " + entityEmp.getEmployeeId());
@@ -1017,7 +1022,7 @@ public class ReimbursementController {
                 } else {
                     obj.put("reimburse_id", reimbursement.getReimburseId());
                 }
-                if (reimbursement.getReimburseId() == null) {
+                if (reimbursement.getReimbursementId() == null) {
                     obj.put("reimbursement_id", "");
                 } else {
                     obj.put("reimbursement_id", reimbursement.getReimbursementId());
@@ -1038,10 +1043,12 @@ public class ReimbursementController {
                 if (reimbursement.getLoan() == null) {
                     obj.put("loan_id", "");
                     obj.put("loan_type", "");
+                    obj.put("loan_amount", "");
                     obj.put("case_id", "");
                 } else {
                     obj.put("loan_id", reimbursement.getLoan().getLoanId());
                     obj.put("loan_type", "b");
+                    obj.put("loan_amount", reimbursement.getLoan().getLoanAmount());
                     obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
                 }
                 if (reimbursement.getNote() == null) {
@@ -1155,7 +1162,7 @@ public class ReimbursementController {
                 } else {
                     obj.put("reimburse_id", reimbursement.getReimburseId());
                 }
-                if (reimbursement.getReimburseId() == null) {
+                if (reimbursement.getReimbursementId() == null) {
                     obj.put("reimbursement_id", "");
                 } else {
                     obj.put("reimbursement_id", reimbursement.getReimbursementId());
@@ -1175,10 +1182,12 @@ public class ReimbursementController {
                 if (reimbursement.getLoan() == null) {
                     obj.put("loan_id", "");
                     obj.put("loan_type", "");
+                    obj.put("loan_amount", "");
                     obj.put("case_id", "");
                 } else {
                     obj.put("loan_id", reimbursement.getLoan().getLoanId());
                     obj.put("loan_type", "b");
+                    obj.put("loan_amount", reimbursement.getLoan().getLoanAmount());
                     obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
                 }
                 if (reimbursement.getNote() == null) {
@@ -1285,7 +1294,7 @@ public class ReimbursementController {
                 Reimbursement rembursement = reimbursementService.findById(reimburse_id);
                 log.info("rembursement : " + rembursement.getReimbursementId());
                 try {
-                   String mime= rembursement.getMimeType();
+                    String mime = rembursement.getMimeType();
                     byte[] input_file = Files.readAllBytes(Paths.get(rembursement.getLinkDocument()));
                     String linkDoc = new String(Base64.getEncoder().encode(input_file));
                     jsonobj.put("response_code", "00");
@@ -1370,7 +1379,7 @@ public class ReimbursementController {
                 } else {
                     obj.put("reimburse_id", reimbursement.getReimburseId());
                 }
-                if (reimbursement.getReimburseId() == null) {
+                if (reimbursement.getReimbursementId() == null) {
                     obj.put("reimbursement_id", "");
                 } else {
                     obj.put("reimbursement_id", reimbursement.getReimbursementId());
@@ -1390,10 +1399,12 @@ public class ReimbursementController {
                 if (reimbursement.getLoan() == null) {
                     obj.put("loan_id", "");
                     obj.put("loan_type", "");
+                    obj.put("loan_amount", "");
                     obj.put("case_id", "");
                 } else {
                     obj.put("loan_id", reimbursement.getLoan().getLoanId());
                     obj.put("loan_type", "b");
+                    obj.put("loan_amount", reimbursement.getLoan().getLoanAmount());
                     obj.put("case_id", reimbursement.getLoan().getEngagement().getCaseID());
                 }
                 if (reimbursement.getNote() == null) {

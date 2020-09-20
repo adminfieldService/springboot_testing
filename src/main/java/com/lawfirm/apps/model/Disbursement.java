@@ -40,6 +40,10 @@ public class Disbursement implements Serializable {
     @Column(name = "disbursement_id")
     private String disbursementId;
 
+    @Column(name = "number_of_disbursement")
+    private Integer numberOfDisbursement;
+//    @Column(name = "team_member_id")
+//    private Long teamMemberId;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "disburse_date", nullable = true)
     @Temporal(TemporalType.DATE)
@@ -62,12 +66,22 @@ public class Disbursement implements Serializable {
     @Column(name = "signature")
     private String signature;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_loan", referencedColumnName = "id")
-    private Loan loan;
+    @Column(name = "is_active", length = 1)
+    private String isActive;
+
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_loan", referencedColumnName = "id")
+//    private Loan loan;
+//    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "team_member_id", referencedColumnName = "team_member_id")
+//    private TeamMember teamMember;
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "engagement_id", referencedColumnName = "engagement_id")
+    protected Engagement engagement;
 
     @PrePersist
     public void onCreate() {
+        isActive = "1";
         tgInput = new Date();
         this.setDisbursementUUId(UUID.randomUUID().toString());
     }
@@ -75,16 +89,18 @@ public class Disbursement implements Serializable {
     public Disbursement() {
     }
 
-    public Disbursement(String disbursementUUId, String disbursementId, Date disburse_date, Date tgInput, String tahunInput, String bulanInput, Double disbursementAmount, String signature, Loan loan) {
+    public Disbursement(String disbursementUUId, String disbursementId, Integer numberOfDisbursement, Date disburse_date, Date tgInput, String tahunInput, String bulanInput, Double disbursementAmount, String signature, String isActive, Engagement engagement) {
         this.disbursementUUId = disbursementUUId;
         this.disbursementId = disbursementId;
+        this.numberOfDisbursement = numberOfDisbursement;
         this.disburse_date = disburse_date;
         this.tgInput = tgInput;
         this.tahunInput = tahunInput;
         this.bulanInput = bulanInput;
         this.disbursementAmount = disbursementAmount;
         this.signature = signature;
-        this.loan = loan;
+        this.isActive = isActive;
+        this.engagement = engagement;
     }
 
     public String getDisbursementUUId() {
@@ -207,12 +223,42 @@ public class Disbursement implements Serializable {
         this.signature = signature;
     }
 
-    public Loan getLoan() {
-        return loan;
+    public Engagement getEngagement() {
+        return engagement;
     }
 
-    public void setLoan(Loan loan) {
-        this.loan = loan;
+    public void setEngagement(Engagement engagement) {
+        this.engagement = engagement;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public Integer getNumberOfDisbursement() {
+        return numberOfDisbursement;
+    }
+
+    public void setNumberOfDisbursement(Integer numberOfDisbursement) {
+        this.numberOfDisbursement = numberOfDisbursement;
     }
 
 }

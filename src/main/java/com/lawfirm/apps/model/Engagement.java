@@ -60,6 +60,9 @@ public class Engagement implements Serializable {
     @Column(name = "approved_by")
     protected String approvedBy;
 
+    @Column(name = "closed_by", length = 40)
+    protected String closedBy;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "created_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -69,6 +72,11 @@ public class Engagement implements Serializable {
     @Column(name = "approved_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date approved_date;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
+    @Column(name = "closed_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date closed_date;
 //   
     @Column(name = "signature")
     protected String signature;
@@ -110,6 +118,9 @@ public class Engagement implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
     protected Collection<Loan> loanCollection;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "engagement")
+    protected Collection<Disbursement> disbursementCollection;
+
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "engagement")
 //    protected Collection<Reimbursement> reimbursementCollection;
     @Column(name = "tahun_input", length = 10, nullable = true)
@@ -127,24 +138,30 @@ public class Engagement implements Serializable {
     public Engagement() {
     }
 
-    public Engagement(Long engagementId, String isActive, String approvedBy, Date created_date, Date approved_date, String signature, String invoiceNumber, String status, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, String tahun_input, String caseID) {
+    public Engagement(Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input) {
         this.engagementId = engagementId;
         this.isActive = isActive;
         this.approvedBy = approvedBy;
+        this.closedBy = closedBy;
         this.created_date = created_date;
         this.approved_date = approved_date;
+        this.closed_date = closed_date;
         this.signature = signature;
         this.invoiceNumber = invoiceNumber;
         this.status = status;
+        this.dmpPortion = dmpPortion;
+        this.dmPercent = dmPercent;
         this.client = client;
         this.employee = employee;
         this.teamMemberCollection = teamMemberCollection;
         this.engagementHistoryCollection = engagementHistoryCollection;
         this.financialCollection = financialCollection;
         this.loanCollection = loanCollection;
+        this.disbursementCollection = disbursementCollection;
         this.tahun_input = tahun_input;
-        this.caseID = caseID;
     }
+
+   
 
     public String getApprovedBy() {
         return approvedBy;
@@ -430,6 +447,31 @@ public class Engagement implements Serializable {
     public void setDmPercent(Integer dmPercent) {
         this.dmPercent = dmPercent;
     }
+
+    public Collection<Disbursement> getDisbursementCollection() {
+        return disbursementCollection;
+    }
+
+    public void setDisbursementCollection(Collection<Disbursement> disbursementCollection) {
+        this.disbursementCollection = disbursementCollection;
+    }
+
+    public String getClosedBy() {
+        return closedBy;
+    }
+
+    public void setClosedBy(String closedBy) {
+        this.closedBy = closedBy;
+    }
+
+    public Date getClosed_date() {
+        return closed_date;
+    }
+
+    public void setClosed_date(Date closed_date) {
+        this.closed_date = closed_date;
+    }
+    
 
     @Override
     public String toString() {

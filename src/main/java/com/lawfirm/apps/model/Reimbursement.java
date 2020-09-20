@@ -106,7 +106,7 @@ public class Reimbursement implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reimbursement")
     private Collection<DocumentReimburse> documentReimburseCollection;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_loan", referencedColumnName = "id")
     private Loan loan;
 
@@ -152,7 +152,6 @@ public class Reimbursement implements Serializable {
         this.reimbursementHistoryCollection = reimbursementHistoryCollection;
         this.signature = signature;
     }
-
 
     public Long getReimburseId() {
         return reimburseId;

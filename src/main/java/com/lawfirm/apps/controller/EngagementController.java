@@ -33,6 +33,7 @@ import com.lawfirm.apps.service.interfaces.EngagementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.EventServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
 import com.lawfirm.apps.support.api.EventsApi;
+import com.lawfirm.apps.support.api.FeeShareDto;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.utils.Util;
@@ -133,6 +134,8 @@ public class EngagementController {
     public Response createEngagement(@RequestBody final EngagementApi object, Authentication authentication) {
         try {
             Date now = new Date();
+            String[] feeSahre = null;
+            Object fee_share = null;
             System.out.print("isi object" + object.toString());
             Boolean process = true;
             String name = authentication.getName();
@@ -192,10 +195,10 @@ public class EngagementController {
                 CreateLog.createJson(rs, "createEngagement");
                 return rs;
             }
-            if (object.getNpwp().length() > 30) {
+            if (object.getNpwp().length() > 20 || object.getNpwp().length() < 20) {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, ADDRESS  filed max 30");
+                rs.setResponse("Create Engagement Failed, NPWP Field  filed max 15 digit");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
                 return rs;
@@ -244,6 +247,31 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                return rs;
+            }
+            fee_share = Arrays.toString(object.getFee_share()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+            feeSahre = fee_share.toString().split(",");
+            Double jumlah = 0d;
+            Double fee_total = 0d;
+            for (String num : feeSahre) {
+                jumlah = jumlah + Double.parseDouble(num);
+
+            }
+            fee_total = jumlah + object.getDmp_fee();
+            if (fee_total > 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + " greater than 100");//&gt;
+                process = false;
+                return rs;
+            }
+            if (fee_total < 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + " less than 100");//&lt;
+                process = false;
                 return rs;
             }
             if (process) {
@@ -810,6 +838,7 @@ public class EngagementController {
     public ResponseEntity<String> byEmployee(Long id_employee, Authentication authentication) {
         try {
             String name = authentication.getName();
+            String status = null;
             log.info("name : " + name);
             Employee entity = employeeService.findByEmployee(name);
             log.info("entity : " + entity);
@@ -856,11 +885,11 @@ public class EngagementController {
                         } else {
                             obj.put("engagement_id", data.getEngagementId());
                         }
-                        if (data.getCaseID() == null) {
-                            obj.put("case_id", "");
-                        } else {
-                            obj.put("case_id", data.getCaseID());
-                        }
+//                        if (data.getCaseID() == null) {
+//                            obj.put("case_id", "");
+//                        } else {
+//                            obj.put("case_id", data.getCaseID());
+//                        }
                         if (data.getApprovedBy() == null) {
                             obj.put("approved_by", "");
                         } else {
@@ -877,19 +906,19 @@ public class EngagementController {
                         if (data.getProfesionalFee() == null) {
                             obj.put("professionalFee", "");
                         } else {
-                            obj.put("professionalFee", data.getProfesionalFee());
+                            obj.put("professionalFee", String.format("%.0f", (data.getProfesionalFee())));
 
                         }
                         if (data.getProfesionalFee() == null) {
                             obj.put("professional_fee", "");
                         } else {
-                            obj.put("professional_fee", data.getProfesionalFee());
+                            obj.put("professional_fee", String.format("%.0f", (data.getProfesionalFee())));
 
                         }
                         if (data.getProfesionalFeeNet() == null) {
                             obj.put("professional_fee_net", "");
                         } else {
-                            obj.put("professional_fee_net", data.getProfesionalFeeNet());
+                            obj.put("professional_fee_net", String.format("%.0f", (data.getProfesionalFeeNet())));
                         }
                         if (data.getDmPercent() == null) {
                             obj.put("dmp_percent", "");
@@ -899,7 +928,7 @@ public class EngagementController {
                         if (data.getDmpPortion() == null) {
                             obj.put("dmp_portion", "");
                         } else {
-                            obj.put("dmp_portion", data.getDmpPortion());
+                            obj.put("dmp_portion", String.format("%.0f", (data.getDmpPortion())));
                         }
                         if (data.getApproved_date() == null) {
                             obj.put("approved_date", "");
@@ -930,6 +959,18 @@ public class EngagementController {
                             obj.put("status", "");
                         } else {
                             obj.put("status", data.getStatus());
+                            status = data.getStatus();
+                            if (data.getCaseID() == null) {
+                                if (status.equals("s")) {
+                                    obj.put("case_id", "Need Approval By admin");
+                                }
+                                if (status.equals("r")) {
+                                    obj.put("case_id", "Engagement Rejected By admin");
+                                }
+
+                            } else {
+                                obj.put("case_id", data.getCaseID());
+                            }
                         }
                         if (data.getClient() == null) {
                             obj.put("id_client", "");
@@ -1046,6 +1087,7 @@ public class EngagementController {
             }
 //            Employee entity = employeeService.findById(id_employee);
 //            if (entity != null) {
+            String status = null;
             List<CaseDetails> listData = caseDetailsService.listCaseDetails();
             JSONArray array = new JSONArray();
             Long id_team = 0l;
@@ -1060,11 +1102,11 @@ public class EngagementController {
                     } else {
                         obj.put("engagement_id", data.getEngagementId());
                     }
-                    if (data.getCaseID() == null) {
-                        obj.put("case_id", "");
-                    } else {
-                        obj.put("case_id", data.getCaseID());
-                    }
+//                    if (data.getCaseID() == null) {
+//                        obj.put("case_id", "");
+//                    } else {
+//                        obj.put("case_id", data.getCaseID());
+//                    }
 //                    if (data.getOperational_cost() == null) {
 //                        obj.put("operational_cost", "");
 //                    } else {
@@ -1074,19 +1116,19 @@ public class EngagementController {
                     if (data.getProfesionalFee() == null) {
                         obj.put("professionalFee", "");
                     } else {
-                        obj.put("professionalFee", data.getProfesionalFee());
+                        obj.put("professionalFee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFee() == null) {
                         obj.put("professional_fee", "");
                     } else {
-                        obj.put("professional_fee", data.getProfesionalFee());
+                        obj.put("professional_fee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFeeNet() == null) {
                         obj.put("professional_fee_net", "");
                     } else {
-                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
+                        obj.put("professional_fee_net", String.format("%.0f", (data.getProfesionalFeeNet())));
 
                     }
                     if (data.getDmPercent() == null) {
@@ -1097,7 +1139,7 @@ public class EngagementController {
                     if (data.getDmpPortion() == null) {
                         obj.put("dmp_portion", "");
                     } else {
-                        obj.put("dmp_portion", data.getDmpPortion());
+                        obj.put("dmp_portion", String.format("%.0f", (data.getDmpPortion())));
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1162,7 +1204,20 @@ public class EngagementController {
                         obj.put("status", "");
                     } else {
                         obj.put("status", data.getStatus());
+                        status = data.getStatus();
+                        if (data.getCaseID() == null) {
+                            if (status.equals("s")) {
+                                obj.put("case_id", "Need Approval By admin");
+                            }
+                            if (status.equals("r")) {
+                                obj.put("case_id", "Engagement Rejected By admin");
+                            }
+
+                        } else {
+                            obj.put("case_id", data.getCaseID());
+                        }
                     }
+
                     List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
                     for (int j = 0; j < entityTeam.size(); j++) {
                         JSONObject objTeam = new JSONObject();
@@ -1217,9 +1272,23 @@ public class EngagementController {
 
     @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> listByEngagementId(@PathVariable("engagement_id") Long engagement_id) {
+    public ResponseEntity<String> listByEngagementId(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
 
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "listByEngagementId");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+
+            String status = null;
 //            Employee entity = employeeService.findById(id_employee);
 //            if (entity != null) {
             List<CaseDetails> listData = caseDetailsService.findByEngagementId(engagement_id);
@@ -1237,11 +1306,11 @@ public class EngagementController {
                     } else {
                         obj.put("engagement_id", data.getEngagementId());
                     }
-                    if (data.getCaseID() == null) {
-                        obj.put("case_id", "");
-                    } else {
-                        obj.put("case_id", data.getCaseID());
-                    }
+//                    if (data.getCaseID() == null) {
+//                        obj.put("case_id", "");
+//                    } else {
+//                        obj.put("case_id", data.getCaseID());
+//                    }
 //                    if (data.getOperational_cost() == null) {
 //                        obj.put("operational_cost", "");
 //                    } else {
@@ -1251,19 +1320,19 @@ public class EngagementController {
                     if (data.getProfesionalFee() == null) {
                         obj.put("professionalFee", "");
                     } else {
-                        obj.put("professionalFee", data.getProfesionalFee());
+                        obj.put("professionalFee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFee() == null) {
                         obj.put("professional_fee", "");
                     } else {
-                        obj.put("professional_fee", data.getProfesionalFee());
+                        obj.put("professional_fee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFeeNet() == null) {
                         obj.put("professional_fee_net", "");
                     } else {
-                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
+                        obj.put("professional_fee_net", String.format("%.0f", (data.getProfesionalFeeNet())));
 
                     }
                     if (data.getDmPercent() == null) {
@@ -1274,7 +1343,7 @@ public class EngagementController {
                     if (data.getDmpPortion() == null) {
                         obj.put("dmp_portion", "");
                     } else {
-                        obj.put("dmp_portion", data.getDmpPortion());
+                        obj.put("dmp_portion", String.format("%.0f", (data.getDmpPortion())));
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1342,7 +1411,20 @@ public class EngagementController {
                         obj.put("status", "");
                     } else {
                         obj.put("status", data.getStatus());
+                        status = data.getStatus();
+                        if (data.getCaseID() == null) {
+                            if (status.equals("s")) {
+                                obj.put("case_id", "Need Approval By admin");
+                            }
+                            if (status.equals("r")) {
+                                obj.put("case_id", "Engagement Rejected By admin");
+                            }
+
+                        } else {
+                            obj.put("case_id", data.getCaseID());
+                        }
                     }
+
                     List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
                     for (int j = 0; j < entityTeam.size(); j++) {
                         JSONObject objTeam = new JSONObject();
@@ -1433,6 +1515,7 @@ public class EngagementController {
         try {
 //          Engagement entity = engagementService.findById(id_employee_admin);
             String name = authentication.getName();
+            String status = null;
             log.info("name : " + name);
             Employee entity = employeeService.findByEmployee(name);
             log.info("entity : " + entity);
@@ -1471,11 +1554,11 @@ public class EngagementController {
                     } else {
                         obj.put("engagement_id", data.getEngagementId());
                     }
-                    if (data.getCaseID() == null) {
-                        obj.put("case_id", "");
-                    } else {
-                        obj.put("case_id", data.getCaseID());
-                    }
+//                    if (data.getCaseID() == null) {
+//                        obj.put("case_id", "");
+//                    } else {
+//                        obj.put("case_id", data.getCaseID());
+//                    }
 //                    if (data.getOperational_cost() == null) {
 //                        obj.put("operational_cost", "");
 //                    } else {
@@ -1485,19 +1568,19 @@ public class EngagementController {
                     if (data.getProfesionalFee() == null) {
                         obj.put("professionalFee", "");
                     } else {
-                        obj.put("professionalFee", data.getProfesionalFee());
+                        obj.put("professionalFee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFee() == null) {
                         obj.put("professional_fee", "");
                     } else {
-                        obj.put("professional_fee", data.getProfesionalFee());
+                        obj.put("professional_fee", String.format("%.0f", (data.getProfesionalFee())));
 
                     }
                     if (data.getProfesionalFeeNet() == null) {
                         obj.put("professional_fee_net", "");
                     } else {
-                        obj.put("professional_fee_net", data.getProfesionalFeeNet());
+                        obj.put("professional_fee_net", String.format("%.0f", (data.getProfesionalFeeNet())));
 
                     }
                     if (data.getDmPercent() == null) {
@@ -1508,7 +1591,7 @@ public class EngagementController {
                     if (data.getDmpPortion() == null) {
                         obj.put("dmp_portion", "");
                     } else {
-                        obj.put("dmp_portion", data.getDmpPortion());
+                        obj.put("dmp_portion", String.format("%.0f", (data.getDmpPortion())));
                     }
                     if (data.getApprovedBy() == null) {
                         obj.put("approved_by", "");
@@ -1570,7 +1653,21 @@ public class EngagementController {
                         obj.put("status", "");
                     } else {
                         obj.put("status", data.getStatus());
+                        status = data.getStatus();
+
+                        if (data.getCaseID() == null) {
+                            if (status.equals("s")) {
+                                obj.put("case_id", "Need Approval By admin");
+                            }
+                            if (status.equals("r")) {
+                                obj.put("case_id", "Engagement Rejected By admin");
+                            }
+
+                        } else {
+                            obj.put("case_id", data.getCaseID());
+                        }
                     }
+
                     List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(data.getEngagementId());
                     for (int j = 0; j < entityTeam.size(); j++) {
                         JSONObject objTeam = new JSONObject();
@@ -2257,4 +2354,187 @@ public class EngagementController {
 //        }
 //        return null;
 //    }
+    @RequestMapping(value = "/managed-fee-share/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
+    public Response updateFeeShare(@RequestBody final FeeShareDto object, Authentication authentication) {
+        try {
+            Date now = new Date();
+            String[] employeeId = null;
+            String[] employeeName = null;
+            String[] feeSahre = null;
+            Object emp_id = null;
+            Object emp_name = null;
+            Object fee_share = null;
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entity = employeeService.findByEmployee(name);
+            Engagement dataEngagement = engagementService.findById(1l);//object.getEngagement_id()
+            log.info("entity : " + entity);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "listEvents");
+                process = false;
+
+            }
+            if (!entity.getRoleName().contains("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "listEvents");
+                process = false;
+
+            }
+            TeamMember dataTeam = new TeamMember();
+            if (dataEngagement == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Failed Ad Team Member dataEngagement NULL ");
+                process = false;
+                CreateLog.createJson(rs, "add-team-member");
+                return rs;
+            }
+            if (object.getEmployee_id() != null) {
+                emp_id = Arrays.toString(object.getEmployee_id()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+                log.info("emp_id == " + emp_id);
+            } else {
+                emp_id = null;
+                log.info("emp_id == null ");
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Employee Not Found emp_id NULL");
+                process = false;
+                CreateLog.createJson(rs, "add-team-member");
+                return rs;
+            }
+            if (object.getEmployee_name() != null) {
+                emp_name = Arrays.toString(object.getEmployee_name()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+//            for (int i = 0; i < object.getEmployee_id().length; i++) {
+//                emp_id = object.getEmployee_id();
+//            }
+                log.info("emp_name == " + emp_name);
+            } else {
+                emp_name = null;
+                log.info("emp_id == null ");
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Employee Not Found");
+                process = false;
+                CreateLog.createJson(rs, "add-team-member");
+                return rs;
+            }
+            if (object.getFee_share_new() != null) {
+                fee_share = Arrays.toString(object.getFee_share_new()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+//            for (int i = 0; i < object.getEmployee_id().length; i++) {
+//                emp_id = object.getEmployee_id();
+//            }
+//            log.info("fee_share == " + fee_share);
+            } else {
+                fee_share = null;
+                log.info("emp_id == null ");
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Employee Not Found");
+                process = false;
+                CreateLog.createJson(rs, "add-team-member");
+                return rs;
+            }
+//            fee_share = Arrays.toString(object.getFee_share_new()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+            feeSahre = fee_share.toString().split(",");
+            Double jumlah = 0d;
+            Double fee_total = 0d;
+            for (String num : feeSahre) {
+                jumlah = jumlah + Double.parseDouble(num);
+            }
+            fee_total = jumlah + object.getDmp_fee_new();
+            if (fee_total > 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + " greater than 100");//&gt;
+                process = false;
+                return rs;
+            }
+            if (fee_total < 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + " less than 100");//&lt;
+                process = false;
+                return rs;
+            }
+            if (process) {
+                Member member = null;
+
+                dataTeam.setEngagement(dataEngagement);
+                dataTeam.setFeeShare(object.getDmp_fee_new());
+                dataTeam.setIsActive(Boolean.TRUE);
+                TeamMember team = this.teamMemberService.update(dataTeam);
+                if (team == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("failed");
+                    rs.setResponse("team null");
+                    CreateLog.createJson(rs, "add-team-member");
+                    return rs;
+                }
+                employeeId = emp_id.toString().split(",");
+                for (int l = 0; l < employeeId.length; l++) {
+                    Member dataM = new Member();
+                    String part = employeeId[l];
+                    System.out.println("@Check Part emp_id " + l + " :" + part.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                    if (employeeId.length == 1) {
+                        Employee dataEmployee = employeeService.findByEmployeeId(part.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                        dataM.setEmployee(dataEmployee);
+
+                    } else {
+                        Employee dataEmployee = employeeService.findByEmployeeId(part.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                        dataM.setEmployee(dataEmployee);
+                    }
+//            }
+                    if (emp_name != null) {
+                        employeeName = emp_name.toString().split(",");
+//                   for (int l = 0; l < employeeName.length; l++) {
+                        String part_emp = employeeName[l].trim().replaceAll("['\":<>\\[\\],-]", "");
+                        System.out.println("@Check Part emp_name " + l + " :" + part_emp);
+                        if (employeeName.length == 1) {
+
+                        }
+                    }
+
+//            for (int l = 0; l < feeSahre.length; l++) {
+                    feeSahre = fee_share.toString().split(",");
+                    String part_fee = feeSahre[l].trim().replaceAll("['\":<>\\[\\],-]", "");
+                    System.out.println("@Check Part fee_share " + l + " :" + part.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                    if (feeSahre.length == 1) {
+                        dataM.setFeeShare(Double.parseDouble(part_fee));
+                    } else {
+                        dataM.setFeeShare(Double.parseDouble(part_fee));
+                    }
+//                dataTeam.addMember(dataM);
+                    dataM.setTeamMember(team);
+                    member = memberService.update(dataM);
+                }
+
+                if (member != null) {
+                    rs.setResponse_code("00");
+                    rs.setInfo("Sucess");
+                    rs.setResponse("Success Create Team Member :");
+                    CreateLog.createJson(rs, "add-team-member");
+//                return rs;
+                }
+
+            }
+            return rs;
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "update-fee-shre");
+            return rs;
+
+        }
+    }
 }

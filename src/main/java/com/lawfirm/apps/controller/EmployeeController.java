@@ -8,6 +8,9 @@ package com.lawfirm.apps.controller;
 import com.lawfirm.apps.model.Account;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.EmployeeRole;
+import com.lawfirm.apps.model.Loan;
+import com.lawfirm.apps.model.LoanHistory;
+import com.lawfirm.apps.model.LoanType;
 import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
 import com.lawfirm.apps.service.interfaces.CaseDetailsServiceIface;
@@ -27,6 +30,7 @@ import com.lawfirm.apps.support.api.DataEmployee;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.support.api.AccountApi;
+import com.lawfirm.apps.support.api.EmployeeInactiveDto;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.Util;
 import com.xss.filter.annotation.XxsFilter;
@@ -143,6 +147,7 @@ public class EmployeeController { //LawfirmController
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
+            CreateLog.createJson(object, "create-employee_16");
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -351,6 +356,13 @@ public class EmployeeController { //LawfirmController
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
+                if (nik.length() > 16 || nik.length() < 16) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Field Nik maximum 16 digits");
+                    rs.setResponse("Create Employee Failed");
+                    CreateLog.createJson(rs, "create-employee");
+                    process = false;
+                }
                 Account cekAcp = accountService.findAccount(account_number_p);
                 if (cekAcp != null) {
                     rs.setResponse_code("55");
@@ -384,6 +396,7 @@ public class EmployeeController { //LawfirmController
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
+
                 String dt = dateFormat.format(object.getJoin_date());
                 Date join_date = dateFormat.parse(dt);
 //                    if (object.getRegister_date() == null) {
@@ -418,7 +431,18 @@ public class EmployeeController { //LawfirmController
                     newEmployee.setNik(nik);
                     newEmployee.setEmail(email);
                     newEmployee.setNpwp(npwp);
-                    newEmployee.setTaxStatus(tax_status);
+                    if (tax_status.contentEquals("TK")) {
+                        newEmployee.setTaxStatus("TK0");
+                    } else if (tax_status.contentEquals("TK1")) {
+                        newEmployee.setTaxStatus("TK1");
+                    } else if (tax_status.contentEquals("TK2")) {
+                        newEmployee.setTaxStatus("TK2");
+                    } else if (tax_status.contentEquals("TK3")) {
+                        newEmployee.setTaxStatus("TK3");
+                    } else {
+                        newEmployee.setTaxStatus(tax_status);
+                    }
+
 //                    newEmployee.setSalary(object.getSalary());
                     if (object.getSalary() != null) {
                         newEmployee.setSalary(object.getSalary());
@@ -2597,4 +2621,303 @@ public class EmployeeController { //LawfirmController
 
     }
 
+    @RequestMapping(value = "/managed-employee/in-active", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+//    @PutMapping(value = "/approved/by-admin/{loan_id}", produces = {"application/json"})
+//    @XxsFilter
+    public Response setInActive(@RequestBody final EmployeeInactiveDto object, Authentication authentication) {
+        try {
+            log.info("object value : " + object);
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+
+            Date now = new Date();
+            Boolean process = true;
+            LoanType typeLoan = new LoanType();
+
+            LoanHistory entityHistory = new LoanHistory();
+//        Financial dataFinance = new Financial();
+//
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "set-InActive");
+//                process = false;
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
+                CreateLog.createJson(rs, "set-InActive");
+//                process = false;
+                return rs;
+            }
+//             Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "set-InActive");
+                process = false;
+
+            }
+
+            Employee employee = employeeService.findById(object.getId_employee());//findById
+            if (employee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee null, Cannot Access This feature");
+                CreateLog.createJson(rs, "set-InActive");
+                process = false;
+            }
+            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("i")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "In Active");
+                CreateLog.createJson(rs, "set-InActive");
+                process = false;
+            }
+            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("resign")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "Resign");
+                CreateLog.createJson(rs, "set-InActive");
+                process = false;
+            }
+
+            if (process) {
+                employee.setStatus("inactive");
+                employee.setIsActive(false);
+                this.employeeService.update(employee);
+                Employee upd_mployee = this.employeeService.update(employee);
+                if (upd_mployee != null) {
+                    rs.setResponse_code("01");
+                    rs.setInfo("Success");
+                    rs.setResponse("set Employee Id : " + employee.getEmployeeId() + "status  in Active");
+                    CreateLog.createJson(rs, "set-InActive");
+                    return rs;
+                }
+            }
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse("Meployee null, Cannot Access This feature");
+            CreateLog.createJson(rs, "set-InActive");
+            return rs;
+        } catch (org.json.JSONException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "set-InActive");
+            CreateLog.createJson(ex.getMessage(), "set-InActive");
+            return rs;
+
+        }
+
+    }
+
+    @RequestMapping(value = "/managed-employee/resign", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+//    @PutMapping(value = "/approved/by-admin/{loan_id}", produces = {"application/json"})
+//    @XxsFilter
+    public Response setResign(@RequestBody final EmployeeInactiveDto object, Authentication authentication) {
+        try {
+            log.info("object value : " + object);
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+
+            Date now = new Date();
+            Boolean process = true;
+            LoanType typeLoan = new LoanType();
+
+            LoanHistory entityHistory = new LoanHistory();
+//        Financial dataFinance = new Financial();
+//
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "set_Resign");
+//                process = false;
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
+                CreateLog.createJson(rs, "set_Resign");
+//                process = false;
+                return rs;
+            }
+//             Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "set_Resign");
+                process = false;
+
+            }
+
+            Employee employee = employeeService.findById(object.getId_employee());//findById
+            if (employee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee null, Cannot Access This feature");
+                CreateLog.createJson(rs, "set_Resign");
+                process = false;
+            }
+            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("i")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "In Active");
+                CreateLog.createJson(rs, "set_Resign");
+                process = false;
+            }
+            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("resign")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "Resign");
+                CreateLog.createJson(rs, "set_Resign");
+                process = false;
+            }
+
+            if (process) {
+                employee.setStatus("resign");
+                employee.setIsActive(false);
+                Employee upd_mployee = this.employeeService.update(employee);
+                if (upd_mployee != null) {
+                    rs.setResponse_code("01");
+                    rs.setInfo("Success");
+                    rs.setResponse("set Employee Id : " + employee.getEmployeeId() + "status Resign");
+                    CreateLog.createJson(rs, "set_Resign");
+                    return rs;
+                }
+            }
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse("Meployee null, Cannot Access This feature");
+            CreateLog.createJson(rs, "set_Resign");
+            return rs;
+        } catch (org.json.JSONException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "set_Resign");
+            CreateLog.createJson(ex.getMessage(), "set_Resign");
+            return rs;
+
+        }
+
+    }
+
+    @RequestMapping(value = "/managed-employee/active", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+//    @PutMapping(value = "/approved/by-admin/{loan_id}", produces = {"application/json"})
+//    @XxsFilter
+    public Response setActive(@RequestBody final EmployeeInactiveDto object, Authentication authentication) {
+        try {
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+
+            Date now = new Date();
+            Boolean process = true;
+            LoanType typeLoan = new LoanType();
+
+            LoanHistory entityHistory = new LoanHistory();
+//        Financial dataFinance = new Financial();
+//
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "set_active");
+//                process = false;
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
+                CreateLog.createJson(rs, "set_active");
+//                process = false;
+                return rs;
+            }
+//             Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "set_active");
+                process = false;
+
+            }
+
+            Employee employee = employeeService.findById(object.getId_employee());//findById
+            if (employee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee null, Cannot Access This feature");
+                CreateLog.createJson(rs, "set_active");
+                process = false;
+            }
+//            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("i")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "In Active");
+//                CreateLog.createJson(rs, "set_active");
+//                process = false;
+//            }
+            if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("resign")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "Resign");
+                CreateLog.createJson(rs, "set_active");
+                process = false;
+            }
+
+            if (process) {
+                employee.setStatus("a");
+                employee.setIsActive(true);
+                Employee upd_mployee = this.employeeService.update(employee);
+                if (upd_mployee != null) {
+                    rs.setResponse_code("01");
+                    rs.setInfo("Success");
+                    rs.setResponse("set Employee Id : " + employee.getEmployeeId() + "status Active");
+                    CreateLog.createJson(rs, "set_active");
+                    return rs;
+                }
+            }
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse("Meployee null, Cannot Access This feature");
+            CreateLog.createJson(rs, "set_active");
+            return rs;
+        } catch (org.json.JSONException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "set_active");
+            CreateLog.createJson(ex.getMessage(), "set_active");
+            return rs;
+
+        }
+
+    }
 }

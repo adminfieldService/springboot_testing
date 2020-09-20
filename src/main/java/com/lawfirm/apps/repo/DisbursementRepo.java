@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  *
@@ -31,7 +32,115 @@ public class DisbursementRepo implements DisbursementRepoIface {
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
-    public List<Loan> listDisburse(String type) {
+    public Disbursement create(Disbursement entity) {
+        try {
+            entityManager.persist(entity);
+            if (entity != null) {
+//                 CreateLog.createJson(entity, "bpr_baiturridho");
+                return entity;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Disbursement update(Disbursement entity) {
+        try {
+            entityManager.merge(entity);
+            if (entity != null) {
+//                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Disbursement delete(Disbursement entity) {
+        try {
+            entity.setIsActive("3");
+            entityManager.merge(entity);
+            if (entity != null) {
+// 	                CreateLog.createJson(entity, "fieldservice");
+                return entity;
+            }
+        } catch (Exception ex) {
+// 	            LogSystem.error(getClass(), e);
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void remove(Disbursement entity) {
+        try {
+            entityManager.remove(entity);
+        } catch (Exception ex) {
+            // 	            LogSystem.error(getClass(), e);
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Disbursement> listDisburse() {
+        try {
+            List<Disbursement> listAcquire = entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " LEFT JOIN FETCH d.engagement AS e "
+                    + " WHERE "
+                    + " e.status = :status")
+                    .setParameter("status", "closed")
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> listDisburseByloan(String type) {
         try {
             List<Loan> listAcquire = null;
             if (type.contentEquals("0")) {
@@ -75,7 +184,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -120,7 +229,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -158,23 +267,66 @@ public class DisbursementRepo implements DisbursementRepoIface {
 //        }
 //    }
     @Override
-    public List<Loan> disbursementbyCaseId(String param) {
+    public List<Disbursement> disbursementbyCaseId(String param) {
         try {
-            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
-                    + " LEFT JOIN FETCH l.loantype AS t "
-                    + " JOIN FETCH l.engagement AS e "
+//            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+//                    + " LEFT JOIN FETCH l.loantype AS t "
+//                    + " JOIN FETCH l.engagement AS e "
+//                    + " WHERE "
+//                    + " e.caseID = :caseID AND "
+//                    + " e.status = :status")
+//                    .setParameter("caseID", param)
+//                    .setParameter("status", "closed")
+//                    .getResultList();
+            //                        .setParameter("status", "d")
+
+            List<Disbursement> listAcquire = entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " LEFT JOIN FETCH d.engagement AS e "
                     + " WHERE "
                     + " e.caseID = :caseID AND "
                     + " e.status = :status")
                     .setParameter("caseID", param)
                     .setParameter("status", "closed")
                     .getResultList();
-            //                        .setParameter("status", "d")
-
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Disbursement disbursementFindbyCaseId(String param) {
+        try {
+//            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+//                    + " LEFT JOIN FETCH l.loantype AS t "
+//                    + " JOIN FETCH l.engagement AS e "
+//                    + " WHERE "
+//                    + " e.caseID = :caseID AND "
+//                    + " e.status = :status")
+//                    .setParameter("caseID", param)
+//                    .setParameter("status", "closed")
+//                    .getResultList();
+            //                        .setParameter("status", "d")
+
+            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " LEFT JOIN FETCH d.engagement AS e "
+                    + " WHERE "
+                    + " e.caseID = :caseID AND "
+                    + " e.status = :status")
+                    .setParameter("caseID", param)
+                    .setParameter("status", "closed")
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -192,6 +344,29 @@ public class DisbursementRepo implements DisbursementRepoIface {
     @Override
     public Loan findLoanBById(Long param) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Disbursement> numOfDisbursement(String param) {
+        try {
+            List<Disbursement> listAcquire = entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " WHERE "
+                    + " d.tahunInput = :tahunInput AND "
+                    + " d.isActive = :isActive")
+                    .setParameter("tahunInput", param)
+                    .setParameter("isActive", "1")
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
 }

@@ -98,8 +98,8 @@ public class LoanService implements LoanServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<Loan> listActive(String param1, String param2, String type) {
-        return loanRepo.listActive(param1, param2, type);
+    public List<Loan> listBy(String param1, String param2, String type) {
+        return loanRepo.listBy(param1, param2, type);
     }
 
     @Override
@@ -153,4 +153,9 @@ public class LoanService implements LoanServiceIface {
         return loanRepo.getListLoanB();
     }
 
+    @Override
+    public Double sumLoan(Long paramLong) {
+        return loanRepo.sumLoan(paramLong);
+
+    }
 }

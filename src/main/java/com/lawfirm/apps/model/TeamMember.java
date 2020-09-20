@@ -66,8 +66,20 @@ public class TeamMember implements Serializable {
     private List<Member> memberCollection = new ArrayList<>();
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
 //    private Collection<Financial> financialCollection;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
+//    private Collection<Disbursement> disbursementCollection;
 
     public TeamMember() {
+    }
+
+    public TeamMember(Long teamMemberId, Boolean isActive, String description, Long dmpId, Double feeShare, String tahun_input, Engagement engagement) {
+        this.teamMemberId = teamMemberId;
+        this.isActive = isActive;
+        this.description = description;
+        this.dmpId = dmpId;
+        this.feeShare = feeShare;
+        this.tahun_input = tahun_input;
+        this.engagement = engagement;
     }
 
     public void addMember(Member member) {

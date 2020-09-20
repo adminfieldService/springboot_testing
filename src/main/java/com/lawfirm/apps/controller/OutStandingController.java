@@ -5,10 +5,18 @@
  */
 package com.lawfirm.apps.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
  *
  * @author newbiecihuy
  */
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@Slf4j
 public class OutStandingController {
-    
+
 }
