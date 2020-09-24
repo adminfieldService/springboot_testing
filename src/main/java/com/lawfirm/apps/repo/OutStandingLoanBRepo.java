@@ -148,8 +148,13 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
     }
 
     @Override
-    public List<OutStandingLoanB> findByCaseId(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public OutStandingLoanB findByCaseId(String param) {
+        String sql = "SELECT o FROM OutStandingLoanB o "
+                + " WHERE "
+                + "o.caseId = :caseId";
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("caseId", param);
+        return (OutStandingLoanB) query.getSingleResult();
     }
 
     @Override

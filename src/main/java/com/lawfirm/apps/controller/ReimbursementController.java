@@ -179,14 +179,14 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
-//            if (!dataEmp.getRoleName().matches("dmp")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("Cannot Access This feature");
-//                CreateLog.createJson(rs, "create-reimburse");
-//                process = false;
-//                return rs;
-//            }
+            if (!dataEmp.getRoleName().matches("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
 //            CaseDetails entity = caseDetailsService.findCaseId(case_id);
 //            if (entity == null) {
 //                rs.setResponse_code("55");
@@ -205,10 +205,26 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
-            if (findByCaseID.getStatus().contains("r")) {
+            if (findByCaseID.getStatus().contentEquals("r")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Case Id : " + case_id + " Rejected ");
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
+            if (findByCaseID.getStatus().contentEquals("s")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Id : " + case_id + " Need Admin Approval");
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
+            if (findByCaseID.getStatus().contentEquals("closed")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Case Id : " + case_id + " Status Close");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
                 return rs;
@@ -247,6 +263,18 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
+//            Double loanB = entityLoan.getLoanAmount();
+            Double loanB = 0d;
+            loanB = this.loanService.sumLoanByCaseId(case_id);
+
+            if (amount > loanB) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("reimburse Amount : " + String.format("%.0f", amount) + " Greater than loanB " + String.format("%.0f", loanB));
+                CreateLog.createJson(rs, "create-reimburse");
+                process = false;
+                return rs;
+            }
             String pathDoc = basepathUpload + "reimbursement" + "/" + entityLoan.getLoanId() + "/";
             String fileDownloadUri = null;
             String fileName = null;
@@ -254,6 +282,7 @@ public class ReimbursementController {
                 expense_date_value = dateFormat.parse(expense_date);
                 ReimbursementHistory history = new ReimbursementHistory();
                 Reimbursement dataReimbursement = new Reimbursement();
+
                 if (!file.isEmpty()) {
                     File newFolder = new File(pathDoc);
                     boolean created = newFolder.mkdir();
@@ -657,6 +686,15 @@ public class ReimbursementController {
                 process = false;
                 return rs;
             }
+            if (object.getApproved_amount() > dataReimbursement.getReimburseAmount()) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse(" Approved Amount : " + String.format("%.0f", object.getApproved_amount()) + " Greater than Reimburse Amount : " + String.format("%.0f", dataReimbursement.getReimburseAmount()));
+                CreateLog.createJson(rs, "approval-reimbursement");
+                process = false;
+                return rs;
+            }
+
             if (process) {
                 ReimbursementHistory history = new ReimbursementHistory();
 //                if (object.getDecision().contentEquals("r")) {
@@ -849,6 +887,9 @@ public class ReimbursementController {
             String nama = authentication.getName();
             Boolean process = true;
             Date expense_date_value = null;
+            String caseId = null;
+            Double totalLoanB = 0d;
+            Double totalOutStanding = 0d;
 //            log.info("object value : " + object.toString());
 
             log.info("nama : " + nama);
@@ -910,10 +951,11 @@ public class ReimbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " Rejected by admin");
-                CreateLog.createJson(rs, "reject-reimbursement");
+                CreateLog.createJson(rs, "reimbursement");
                 process = false;
                 return rs;
             }
+
             if (process) {
                 ReimbursementHistory history = new ReimbursementHistory();
                 OutStandingLoanB outStanding = new OutStandingLoanB();
@@ -926,11 +968,51 @@ public class ReimbursementController {
                 outStanding.setReimburseAmount(dataReimbursement.getApprovedAmount());
                 outStanding.setReimburseId(reimburse_id);
                 Loan dataLoan = this.loanService.findByIdLoan(dataReimbursement.getLoan().getId());
-                outStanding.setLoan(dataLoan);
+//                outStanding.setLoan(dataLoan);
                 Engagement engagement = this.engagementService.findById(dataLoan.getEngagement().getEngagementId());
+                if (engagement == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("CASE ID Not Found");
+                    CreateLog.createJson(rs, "reimbursement");
+                    process = false;
+                    return rs;
+                }
+
+                if (engagement.getStatus().contentEquals("s")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("CASE ID : " + engagement.getCaseID() + " Need admin approval");
+                    CreateLog.createJson(rs, "reimbursement");
+                    process = false;
+                    return rs;
+                }
+                if (engagement.getStatus().contentEquals("r")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("CASE ID : " + engagement.getCaseID() + " Rejected by admin");
+                    CreateLog.createJson(rs, "reimbursement");
+                    process = false;
+                    return rs;
+                }
+                if (engagement.getStatus().contentEquals("closed")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("CASE ID : " + engagement.getCaseID() + " Status CLOSE");
+                    CreateLog.createJson(rs, "reimbursement");
+                    process = false;
+                    return rs;
+                }
+
                 if (engagement != null) {
                     outStanding.setCaseId(engagement.getCaseID());
+                    caseId = engagement.getCaseID();
                 }
+
+                totalLoanB = this.loanService.sumLoanByCaseId(caseId);
+                outStanding.setLoanAmount(totalLoanB);//total_loan_amount
+                totalOutStanding = totalLoanB - dataReimbursement.getApprovedAmount();//out_standing = total_loanB By case id - total reimbursement approve By case id;
+                outStanding.setOutStanding(totalOutStanding);//out_standing
                 outStanding.setTahun_input(sdfYear.format(now));
                 history.setResponse("reimburse by : " + dataEmp.getEmployeeId());
                 history.setUserId(dataEmp.getIdEmployee());
@@ -938,7 +1020,7 @@ public class ReimbursementController {
                 if (updateReimbursement != null) {
                     history.setReimbursement(updateReimbursement);
                     this.reimbursementHistoryService.create(history);
-//                    this.outStandingService.create(outStanding);
+                    this.outStandingLoanBService.create(outStanding);
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("data reimbursement reimburse by : " + entityEmp.getEmployeeId());

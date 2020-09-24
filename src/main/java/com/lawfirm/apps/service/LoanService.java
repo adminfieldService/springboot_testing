@@ -139,23 +139,34 @@ public class LoanService implements LoanServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Loan> listDisburse(String type) {
         return loanRepo.listDisburse(type);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Loan> getLoanB(String param) {
         return loanRepo.getLoanB(param);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Loan> getListLoanB() {
         return loanRepo.getListLoanB();
     }
 
     @Override
-    public Double sumLoan(Long paramLong) {
-        return loanRepo.sumLoan(paramLong);
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double sumLoanB(Long paramLong) {
+        return loanRepo.sumLoanB(paramLong);
+
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double sumLoanByCaseId(String param) {
+        return loanRepo.sumLoanByCaseId(param);
 
     }
 }

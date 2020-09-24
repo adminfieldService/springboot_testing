@@ -62,8 +62,8 @@ public class OutStandingLoaBService implements OutStandingLoanBServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<OutStandingLoanB> findByCaseId(Long paramLong) {
-        return outStandingRepo.findByCaseId(paramLong);
+    public OutStandingLoanB findByCaseId(String param) {
+        return outStandingRepo.findByCaseId(param);
     }
 
     @Override

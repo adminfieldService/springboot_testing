@@ -131,7 +131,7 @@ public class DisbursementController {
     @Autowired
     LoanHistoryServiceIface loanHistoryService;
     @Autowired
-    OutStandingLoanBServiceIface OutStandingService;
+    OutStandingLoanBServiceIface outStandingLoanBService;
     @Autowired
     MemberServiceIface memberService;
     @Autowired
@@ -560,8 +560,9 @@ public class DisbursementController {
                 entityHistory.setUserId(entityEmp.getIdEmployee());
                 entityHistory.setResponse("disburse by : " + entityEmp.getEmployeeId());
                 Loan upDataLoan = loanService.update(dataLoan);
-                OutStandingLoanB checkLoan = this.OutStandingService.checkLoan(dataLoan.getEngagement().getCaseID(), dataLoan.getEmployee().getIdEmployee());
-                log.info("checkLoan : " + checkLoan);
+//                OutStandingLoanB checkLoan = this.outStandingLoanBService.checkLoan(dataLoan.getEngagement().getCaseID(), dataLoan.getEmployee().getIdEmployee());
+//                OutStandingLoanB checkLoan = this.outStandingLoanBService.findByCaseId(dataLoan.getEngagement().getCaseID());
+//                log.info("checkLoan : " + checkLoan);
 //                if (checkLoan == null) {
 //                    outStanding.setLoan(dataLoan);
 //                    outStanding.setTahun_input(date_now);
@@ -1133,7 +1134,7 @@ public class DisbursementController {
 //                                    Double amount_portion_dmp = 0d;
 //
 //                                    Double previous_disbursement_dmp = 0d;
-//                                    Double total_income_fortax_dmp = 0d;
+//                                    Double total_income_fortax_purpose_dmp = 0d;
 //                                    String dmp_tax_status = getDmp.getTaxStatus();
 //                                    Double income_tax_dmp = 0d;
 //                                    Double taxable_income_dmp = 0d;
@@ -1159,8 +1160,8 @@ public class DisbursementController {
 //                                    obj.put("previous_disbursement_dmp", previous_disbursement_dmp);
 //
 //                                    obj.put("anual_salary_dmp", String.format("%d", anual_salary_dmp));
-//                                    total_income_fortax_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
-//                                    obj.put("total_income_fortax_dmp", String.format("%.0f", total_income_fortax_dmp));
+//                                    total_income_fortax_purpose_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
+//                                    obj.put("total_income_fortax_purpose_dmp", String.format("%.0f", total_income_fortax_purpose_dmp));
 //                                    masa_kerja_dmp = Util.hitungMasakerja(getDmp.getDateRegister());
 //                                    obj.put("masa_kerja_dmp", masa_kerja_dmp);
 //                                    String jabatan_per_bulan_dmp = String.format("%d", Math.min(a_jabatan_dmp, b_jabatan_dmp));
@@ -1169,7 +1170,7 @@ public class DisbursementController {
 //                                    obj.put("jabatan_per_tahun_dmp", String.format("%d", jabatan_per_tahun_dmp));
 //                                    obj.put("tax_status_dmp", dmp_tax_status);
 //                                    obj.put("ptkp_dmp", String.format("%.0f", ptkp));
-//                                    taxable_income_dmp = (total_income_fortax_dmp - jabatan_per_tahun_dmp - ptkp);
+//                                    taxable_income_dmp = (total_income_fortax_purpose_dmp - jabatan_per_tahun_dmp - ptkp);
 //                                    obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
 //                                    income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
 //                                    obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
@@ -1215,7 +1216,7 @@ public class DisbursementController {
 //                                        Double amount_portion_team = 0d;
 //                                        Double previous_disbursement_team = 0d;
 //
-//                                        Double total_income_fortax_team = 0d;
+//                                        Double total_income_fortax_purpose_team = 0d;
 //                                        String team_tax_status = dataMember.getEmployee().getTaxStatus();
 //                                        Double taxable_income_team = 0d;
 //                                        Double income_tax_team = 0d;
@@ -1241,8 +1242,8 @@ public class DisbursementController {
 //                                        objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
 //
 //                                        objMember.put("anual_salary_team", String.format("%d", anual_salary_team));
-//                                        total_income_fortax_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
-//                                        objMember.put("total_income_fortax_team", String.format("%.0f", (total_income_fortax_team)));
+//                                        total_income_fortax_purpose_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
+//                                        objMember.put("total_income_fortax_purpose_team", String.format("%.0f", (total_income_fortax_purpose_team)));
 //                                        masa_kerja_team = Util.hitungMasakerja(dataMember.getEmployee().getDateRegister());
 //                                        objMember.put("masa_kerja_team", masa_kerja_team);
 //                                        String jabatan_per_bulan_team = String.format("%d", Math.min(a_jabatan_team, b_jabatan_team));
@@ -1251,7 +1252,7 @@ public class DisbursementController {
 //                                        objMember.put("jabatan_per_tahun_team", String.format("%d", jabatan_per_tahun_team));
 //                                        objMember.put("tax_status_team", team_tax_status);
 //                                        objMember.put("ptkp_team", String.format("%.0f", ptkp));
-//                                        taxable_income_team = (total_income_fortax_team - jabatan_per_tahun_team - ptkp);
+//                                        taxable_income_team = (total_income_fortax_purpose_team - jabatan_per_tahun_team - ptkp);
 //                                        objMember.put("taxable_income_team", String.format("%.0f", Math.max(taxable_income_team, 0)));
 //                                        income_tax_team = Util.hitungPajak(taxable_income_team);
 //                                        objMember.put("income_tax_team", String.format("%.0f", income_tax_team));
@@ -1343,6 +1344,8 @@ public class DisbursementController {
                 Long idLoanB = 0l;
                 Long id_team = 0l;
                 Double dmpPortion = 0d;
+                Double outStandingLoanB = 0d;
+                String caseId = null;
                 if (dataDisbursement.getDisbursementId() == null) {
                     obj.put("disbursement_id", "");
                 } else {
@@ -1368,9 +1371,7 @@ public class DisbursementController {
                 } else {
                     obj.put("case_id", object.getCase_id());// disbursements.getLoan().getEngagement().getCaseID()
                     EngagementId = dataDisbursement.getEngagement().getEngagementId();
-
-//                            idLoanB = dataLoan.getId();
-//                            log.info("idLoanB : " + idLoanB);
+                    caseId = object.getCase_id();
                 }
                 CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
                 if (caseDetails != null) {
@@ -1382,8 +1383,20 @@ public class DisbursementController {
                     obj.put("dmp_portion_case_id", "");
                     dmpPortion = 0d;
                 }
-//                        Double total = loanService.sumLoan(idLoanB);
-//                        log.info("total : " + total);
+
+                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(caseId);
+
+                if (outStandingB == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("caseId : " + caseId + " Not found");
+                    CreateLog.createJson(rs, "disbursementbyCaseId");
+                    process = false;
+                }
+
+                outStandingLoanB = outStandingB.getOutStanding();
+                obj.put("out_standing_loan_b", String.format("%.0f", outStandingLoanB));
+
                 List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);
                 if (entityTeam != null) {
                     for (int j = 0; j < entityTeam.size(); j++) {
@@ -1393,13 +1406,26 @@ public class DisbursementController {
                         if (getDmp == null) {
                             obj.put("employee_id_dmp", "");
                             obj.put("fee_share_dmp", "");
+
                             obj.put("amount_portion_dmp", "");
-                            obj.put("masa_kerja_dmp", "");
-                            obj.put("jabatan_dmp_per_bulan", "");
-                            obj.put("jabatan_dmp_per_tahun", "");
-                            obj.put("ptkp_dmp", "");
                             obj.put("previous_disbursement_dmp", "");
+
                             obj.put("anual_salary_dmp", "");
+                            obj.put("total_income_fortax_purpose_dmp", "");
+                            obj.put("masa_kerja_dmp", "");
+                            obj.put("jabatan_per_bulan_dmp", "");
+                            obj.put("jabatan_per_tahun_dmp", "");
+                            obj.put("tax_status_dmp", "");
+                            obj.put("ptkp_dmp", "");
+                            obj.put("taxable_income_dmp", "");
+                            obj.put("income_tax_dmp", "");
+                            obj.put("income_tax_paid_on_prior_period_dmp", "");
+                            obj.put("net_income_tax_deducted_dmp", "");
+                            obj.put("net_income_dmp", "");
+                            obj.put("outstanding_loan_b_dmp", "");
+                            obj.put("disbursable_amount_dmp", "");
+                            obj.put("outstanding_loan_a_dmp", "");
+                            obj.put("disbursed_amount_dmp", "");
                         } else {
                             if (dataTeam.getTeamMemberId() != null) {
                                 id_team = dataTeam.getTeamMemberId();
@@ -1411,7 +1437,7 @@ public class DisbursementController {
                             Double amount_portion_dmp = 0d;
 
                             Double previous_disbursement_dmp = 0d;
-                            Double total_income_fortax_dmp = 0d;
+                            Double total_income_fortax_purpose_dmp = 0d;
                             String dmp_tax_status = getDmp.getTaxStatus();
                             Double income_tax_dmp = 0d;
                             Double taxable_income_dmp = 0d;
@@ -1437,8 +1463,8 @@ public class DisbursementController {
                             obj.put("previous_disbursement_dmp", previous_disbursement_dmp);
 
                             obj.put("anual_salary_dmp", String.format("%d", anual_salary_dmp));
-                            total_income_fortax_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
-                            obj.put("total_income_fortax_dmp", String.format("%.0f", total_income_fortax_dmp));
+                            total_income_fortax_purpose_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
+                            obj.put("total_income_fortax_purpose_dmp", String.format("%.0f", total_income_fortax_purpose_dmp));
                             masa_kerja_dmp = Util.hitungMasakerja(getDmp.getDateRegister());
                             obj.put("masa_kerja_dmp", masa_kerja_dmp);
                             String jabatan_per_bulan_dmp = String.format("%d", Math.min(a_jabatan_dmp, b_jabatan_dmp));
@@ -1447,7 +1473,7 @@ public class DisbursementController {
                             obj.put("jabatan_per_tahun_dmp", String.format("%d", jabatan_per_tahun_dmp));
                             obj.put("tax_status_dmp", dmp_tax_status);
                             obj.put("ptkp_dmp", String.format("%.0f", ptkp));
-                            taxable_income_dmp = (total_income_fortax_dmp - jabatan_per_tahun_dmp - ptkp);
+                            taxable_income_dmp = (total_income_fortax_purpose_dmp - jabatan_per_tahun_dmp - ptkp);
                             obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
                             income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
                             obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
@@ -1457,7 +1483,7 @@ public class DisbursementController {
                             obj.put("net_income_tax_deducted_dmp", String.format("%.0f", net_income_tax_deducted_dmp));
                             net_income_dmp = (amount_portion_dmp - net_income_tax_deducted_dmp);
                             obj.put("net_income_dmp", String.format("%.0f", net_income_dmp));
-                            outstanding_loan_b_dmp = 0d;
+                            outstanding_loan_b_dmp = (outStandingLoanB * dataTeam.getFeeShare()) / 100;;
                             obj.put("outstanding_loan_b_dmp", String.format("%.0f", outstanding_loan_b_dmp));
                             disbursable_amount_dmp = (net_income_dmp - outstanding_loan_b_dmp);
                             obj.put("disbursable_amount_dmp", String.format("%.0f", Math.abs(disbursable_amount_dmp)));
@@ -1476,14 +1502,25 @@ public class DisbursementController {
                             Member dataMember = entityMember.get(k);
                             if (dataMember == null) {
                                 objMember.put("employee_id_team", "");
-                                objMember.put("fee_share_team", "");
+                                objMember.put("fee_share_team", "");//"fee_share_team
                                 objMember.put("amount_portion_team", "");
+                                objMember.put("previous_disbursement_team", "");
+                                objMember.put("anual_salary_team", "");
+                                objMember.put("total_income_fortax_purpose_team", "");
                                 objMember.put("masa_kerja_team", "");
                                 objMember.put("jabatan_per_bulan_team", "");
                                 objMember.put("jabatan_per_tahun_team", "");
+                                objMember.put("tax_status_team", "");
                                 objMember.put("ptkp_team", "");
-                                objMember.put("previous_disbursement_team", "");
-                                objMember.put("anual_salary_team", "");
+                                objMember.put("taxable_income_team", "");
+                                objMember.put("income_tax_team", "");
+                                objMember.put("income_tax_paid_on_prior_period_team", "");
+                                objMember.put("net_income_tax_deducted_team", "");
+                                objMember.put("net_income_team", "");
+                                objMember.put("outstanding_loan_b_team", "");
+                                objMember.put("disbursable_amount_team", "");
+                                objMember.put("outstanding_loan_a_team", "");
+                                objMember.put("disbursed_amount_team", "");
 
                             } else {
                                 Integer anual_salary_team = (4000000 * 13);
@@ -1493,7 +1530,7 @@ public class DisbursementController {
                                 Double amount_portion_team = 0d;
                                 Double previous_disbursement_team = 0d;
 
-                                Double total_income_fortax_team = 0d;
+                                Double total_income_fortax_purpose_team = 0d;
                                 String team_tax_status = dataMember.getEmployee().getTaxStatus();
                                 Double taxable_income_team = 0d;
                                 Double income_tax_team = 0d;
@@ -1519,8 +1556,8 @@ public class DisbursementController {
                                 objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
 
                                 objMember.put("anual_salary_team", String.format("%d", anual_salary_team));
-                                total_income_fortax_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
-                                objMember.put("total_income_fortax_team", String.format("%.0f", (total_income_fortax_team)));
+                                total_income_fortax_purpose_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
+                                objMember.put("total_income_fortax_purpose_team", String.format("%.0f", (total_income_fortax_purpose_team)));
                                 masa_kerja_team = Util.hitungMasakerja(dataMember.getEmployee().getDateRegister());
                                 objMember.put("masa_kerja_team", masa_kerja_team);
                                 String jabatan_per_bulan_team = String.format("%d", Math.min(a_jabatan_team, b_jabatan_team));
@@ -1529,7 +1566,7 @@ public class DisbursementController {
                                 objMember.put("jabatan_per_tahun_team", String.format("%d", jabatan_per_tahun_team));
                                 objMember.put("tax_status_team", team_tax_status);
                                 objMember.put("ptkp_team", String.format("%.0f", ptkp));
-                                taxable_income_team = (total_income_fortax_team - jabatan_per_tahun_team - ptkp);
+                                taxable_income_team = (total_income_fortax_purpose_team - jabatan_per_tahun_team - ptkp);
                                 objMember.put("taxable_income_team", String.format("%.0f", Math.max(taxable_income_team, 0)));
                                 income_tax_team = Util.hitungPajak(taxable_income_team);
                                 objMember.put("income_tax_team", String.format("%.0f", income_tax_team));
@@ -1539,7 +1576,7 @@ public class DisbursementController {
                                 objMember.put("net_income_tax_deducted_team", String.format("%.0f", net_income_tax_deducted_team));
                                 net_income_team = (amount_portion_team - net_income_tax_deducted_team);
                                 objMember.put("net_income_team", String.format("%.0f", net_income_team));
-                                outstanding_loan_b_team = 0d;
+                                outstanding_loan_b_team = (outStandingLoanB * dataMember.getFeeShare()) / 100;;
                                 objMember.put("outstanding_loan_b_team", String.format("%.0f", outstanding_loan_b_team));
                                 disbursable_amount_team = (net_income_team - outstanding_loan_b_team);
                                 objMember.put("disbursable_amount_team", String.format("%.0f", Math.abs(disbursable_amount_team)));
@@ -1582,6 +1619,7 @@ public class DisbursementController {
             Date dateDisburs = new Date();
             Boolean process = true;
             String name = authentication.getName();
+            Double outStandingLoanB = 0d;
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entity : " + entityEmp);
@@ -1614,6 +1652,7 @@ public class DisbursementController {
 //                        JSONObject objMember = new JSONObject();
                         JSONArray arrayM = new JSONArray();
                         Long EngagementId = 0l;
+                        String caseId = null;
                         Long idLoanB = 0l;
                         Long id_team = 0l;
                         Double dmpPortion = 0d;
@@ -1642,9 +1681,6 @@ public class DisbursementController {
                         } else {
                             obj.put("case_id", dataDisbursement.getEngagement().getCaseID());// disbursements.getLoan().getEngagement().getCaseID()
                             EngagementId = dataDisbursement.getEngagement().getEngagementId();
-
-//                            idLoanB = dataLoan.getId();
-//                            log.info("idLoanB : " + idLoanB);
                         }
                         CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
                         if (caseDetails != null) {
@@ -1661,22 +1697,22 @@ public class DisbursementController {
                         } else {
                             obj.put("case_id", dataDisbursement.getEngagement().getCaseID());// disbursements.getLoan().getEngagement().getCaseID()
                             EngagementId = dataDisbursement.getEngagement().getEngagementId();
+                            caseId = dataDisbursement.getEngagement().getCaseID();
 
-//                            idLoanB = dataDisbursement.getId();
-//                            log.info("idLoanB : " + idLoanB);
                         }
-//                        CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
-//                        if (caseDetails != null) {
-////                        obj.put("professionalFee", caseDetails.getProfesionalFee());
-//                            obj.put("dmp_portion_case_id", String.format("%.0f", (caseDetails.getDmpPortion())));
-//                            dmpPortion = caseDetails.getDmpPortion();
-//                        } else {
-////                        obj.put("professionalFee", "");
-//                            obj.put("dmp_portion_case_id", "");
-//                            dmpPortion = 0d;
-//                        }
-//                        Double total = loanService.sumLoan(idLoanB);
-//                        log.info("total : " + total);
+
+                        OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(caseId);
+
+                        if (outStandingB == null) {
+                            rs.setResponse_code("55");
+                            rs.setInfo("Failed");
+                            rs.setResponse("caseId : " + caseId + " Not found");
+                            CreateLog.createJson(rs, "disbursementbyCaseId");
+                            process = false;
+                        }
+
+                        outStandingLoanB = outStandingB.getOutStanding();
+                        obj.put("out_standing_loan_b",  String.format("%.0f",outStandingLoanB));
                         List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);
                         if (entityTeam != null) {
                             for (int j = 0; j < entityTeam.size(); j++) {
@@ -1686,13 +1722,26 @@ public class DisbursementController {
                                 if (getDmp == null) {
                                     obj.put("employee_id_dmp", "");
                                     obj.put("fee_share_dmp", "");
+
                                     obj.put("amount_portion_dmp", "");
-                                    obj.put("masa_kerja_dmp", "");
-                                    obj.put("jabatan_dmp_per_bulan", "");
-                                    obj.put("jabatan_dmp_per_tahun", "");
-                                    obj.put("ptkp_dmp", "");
                                     obj.put("previous_disbursement_dmp", "");
+
                                     obj.put("anual_salary_dmp", "");
+                                    obj.put("total_income_fortax_purpose_dmp", "");
+                                    obj.put("masa_kerja_dmp", "");
+                                    obj.put("jabatan_per_bulan_dmp", "");
+                                    obj.put("jabatan_per_tahun_dmp", "");
+                                    obj.put("tax_status_dmp", "");
+                                    obj.put("ptkp_dmp", "");
+                                    obj.put("taxable_income_dmp", "");
+                                    obj.put("income_tax_dmp", "");
+                                    obj.put("income_tax_paid_on_prior_period_dmp", "");
+                                    obj.put("net_income_tax_deducted_dmp", "");
+                                    obj.put("net_income_dmp", "");
+                                    obj.put("outstanding_loan_b_dmp", "");
+                                    obj.put("disbursable_amount_dmp", "");
+                                    obj.put("outstanding_loan_a_dmp", "");
+                                    obj.put("disbursed_amount_dmp", "");
                                 } else {
                                     if (dataTeam.getTeamMemberId() != null) {
                                         id_team = dataTeam.getTeamMemberId();
@@ -1704,7 +1753,7 @@ public class DisbursementController {
                                     Double amount_portion_dmp = 0d;
 
                                     Double previous_disbursement_dmp = 0d;
-                                    Double total_income_fortax_dmp = 0d;
+                                    Double total_income_fortax_purpose_dmp = 0d;
                                     String dmp_tax_status = getDmp.getTaxStatus();
                                     Double income_tax_dmp = 0d;
                                     Double taxable_income_dmp = 0d;
@@ -1730,8 +1779,8 @@ public class DisbursementController {
                                     obj.put("previous_disbursement_dmp", previous_disbursement_dmp);
 
                                     obj.put("anual_salary_dmp", String.format("%d", anual_salary_dmp));
-                                    total_income_fortax_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
-                                    obj.put("total_income_fortax_dmp", String.format("%.0f", total_income_fortax_dmp));
+                                    total_income_fortax_purpose_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
+                                    obj.put("total_income_fortax_purpose_dmp", String.format("%.0f", total_income_fortax_purpose_dmp));
                                     masa_kerja_dmp = Util.hitungMasakerja(getDmp.getDateRegister());
                                     obj.put("masa_kerja_dmp", masa_kerja_dmp);
                                     String jabatan_per_bulan_dmp = String.format("%d", Math.min(a_jabatan_dmp, b_jabatan_dmp));
@@ -1740,7 +1789,7 @@ public class DisbursementController {
                                     obj.put("jabatan_per_tahun_dmp", String.format("%d", jabatan_per_tahun_dmp));
                                     obj.put("tax_status_dmp", dmp_tax_status);
                                     obj.put("ptkp_dmp", String.format("%.0f", ptkp));
-                                    taxable_income_dmp = (total_income_fortax_dmp - jabatan_per_tahun_dmp - ptkp);
+                                    taxable_income_dmp = (total_income_fortax_purpose_dmp - jabatan_per_tahun_dmp - ptkp);
                                     obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
                                     income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
                                     obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
@@ -1750,7 +1799,7 @@ public class DisbursementController {
                                     obj.put("net_income_tax_deducted_dmp", String.format("%.0f", net_income_tax_deducted_dmp));
                                     net_income_dmp = (amount_portion_dmp - net_income_tax_deducted_dmp);
                                     obj.put("net_income_dmp", String.format("%.0f", net_income_dmp));
-                                    outstanding_loan_b_dmp = 0d;
+                                    outstanding_loan_b_dmp = (outStandingLoanB * dataTeam.getFeeShare()) / 100;
                                     obj.put("outstanding_loan_b_dmp", String.format("%.0f", outstanding_loan_b_dmp));
                                     disbursable_amount_dmp = (net_income_dmp - outstanding_loan_b_dmp);
                                     obj.put("disbursable_amount_dmp", String.format("%.0f", Math.abs(disbursable_amount_dmp)));
@@ -1769,14 +1818,25 @@ public class DisbursementController {
                                     Member dataMember = entityMember.get(k);
                                     if (dataMember == null) {
                                         objMember.put("employee_id_team", "");
-                                        objMember.put("fee_share_team", "");
+                                        objMember.put("fee_share_team", "");//"fee_share_team
                                         objMember.put("amount_portion_team", "");
+                                        objMember.put("previous_disbursement_team", "");
+                                        objMember.put("anual_salary_team", "");
+                                        objMember.put("total_income_fortax_purpose_team", "");
                                         objMember.put("masa_kerja_team", "");
                                         objMember.put("jabatan_per_bulan_team", "");
                                         objMember.put("jabatan_per_tahun_team", "");
+                                        objMember.put("tax_status_team", "");
                                         objMember.put("ptkp_team", "");
-                                        objMember.put("previous_disbursement_team", "");
-                                        objMember.put("anual_salary_team", "");
+                                        objMember.put("taxable_income_team", "");
+                                        objMember.put("income_tax_team", "");
+                                        objMember.put("income_tax_paid_on_prior_period_team", "");
+                                        objMember.put("net_income_tax_deducted_team", "");
+                                        objMember.put("net_income_team", "");
+                                        objMember.put("outstanding_loan_b_team", "");
+                                        objMember.put("disbursable_amount_team", "");
+                                        objMember.put("outstanding_loan_a_team", "");
+                                        objMember.put("disbursed_amount_team", "");
 
                                     } else {
                                         Integer anual_salary_team = (4000000 * 13);
@@ -1786,7 +1846,7 @@ public class DisbursementController {
                                         Double amount_portion_team = 0d;
                                         Double previous_disbursement_team = 0d;
 
-                                        Double total_income_fortax_team = 0d;
+                                        Double total_income_fortax_purpose_team = 0d;
                                         String team_tax_status = dataMember.getEmployee().getTaxStatus();
                                         Double taxable_income_team = 0d;
                                         Double income_tax_team = 0d;
@@ -1812,8 +1872,8 @@ public class DisbursementController {
                                         objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
 
                                         objMember.put("anual_salary_team", String.format("%d", anual_salary_team));
-                                        total_income_fortax_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
-                                        objMember.put("total_income_fortax_team", String.format("%.0f", (total_income_fortax_team)));
+                                        total_income_fortax_purpose_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
+                                        objMember.put("total_income_fortax_purpose_team", String.format("%.0f", (total_income_fortax_purpose_team)));
                                         masa_kerja_team = Util.hitungMasakerja(dataMember.getEmployee().getDateRegister());
                                         objMember.put("masa_kerja_team", masa_kerja_team);
                                         String jabatan_per_bulan_team = String.format("%d", Math.min(a_jabatan_team, b_jabatan_team));
@@ -1822,7 +1882,7 @@ public class DisbursementController {
                                         objMember.put("jabatan_per_tahun_team", String.format("%d", jabatan_per_tahun_team));
                                         objMember.put("tax_status_team", team_tax_status);
                                         objMember.put("ptkp_team", String.format("%.0f", ptkp));
-                                        taxable_income_team = (total_income_fortax_team - jabatan_per_tahun_team - ptkp);
+                                        taxable_income_team = (total_income_fortax_purpose_team - jabatan_per_tahun_team - ptkp);
                                         objMember.put("taxable_income_team", String.format("%.0f", Math.max(taxable_income_team, 0)));
                                         income_tax_team = Util.hitungPajak(taxable_income_team);
                                         objMember.put("income_tax_team", String.format("%.0f", income_tax_team));
@@ -1832,7 +1892,7 @@ public class DisbursementController {
                                         objMember.put("net_income_tax_deducted_team", String.format("%.0f", net_income_tax_deducted_team));
                                         net_income_team = (amount_portion_team - net_income_tax_deducted_team);
                                         objMember.put("net_income_team", String.format("%.0f", net_income_team));
-                                        outstanding_loan_b_team = 0d;
+                                        outstanding_loan_b_team = (outStandingLoanB * dataMember.getFeeShare()) / 100;
                                         objMember.put("outstanding_loan_b_team", String.format("%.0f", outstanding_loan_b_team));
                                         disbursable_amount_team = (net_income_team - outstanding_loan_b_team);
                                         objMember.put("disbursable_amount_team", String.format("%.0f", Math.abs(disbursable_amount_team)));

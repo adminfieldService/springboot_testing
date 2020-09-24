@@ -25,14 +25,15 @@ public interface OutStandingLoanBServiceIface {
     OutStandingLoanB delete(OutStandingLoanB entity);
 
     OutStandingLoanB checkLoan(String param, Long userId);
-    
+
     OutStandingLoanB checkReimburse(String param, Long userId);
 
     void remove(OutStandingLoanB entity);
 
     List<OutStandingLoanB> findByIdLoan(Long paramLong);
 
-    List<OutStandingLoanB> findByCaseId(Long paramLong);
+//    List<OutStandingLoanB> findByCaseId(Long paramLong);
+    OutStandingLoanB findByCaseId(String param);
 
     Double sumLoan(Long paramLong);
 }

@@ -109,7 +109,7 @@ public class MemberRepo implements MemberRepoIface {
                     + " JOIN FETCH m.teamMember AS t "
                     + " JOIN FETCH m.employee AS e "
                     + " WHERE "
-                    + " t.teamMemberId = :teamMemberId";
+                    + " t.teamMemberId = :teamMemberId ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("teamMemberId", paramLong);
             if (query != null) {

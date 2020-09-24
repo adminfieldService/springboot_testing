@@ -563,7 +563,7 @@ public class LoanRepo implements LoanRepoIface {
                         + " LEFT JOIN FETCH l.loantype AS t "
                         + " WHERE "
                         + " t.typeLoan = :typeLoan AND "
-                        + " l.status = :status "    
+                        + " l.status = :status "
                         + " ORDER BY l.date_created DESC ")
                         .setParameter("status", "s")
                         .getResultList();
@@ -674,16 +674,55 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
-    public Double sumLoan(Long paramLong) {
+    public Double sumLoanB(Long paramLong) {
         try {
-            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l "
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
-                    + " l.Id = :Id";
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " l.engagement.engagementId = :engagementId AND "
+                    + " (l.status <> :status OR "
+                    + " l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);
-            query.setParameter("Id", paramLong);
+            query.setParameter("typeLoan", "b");
+            query.setParameter("engagementId", paramLong);
+            query.setParameter("status", "s");
+            query.setParameter("status2", "r");
 //            if (query != null) {
-                log.info("isi" + String.format("%.0f", query.getSingleResult()));
-                return Double.parseDouble(query.getSingleResult().toString());
+            log.info("isi" + String.format("%.0f", query.getSingleResult()));
+            return Double.parseDouble(query.getSingleResult().toString());
+//            } else {
+//                log.info("isi" + query.getSingleResult().toString());
+//                return 0d;
+//            }
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double sumLoanByCaseId(String param) {
+        try {
+              String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " l.engagement.caseID = :caseID AND "
+                    + " (l.status <> :status OR "
+                    + " l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "b");
+            query.setParameter("caseID", param);
+            query.setParameter("status", "s");
+            query.setParameter("status2", "r");
+//            if (query != null) {
+            log.info("isi" + String.format("%.0f", query.getSingleResult()));
+            return Double.parseDouble(query.getSingleResult().toString());
 //            } else {
 //                log.info("isi" + query.getSingleResult().toString());
 //                return 0d;

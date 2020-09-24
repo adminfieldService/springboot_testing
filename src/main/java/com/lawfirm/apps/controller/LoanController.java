@@ -391,13 +391,13 @@ public class LoanController {
                     process = false;
                     CreateLog.createJson(rs, "createLoanb-employee");
                 }
-//                if (!dataEMploye.getRoleName().contentEquals("dmp")) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Failed");
-//                    rs.setResponse("Create Loan Apps Type B Failed");
-//                    process = false;
-//                    CreateLog.createJson(rs, "createLoanb-employee");
-//                }
+                if (!dataEMploye.getRoleName().contentEquals("dmp")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Create Loan Apps Type B Failed");
+                    process = false;
+                    CreateLog.createJson(rs, "createLoanb-employee");
+                }
 //                CaseDetails dataCase = new CaseDetails();
                 if (object.getCase_id() == null) {
                     rs.setResponse_code("55");
@@ -2265,7 +2265,7 @@ public class LoanController {
             int start = 0;
 
             List<Loan> entityList = this.loanService.getLoanB(object.getCase_id());
-
+            Double totalLoanB = 0d;
             JSONArray array = new JSONArray();
             for (int i = 0; i < entityList.size(); i++) {
                 JSONObject jsonobj = new JSONObject();
@@ -2283,7 +2283,11 @@ public class LoanController {
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
                 } else {
-                    jsonobj.put("amount", String.format("%.0f", entity.getLoanAmount()));
+
+//                    jsonobj.put("amount", String.format("%.0f", entity.getLoanAmount()));
+                    log.info("engagementId : " + entity.getEngagement().getEngagementId());
+                    totalLoanB = this.loanService.sumLoanB(entity.getEngagement().getEngagementId());
+                    jsonobj.put("amount", String.format("%.0f", totalLoanB));
                 }
                 if (entity.getLoantype().getTypeLoan() == null) {
                     jsonobj.put("loan_type", "");
