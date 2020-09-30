@@ -44,7 +44,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
 
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
+            CreateLog.createJson("ERROR_outStandingLoanBRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -67,7 +67,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
+            CreateLog.createJson("ERROR_outStandingLoanBRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -95,7 +95,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
+            CreateLog.createJson("ERROR_outStandingLoanBRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -113,7 +113,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson("ERROR_employeeRoleRepo", ex.getMessage());
+            CreateLog.createJson("ERROR_outStandingLoanBRepo", ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -137,7 +137,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -149,12 +149,23 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
 
     @Override
     public OutStandingLoanB findByCaseId(String param) {
-        String sql = "SELECT o FROM OutStandingLoanB o "
-                + " WHERE "
-                + "o.caseId = :caseId";
-        Query query = entityManager.createQuery(sql);
-        query.setParameter("caseId", param);
-        return (OutStandingLoanB) query.getSingleResult();
+        try {
+            String sql = "SELECT o FROM OutStandingLoanB o "
+                    + " WHERE "
+                    + "o.caseId = :caseId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("caseId", param);
+            return (OutStandingLoanB) query.getSingleResult();
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
@@ -175,7 +186,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             }
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -192,14 +203,14 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
                     + " JOIN o.loan AS l "
                     + " WHERE"
                     + " o.caseId = :caseId AND "
-                    + " o.userId = :userId";
+                    + " o.idEmployee = :idEmployee";
             Query query = entityManager.createQuery(sql);
             query.setParameter("caseId", param);
-            query.setParameter("userId", userId);
+            query.setParameter("idEmployee", userId);
             return null;
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -216,14 +227,14 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
                     + " JOIN o.loan AS l "
                     + " WHERE"
                     + " o.caseId = :caseId AND "
-                    + " o.userId = :userId";
+                    + " o.idEmployee = :idEmployee";
             Query query = entityManager.createQuery(sql);
             query.setParameter("caseId", param);
-            query.setParameter("userId", userId);
+            query.setParameter("idEmployee", userId);
             return null;
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

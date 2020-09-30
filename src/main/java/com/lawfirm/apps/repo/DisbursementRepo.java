@@ -369,4 +369,28 @@ public class DisbursementRepo implements DisbursementRepoIface {
         }
     }
 
+    @Override
+    public Disbursement disbursement(Integer number, String param) {
+        try {
+            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " WHERE "
+                    + " d.tahunInput = :tahunInput AND "
+                    + " d.numberOfDisbursement = :numberOfDisbursement AND "
+                    + " d.isActive = :isActive")
+                    .setParameter("tahunInput", param)
+                    .setParameter("numberOfDisbursement", number)
+                    .setParameter("isActive", "1")
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 }

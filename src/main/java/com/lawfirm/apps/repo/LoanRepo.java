@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.repo.interfaces.LoanRepoIface;
 import com.lawfirm.apps.utils.CreateLog;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -709,7 +710,7 @@ public class LoanRepo implements LoanRepoIface {
     @Override
     public Double sumLoanByCaseId(String param) {
         try {
-              String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan AND "
                     + " l.engagement.caseID = :caseID AND "
@@ -718,6 +719,86 @@ public class LoanRepo implements LoanRepoIface {
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "b");
             query.setParameter("caseID", param);
+            query.setParameter("status", "s");
+            query.setParameter("status2", "r");
+//            if (query != null) {
+            log.info("isi" + String.format("%.0f", query.getSingleResult()));
+            return Double.parseDouble(query.getSingleResult().toString());
+//            } else {
+//                log.info("isi" + query.getSingleResult().toString());
+//                return 0d;
+//            }
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double sumLoanA(Long userId, String taxtYear, Date tgl_cut_off) {
+        try {
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " l.date_created <= :tgl_cut_off AND "
+                    + " l.employee.idEmployee = :idEmployee AND "
+                    + " l.tgl_input = :taxtYear AND "
+                    + " l.isDelete = :isDelete AND "
+                    + " (l.status <> :status OR "
+                    + " l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "a");
+            query.setParameter("tgl_cut_off", tgl_cut_off);
+            query.setParameter("idEmployee", userId);
+            query.setParameter("taxtYear", taxtYear);
+            query.setParameter("isDelete", false);
+            query.setParameter("status", "s");
+            query.setParameter("status2", "r");
+//            if (query != null) {
+            log.info("isi" + String.format("%.0f", query.getSingleResult()));
+            return Double.parseDouble(query.getSingleResult().toString());
+//            } else {
+//                log.info("isi" + query.getSingleResult().toString());
+//                return 0d;
+//            }
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double sumLoanA2(Long userId, String taxtYear, Date tgl_cut_off, Date old_tgl_cut_off) {
+        try {
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " l.date_created > :old_tgl_cut_off AND "
+                    + " l.date_created <= :tgl_cut_off AND "
+                    + " l.employee.idEmployee = :idEmployee AND "
+                    + " l.tgl_input = :taxtYear AND "
+                    + " l.isDelete = :isDelete AND "
+                    + " (l.status <> :status OR "
+                    + " l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "a");
+            query.setParameter("old_tgl_cut_off", old_tgl_cut_off);
+            query.setParameter("tgl_cut_off", tgl_cut_off);
+            query.setParameter("idEmployee", userId);
+            query.setParameter("taxtYear", taxtYear);
+            query.setParameter("isDelete", false);
             query.setParameter("status", "s");
             query.setParameter("status2", "r");
 //            if (query != null) {

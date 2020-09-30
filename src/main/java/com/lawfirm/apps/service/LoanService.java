@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.repo.interfaces.LoanRepoIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,5 +169,17 @@ public class LoanService implements LoanServiceIface {
     public Double sumLoanByCaseId(String param) {
         return loanRepo.sumLoanByCaseId(param);
 
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double sumLoanA(Long userId, String taxtYear, Date tgl_cut_off) {
+        return loanRepo.sumLoanA(userId, taxtYear, tgl_cut_off);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double sumLoanA2(Long userId, String taxtYear, Date tgl_cut_off, Date old_tgl_cut_off) {
+        return loanRepo.sumLoanA2(userId, taxtYear, tgl_cut_off, old_tgl_cut_off);
     }
 }

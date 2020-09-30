@@ -964,7 +964,7 @@ public class ReimbursementController {
                 dataReimbursement.setStatus("reimburse");
                 dataReimbursement.setReimbursedDate(now);
 
-                outStanding.setUserId(dataEmp.getIdEmployee());
+                outStanding.setIdEmployee(dataEmp.getIdEmployee());
                 outStanding.setReimburseAmount(dataReimbursement.getApprovedAmount());
                 outStanding.setReimburseId(reimburse_id);
                 Loan dataLoan = this.loanService.findByIdLoan(dataReimbursement.getLoan().getId());

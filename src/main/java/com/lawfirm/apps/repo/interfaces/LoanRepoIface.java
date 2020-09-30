@@ -6,6 +6,7 @@
 package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.Loan;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -57,6 +58,10 @@ public interface LoanRepoIface {
     Double sumLoanB(Long paramLong);
 
     Double sumLoanByCaseId(String param);
+
+    Double sumLoanA(Long userId, String taxtYear, Date tgl_cut_off);
+
+    Double sumLoanA2(Long userId, String taxtYear, Date tgl_cut_off, Date old_tgl_cut_off);
 
 //    Integer generateLoanId(String param1, String param2, String param3);
     List<Loan> generateLoanId(String param1, String param2, String param3);

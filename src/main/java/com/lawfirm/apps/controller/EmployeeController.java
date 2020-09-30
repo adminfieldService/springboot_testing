@@ -2234,11 +2234,11 @@ public class EmployeeController { //LawfirmController
                                 obj.put("account_name_p", enAccount.getAccountName());
                             }
                             if (enAccount.getIsActive() == true) {
-                                obj.put("is_active", true);
+                                obj.put("is_active_acc_p", true);
                                 obj.put("account_number_p", enAccount.getAccountNumberFinance());
                             }
                             if (enAccount.getIsActive() == false) {
-                                obj.put("is_active", false);
+                                obj.put("is_active_acc", false);
                                 if (enAccount.getAccountNumberFinance() != null) {
                                     obj.put("account_number_p", enAccount.getAccountNumberFinance());
                                 } else {
@@ -2267,11 +2267,11 @@ public class EmployeeController { //LawfirmController
                                 obj.put("account_name_l", enAccount.getAccountName());
                             }
                             if (enAccount.getIsActive() == true) {
-                                obj.put("is_active", true);
+                                obj.put("is_active_acc_l", true);
                                 obj.put("account_number_l", enAccount.getAccountNumberFinance());
                             }
                             if (enAccount.getIsActive() == false) {
-                                obj.put("is_active", false);
+                                obj.put("is_active_acc_l", false);
                                 if (enAccount.getAccountNumberFinance() != null) {
                                     obj.put("account_number_l", enAccount.getAccountNumberFinance());
                                 } else {
@@ -2280,11 +2280,11 @@ public class EmployeeController { //LawfirmController
 
                             }
                             if (enAccount.getIsDelete() == true) {
-                                obj.put("is_active_l", false);
+                                obj.put("is_active_acc_l", false);
                                 obj.put("is_delete_l", true);
                             }
                             if (enAccount.getIsDelete() == false) {
-                                obj.put("is_active_l", true);
+                                obj.put("is_active_acc_l", true);
                                 obj.put("is_delete_l", false);
                             }
                         }
@@ -2390,7 +2390,7 @@ public class EmployeeController { //LawfirmController
                                 obj.put("account_name_p", enAccount.getAccountName());
                             }
                             if (enAccount.getIsActive() == true) {
-                                obj.put("is_active", true);
+                                obj.put("is_active_acc_p", true);
                                 obj.put("account_number_p", enAccount.getAccountNumberFinance());
                             }
                             if (enAccount.getIsActive() == false) {
@@ -2403,11 +2403,11 @@ public class EmployeeController { //LawfirmController
                                 obj.put("account_number_p", enAccount.getAccountNumber());
                             }
                             if (enAccount.getIsDelete() == true) {
-                                obj.put("is_active_p", false);
+                                obj.put("is_active_acc_p", false);
                                 obj.put("is_delete_p", true);
                             }
                             if (enAccount.getIsDelete() == false) {
-                                obj.put("is_active_p", true);
+                                obj.put("is_active_acc_p", true);
                                 obj.put("is_delete_p", false);
                             }
                         }
@@ -2664,6 +2664,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "set-InActive");
                 process = false;
+                return rs;
 
             }
 
@@ -2674,6 +2675,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("Employee null, Cannot Access This feature");
                 CreateLog.createJson(rs, "set-InActive");
                 process = false;
+                return rs;
             }
             if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("i")) {
                 rs.setResponse_code("55");
@@ -2681,6 +2683,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "In Active");
                 CreateLog.createJson(rs, "set-InActive");
                 process = false;
+                return rs;
             }
             if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("resign")) {
                 rs.setResponse_code("55");
@@ -2688,6 +2691,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "Resign");
                 CreateLog.createJson(rs, "set-InActive");
                 process = false;
+                return rs;
             }
 
             if (process) {
@@ -2705,7 +2709,7 @@ public class EmployeeController { //LawfirmController
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
-            rs.setResponse("Meployee null, Cannot Access This feature");
+            rs.setResponse("Employee null, Cannot Access This feature");
             CreateLog.createJson(rs, "set-InActive");
             return rs;
         } catch (org.json.JSONException ex) {
@@ -2765,7 +2769,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "set_Resign");
                 process = false;
-
+                return rs;
             }
 
             Employee employee = employeeService.findById(object.getId_employee());//findById
@@ -2775,6 +2779,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("Employee null, Cannot Access This feature");
                 CreateLog.createJson(rs, "set_Resign");
                 process = false;
+                return rs;
             }
             if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("i")) {
                 rs.setResponse_code("55");
@@ -2782,6 +2787,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "In Active");
                 CreateLog.createJson(rs, "set_Resign");
                 process = false;
+                return rs;
             }
             if (employee.IsActive().equals(false) || employee.getStatus().contentEquals("resign")) {
                 rs.setResponse_code("55");
@@ -2789,6 +2795,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse("employee id : " + employee.getEmployeeId() + " Status : " + "Resign");
                 CreateLog.createJson(rs, "set_Resign");
                 process = false;
+                return rs;
             }
 
             if (process) {
@@ -2805,7 +2812,7 @@ public class EmployeeController { //LawfirmController
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
-            rs.setResponse("Meployee null, Cannot Access This feature");
+            rs.setResponse("Employee null, Cannot Access This feature");
             CreateLog.createJson(rs, "set_Resign");
             return rs;
         } catch (org.json.JSONException ex) {
@@ -2904,7 +2911,7 @@ public class EmployeeController { //LawfirmController
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
-            rs.setResponse("Meployee null, Cannot Access This feature");
+            rs.setResponse("Employee null, Cannot Access This feature");
             CreateLog.createJson(rs, "set_active");
             return rs;
         } catch (org.json.JSONException ex) {

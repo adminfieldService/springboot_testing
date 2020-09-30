@@ -638,25 +638,23 @@ public class CaseController {
             } else {
                 number = disburseList.size() + 1;
             }
-//            System.out.println("isi : " + object.getDisburse_date());
-            String dt = dateFormat.format(new Date());
-            Date disburse = dateFormat.parse(dt);
-//            dataLoan.setDisburse_date(disburse);
-            String disburseM = sdfDisbursM.format(new Date());
-            String disburseMy = sdfDisbursMY.format(new Date());
-            System.out.println("isi disburseM : " + disburseM);
-            disbursement.setBulanInput(disburseM);
-            String dsb_id = "DSB" + disburseMy;
-            disbursement.setDisbursementId(dsb_id);
-            disbursement.setDisburse_date(disburse);
-            disbursement.setNumberOfDisbursement(number);
-            disbursement.setBulanInput(sdfMonth.format(now));
-            disbursement.setTahunInput(sdfYear.format(now));
+//            String dt = dateFormat.format(new Date());
+//            Date disburse = dateFormat.parse(dt);
+//            String disburseM = sdfDisbursM.format(new Date());
+//            String disburseMy = sdfDisbursMY.format(new Date());
+//            System.out.println("isi disburseM : " + disburseM);
+//            disbursement.setBulanInput(disburseM);
+//            String dsb_id = "DSB" + disburseMy;
+//            disbursement.setDisbursementId(dsb_id);
+//            disbursement.setDisburse_date(disburse);
+//            disbursement.setNumberOfDisbursement(number);
+//            disbursement.setBulanInput(sdfMonth.format(now));
+//            disbursement.setTahunInput(sdfYear.format(now));
             enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
             CaseDetails closeCase = this.caseDetailsService.update(entity);
             if (closeCase != null) {
                 this.engagementHistoryService.create(enHistory);
-                this.disbursementService.create(disbursement);
+//                this.disbursementService.create(disbursement);
                 rs.setResponse_code("00");
                 rs.setInfo("Success");
                 rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
@@ -680,14 +678,7 @@ public class CaseController {
             CreateLog.createJson(ex.getMessage(), "closing-Case");
             return rs;
 
-        } catch (ParseException ex) {
-            Logger.getLogger(CaseController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        rs.setResponse_code("55");
-        rs.setInfo("Failed");
-        rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
-        CreateLog.createJson(rs, "closing-Case");
-        return rs;
     }
 
     @RequestMapping(value = "/case/case-id", method = RequestMethod.GET, produces = {"application/json"})

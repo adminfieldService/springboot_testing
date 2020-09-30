@@ -49,6 +49,16 @@ public class Disbursement implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date disburse_date;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "cut_off_date", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date cutOffDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "old_cut_off_date", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date oldCutOffDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -89,11 +99,13 @@ public class Disbursement implements Serializable {
     public Disbursement() {
     }
 
-    public Disbursement(String disbursementUUId, String disbursementId, Integer numberOfDisbursement, Date disburse_date, Date tgInput, String tahunInput, String bulanInput, Double disbursementAmount, String signature, String isActive, Engagement engagement) {
+    public Disbursement(String disbursementUUId, String disbursementId, Integer numberOfDisbursement, Date disburse_date, Date cutOffDate, Date oldCutOffDate, Date tgInput, String tahunInput, String bulanInput, Double disbursementAmount, String signature, String isActive, Engagement engagement) {
         this.disbursementUUId = disbursementUUId;
         this.disbursementId = disbursementId;
         this.numberOfDisbursement = numberOfDisbursement;
         this.disburse_date = disburse_date;
+        this.cutOffDate = cutOffDate;
+        this.oldCutOffDate = oldCutOffDate;
         this.tgInput = tgInput;
         this.tahunInput = tahunInput;
         this.bulanInput = bulanInput;
@@ -102,6 +114,8 @@ public class Disbursement implements Serializable {
         this.isActive = isActive;
         this.engagement = engagement;
     }
+
+   
 
     public String getDisbursementUUId() {
         return disbursementUUId;
@@ -260,5 +274,23 @@ public class Disbursement implements Serializable {
     public void setNumberOfDisbursement(Integer numberOfDisbursement) {
         this.numberOfDisbursement = numberOfDisbursement;
     }
+
+    public Date getCutOffDate() {
+        return cutOffDate;
+    }
+
+    public void setCutOffDate(Date cutOffDate) {
+        this.cutOffDate = cutOffDate;
+    }
+
+    public Date getOldCutOffDate() {
+        return oldCutOffDate;
+    }
+
+    public void setOldCutOffDate(Date oldCutOffDate) {
+        this.oldCutOffDate = oldCutOffDate;
+    }
+    
+    
 
 }

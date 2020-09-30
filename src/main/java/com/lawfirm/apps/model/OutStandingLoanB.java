@@ -34,8 +34,8 @@ public class OutStandingLoanB implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "outstanding_uu_id")
-    private String outstandingUUId;
+    @Column(name = "outstanding_b_uu_id")
+    private String outstandingBUUId;
 
     @Column(name = "outstanding_id")
     private String outstandingId;
@@ -60,8 +60,8 @@ public class OutStandingLoanB implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "id_employee")
+    private Long idEmployee;
 
     @Column(name = "tahun_input", length = 10, nullable = true)
     private String tahun_input;
@@ -79,14 +79,14 @@ public class OutStandingLoanB implements Serializable {
     public void onCreate() {
         tgInput = new Date();
         isActive = true;
-        this.setOutstandingUUId(UUID.randomUUID().toString());
+        this.setOutstandingBUUId(UUID.randomUUID().toString());
     }
 
     public OutStandingLoanB() {
     }
 
-    public OutStandingLoanB(String outstandingUUId, String outstandingId, Long reimburseId, Double reimburseAmount, Double loanAmount, Double outStanding, String caseId, Boolean isActive, Long userId, String tahun_input, Date tgInput, Loan loan) {
-        this.outstandingUUId = outstandingUUId;
+    public OutStandingLoanB(String outstandingBUUId, String outstandingId, Long reimburseId, Double reimburseAmount, Double loanAmount, Double outStanding, String caseId, Boolean isActive, Long idEmployee, String tahun_input, Date tgInput, Loan loan) {
+        this.outstandingBUUId = outstandingBUUId;
         this.outstandingId = outstandingId;
         this.reimburseId = reimburseId;
         this.reimburseAmount = reimburseAmount;
@@ -94,7 +94,7 @@ public class OutStandingLoanB implements Serializable {
         this.outStanding = outStanding;
         this.caseId = caseId;
         this.isActive = isActive;
-        this.userId = userId;
+        this.idEmployee = idEmployee;
         this.tahun_input = tahun_input;
         this.tgInput = tgInput;
         this.loan = loan;
@@ -116,14 +116,12 @@ public class OutStandingLoanB implements Serializable {
         this.outStanding = outStanding;
     }
 
-   
-
-    public String getOutstandingUUId() {
-        return outstandingUUId;
+    public String getOutstandingBUUId() {
+        return outstandingBUUId;
     }
 
-    public void setOutstandingUUId(String outstandingUUId) {
-        this.outstandingUUId = outstandingUUId.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+    public void setOutstandingBUUId(String outstandingBUUId) {
+        this.outstandingBUUId = outstandingBUUId.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")
@@ -208,12 +206,12 @@ public class OutStandingLoanB implements Serializable {
         this.loan = loan;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getIdEmployee() {
+        return idEmployee;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setIdEmployee(Long idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     public Double getReimburseAmount() {

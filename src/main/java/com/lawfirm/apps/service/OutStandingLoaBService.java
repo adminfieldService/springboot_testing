@@ -22,66 +22,66 @@ import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 public class OutStandingLoaBService implements OutStandingLoanBServiceIface {
 
     @Autowired
-    private OutStandingLoanBRepoIface outStandingRepo;
+    private OutStandingLoanBRepoIface outStandingLoanBRepo;
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB create(OutStandingLoanB entity) {
-        return outStandingRepo.create(entity);
+        return outStandingLoanBRepo.create(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB update(OutStandingLoanB entity) {
-        return outStandingRepo.update(entity);
+        return outStandingLoanBRepo.update(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB approved(OutStandingLoanB entity) {
-        return outStandingRepo.approved(entity);
+        return outStandingLoanBRepo.approved(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB delete(OutStandingLoanB entity) {
-        return outStandingRepo.delete(entity);
+        return outStandingLoanBRepo.delete(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public void remove(OutStandingLoanB entity) {
-        outStandingRepo.remove(entity);
+        outStandingLoanBRepo.remove(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<OutStandingLoanB> findByIdLoan(Long paramLong) {
-        return outStandingRepo.findByIdLoan(paramLong);
+        return outStandingLoanBRepo.findByIdLoan(paramLong);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB findByCaseId(String param) {
-        return outStandingRepo.findByCaseId(param);
+        return outStandingLoanBRepo.findByCaseId(param);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Double sumLoan(Long paramLong) {
-        return outStandingRepo.sumLoan(paramLong);
+        return outStandingLoanBRepo.sumLoan(paramLong);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB checkLoan(String param, Long userId) {
-        return outStandingRepo.checkLoan(param, userId);
+        return outStandingLoanBRepo.checkLoan(param, userId);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanB checkReimburse(String param, Long userId) {
-        return outStandingRepo.checkReimburse(param, userId);
+        return outStandingLoanBRepo.checkReimburse(param, userId);
     }
 
 }

@@ -92,8 +92,14 @@ public class DisbursementService implements DisbursementServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Disbursement disbursementFindbyCaseId(String param) {
-          return this.disbursementRepo.disbursementFindbyCaseId(param);
+        return this.disbursementRepo.disbursementFindbyCaseId(param);
+    }
+
+    @Override
+    public Disbursement disbursement(Integer number, String taxyear) {
+          return this.disbursementRepo.disbursement(number, taxyear);
     }
 
 }
