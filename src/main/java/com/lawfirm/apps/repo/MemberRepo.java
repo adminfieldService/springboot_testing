@@ -180,26 +180,53 @@ public class MemberRepo implements MemberRepoIface {
         }
     }
 
-//    @Override
-//    public List<Member> findByTeam(Long param) {
+    @Override
+    public Member findBy(Long idTeamMember, String employeeId) {
+        try {
+            String sql = "SELECT m FROM Member m JOIN FETCH m.employee AS e WHERE "
+                    + " m.teamMember.teamMemberId = :teamMemberId AND "
+                    + " e.employeeId = :employeeId ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("teamMemberId", idTeamMember);
+            query.setParameter("employeeId", employeeId);
+            if (query != null) {
+                return (Member) query.getSingleResult();
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare) {
+//        int updateCount = 0;
 //        try {
-//            String sql = "SELECT m FROM Member m JOIN FETCH m.teamMember AS t WHERE "
-//                    + " t.team_member_id = :team_member_id";
-//            Query query = entityManager.createQuery(sql);
-//            query.setParameter("team_member_id", param);
-//            if (query != null) {
-//                return query.getResultList();
-//            } else {
-//                return null;
-//            }
+//            Query query = entityManager.createQuery(
+//                    "UPDATE Member SET feeShare = :feeShare "
+//                    + "WHERE "
+//                    + "teamMember.teamMemberId = :teamMemberId AND "
+//                    + "employee.idEmployee = :idEmployee")
+//                    .setParameter("teamMemberId", teamMemberId)
+//                    .setParameter("idEmployee", idEmployee);
+//            updateCount = entityManager.executeUpdate();
 //        } catch (Exception ex) {
 //            logger.error(ex.getMessage());
 //            System.out.println("ERROR: " + ex.getMessage());
-//            return null;
+//            return updateCount;
 //        } finally {
 //            if ((entityManager != null) && (entityManager.isOpen())) {
 //                entityManager.close();
 //            }
 //        }
-//    }
+        return null;
+    }
 }

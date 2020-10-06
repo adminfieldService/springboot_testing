@@ -72,4 +72,16 @@ public class MemberService implements MemberServiceIface {
         return memberRepo.findByEmpId(param);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare) {
+        return memberRepo.updateFeeMember(teamMemberId, idEmployee, feeShare);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Member findBy(Long idTeamMember, String employeeId) {
+        return memberRepo.findBy(idTeamMember, employeeId);
+    }
+
 }

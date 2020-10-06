@@ -49,4 +49,7 @@ public interface TeamMemberServiceIface {
     List<TeamMember> findByDmp(Long dmpId);
 
     List<TeamMember> listTeamMemberByEngagement(Long param);
+
+    TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare);
+
 }

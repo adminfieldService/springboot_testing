@@ -25,7 +25,7 @@ public class EmployeeApi {
     protected String npwp;
     protected String tax_status;
     protected String mobile_phone;
-    protected String userName;
+//    protected String userName;
     protected String roleName;
     protected String userPass;
     protected String passUser;
@@ -38,8 +38,9 @@ public class EmployeeApi {
     protected Date input_date;
     protected Date aprroved_date;
     protected String linkCv;
-    protected String employee_id;
+    protected String cell_phone;
+    protected String user_name;
+//    protected String employee_id;
 //    private MultipartFile doc_cv;
 
-   
 }

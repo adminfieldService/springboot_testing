@@ -76,4 +76,10 @@ public class OutStandingLoanAService implements OutStandingLoanAServiceIface {
     public OutStandingLoanA findByCaseId(String param) {
         return outStandingLoanARepo.findByCaseId(param);
     }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId) {
+        return outStandingLoanARepo.findBy(idEmployee, taxyear, disburseId);
+    }
 }

@@ -48,7 +48,7 @@ public class Member implements Serializable {
     private TeamMember teamMember;
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_employee", referencedColumnName = "id_employee")
-    private Employee employee;
+        private Employee employee;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Jakarta")
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

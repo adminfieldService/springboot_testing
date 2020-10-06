@@ -33,4 +33,7 @@ public interface MemberRepoIface {
     List<Member> findByEmpId(String param);//@Repository
 
 //    List<Member> findByTeam(Long param);
+    Member findBy(Long idTeamMember, String employeeId);
+
+    Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
 }

@@ -19,7 +19,6 @@ import com.lawfirm.apps.service.interfaces.DocumentReimburseServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeRoleServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementServiceIface;
-import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
@@ -82,8 +81,6 @@ public class EngagementControllerDto {
     DocumentReimburseServiceIface documentReimburseService;
     @Autowired
     EngagementServiceIface engagementService;
-    @Autowired
-    FinancialServiceIface financialService;
     @Autowired
     LoanServiceIface loanService;
     @Autowired

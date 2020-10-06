@@ -105,18 +105,27 @@ public class TeamMemberService implements TeamMemberServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<TeamMember> listTeamMemberByEngagement(Long param) {
         return teamMemberRepo.listTeamMemberByEngagement(param);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<TeamMember> generateTeamCaseId(String param1) {
         return teamMemberRepo.generateTeamCaseId(param1);
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public TeamMember findByTeamCaseId(String teamcaseID, String paramY) {
         return teamMemberRepo.findByTeamCaseId(teamcaseID, paramY);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare) {
+        return teamMemberRepo.updateFeeDmp(engagementId, dmpId, feeShare);
     }
 
 }

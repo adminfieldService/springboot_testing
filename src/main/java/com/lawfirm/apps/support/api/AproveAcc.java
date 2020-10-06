@@ -14,10 +14,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class FeeShareDto {
+public class AproveAcc {
 
-    protected Double dmp_fee_new;
-    protected String employee_id[] = null;
-//    protected String employee_name[] = null;
-    protected Double fee_share_new[] = null;
+    Long id_employee;
 }

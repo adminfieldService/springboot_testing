@@ -49,4 +49,6 @@ public interface TeamMemberRepoIface {
     EntityManager getEntityManager();
 
     List<TeamMember> listTeamMemberByEngagement(Long param);
+
+    TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare);
 }

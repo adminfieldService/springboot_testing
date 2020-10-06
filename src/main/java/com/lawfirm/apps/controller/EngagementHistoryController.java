@@ -17,7 +17,6 @@ import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementServiceIface;
 import com.lawfirm.apps.service.interfaces.EventServiceIface;
-import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
@@ -81,8 +80,6 @@ public class EngagementHistoryController {
     EngagementServiceIface engagementService;
     @Autowired
     EngagementHistoryServiceIface engagementHistoryService;
-    @Autowired
-    FinancialServiceIface financialService;
     @Autowired
     LoanServiceIface loanService;
     @Autowired

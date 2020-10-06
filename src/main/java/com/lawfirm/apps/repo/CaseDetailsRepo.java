@@ -426,9 +426,11 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
 //              List<CaseDetails> listAcquire = entityManager.createQuery("SELECT COUNT(c) FROM CaseDetails c WHERE "
             List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
                     + " c.tahun_input = :tahun_input AND "
-                    + " c.status = :status")
+                    + " (c.status  <> :status OR "
+                    + "  c.status  <> :status2 )")
                     .setParameter("tahun_input", param1)
-                    .setParameter("status", "a")
+                    .setParameter("status", "s")
+                    .setParameter("status2", "r")
                     .getResultList();
             if (listAcquire == null) {
                 return null;

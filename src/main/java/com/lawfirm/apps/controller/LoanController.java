@@ -19,7 +19,6 @@ import com.lawfirm.apps.service.interfaces.DocumentReimburseServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeRoleServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementServiceIface;
-import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
@@ -99,8 +98,6 @@ public class LoanController {
     DocumentReimburseServiceIface documentReimburseService;
     @Autowired
     EngagementServiceIface engagementService;
-    @Autowired
-    FinancialServiceIface financialService;
     @Autowired
     LoanServiceIface loanService;
     @Autowired
@@ -788,7 +785,6 @@ public class LoanController {
             LoanType typeLoan = new LoanType();
             LoanHistory entityHistory = new LoanHistory();
 //            Disbursement entityDisbursement = new Disbursement();
-            Financial dataFinance = new Financial();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("55");
 //            rs.setInfo("Failed");
@@ -881,26 +877,26 @@ public class LoanController {
                 Loan upDataLoan = loanService.update(dataLoan);
                 this.loanHistoryService.create(entityHistory);
                 if (upDataLoan != null) {
-                    dataFinance.setDisburse_date(new Date());
-                    if (object.getOut_standing() != null) {
-                        dataFinance.setOutStanding(object.getOut_standing());
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Failed");
-                        rs.setResponse("out Standing Field can't be null");
-                        CreateLog.createJson(rs, "loan-approve-Byfinance");
-                    }
-                    Financial upd_finance = financialService.update(dataFinance);
-                    if (upd_finance != null) {
-                        rs.setResponse_code("01");
-                        rs.setInfo("Success");
-                        rs.setResponse("Loan apps Approved By :" + dataLoan.getAprovedByFinance());
-                        CreateLog.createJson(rs, "loan-approve-Byfinance");
-                        return rs;
-                    }
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("Loand id null, Cannot Access This feature");
+//                    dataFinance.setDisburse_date(new Date());
+//                    if (object.getOut_standing() != null) {
+//                        dataFinance.setOutStanding(object.getOut_standing());
+//                    } else {
+//                        rs.setResponse_code("55");
+//                        rs.setInfo("Failed");
+//                        rs.setResponse("out Standing Field can't be null");
+//                        CreateLog.createJson(rs, "loan-approve-Byfinance");
+//                    }
+//                    Financial upd_finance = financialService.update(dataFinance);
+//                    if (upd_finance != null) {
+//                        rs.setResponse_code("01");
+//                        rs.setInfo("Success");
+//                        rs.setResponse("Loan apps Approved By :" + dataLoan.getAprovedByFinance());
+//                        CreateLog.createJson(rs, "loan-approve-Byfinance");
+//                        return rs;
+//                    }
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("Loan apps Approved By :" + dataLoan.getAprovedByFinance());
                     CreateLog.createJson(rs, "loan-approve-Byfinance");
                     return rs;
                 } else {

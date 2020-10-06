@@ -177,4 +177,31 @@ public class OutStandingLoanARepo implements OutStandingLoanARepoIface {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId) {
+        try {
+            OutStandingLoanA listAcquire = (OutStandingLoanA) entityManager.createQuery("SELECT o FROM OutStandingLoanA o "
+                    + " WHERE "
+                    + " o.idEmployee = :idEmployee AND"
+                    + " o.taxYear = :taxYear AND"
+                    + " o.disburseId = :disburseId ")
+                    .setParameter("idEmployee", idEmployee)
+                    .setParameter("taxYear", taxyear)
+                    .setParameter("disburseId", disburseId)
+                    .getSingleResult();
+            //                        .setParameter("status", "d")
+
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
 }

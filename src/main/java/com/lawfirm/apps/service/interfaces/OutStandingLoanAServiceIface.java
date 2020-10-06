@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface OutStandingLoanAServiceIface {
-     OutStandingLoanA create(OutStandingLoanA entity);
+
+    OutStandingLoanA create(OutStandingLoanA entity);
 
     OutStandingLoanA update(OutStandingLoanA entity);
 
@@ -32,4 +33,6 @@ public interface OutStandingLoanAServiceIface {
 
 //    List<OutStandingLoanB> findByCaseId(Long paramLong);
     OutStandingLoanA findByCaseId(String param);
+
+    OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId);
 }

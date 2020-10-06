@@ -29,7 +29,6 @@ import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementServiceIface;
 import com.lawfirm.apps.service.interfaces.EntityPeriodServiceIface;
 import com.lawfirm.apps.service.interfaces.EventServiceIface;
-import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
@@ -113,8 +112,6 @@ public class DisbursementController {
     DocumentReimburseServiceIface documentReimburseService;
     @Autowired
     EngagementServiceIface engagementService;
-    @Autowired
-    FinancialServiceIface financialService;
     @Autowired
     LoanServiceIface loanService;
     @Autowired
@@ -303,7 +300,6 @@ public class DisbursementController {
             LoanType typeLoan = new LoanType();
             LoanHistory entityHistory = new LoanHistory();
             Disbursement entityDisbursement = new Disbursement();
-            Financial dataFinance = new Financial();
             OutStandingLoanB outStanding = new OutStandingLoanB();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("55");
@@ -402,26 +398,29 @@ public class DisbursementController {
 //                this.OutStandingService.create(outStanding);
                 this.loanHistoryService.create(entityHistory);
                 if (upDataLoan != null) {
-                    dataFinance.setDisburse_date(new Date());
-                    if (object.getOut_standing() != null) {
-                        dataFinance.setOutStanding(object.getOut_standing());
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Failed");
-                        rs.setResponse("out Standing Field can't be null");
-                        CreateLog.createJson(rs, "disburseLoanA");
-                    }
-                    Financial upd_finance = financialService.update(dataFinance);
-                    if (upd_finance != null) {
-                        rs.setResponse_code("01");
-                        rs.setInfo("Success");
-                        rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
-                        CreateLog.createJson(rs, "disburseLoanA");
-                        return rs;
-                    }
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("Loand id null, Cannot Access This feature");
+//                    if (object.getOut_standing() != null) {
+//                        dataFinance.setOutStanding(object.getOut_standing());
+//                    } else {
+//                        rs.setResponse_code("55");
+//                        rs.setInfo("Failed");
+//                        rs.setResponse("out Standing Field can't be null");
+//                        CreateLog.createJson(rs, "disburseLoanA");
+//                    }
+//                    Financial upd_finance = financialService.update(dataFinance);
+//                    if (upd_finance != null) {
+//                        rs.setResponse_code("01");
+//                        rs.setInfo("Success");
+//                        rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
+//                        CreateLog.createJson(rs, "disburseLoanA");
+//                        return rs;
+//                    }
+//                    rs.setResponse_code("55");
+//                    rs.setInfo("Failed");
+//                    rs.setResponse("Loand id null, Cannot Access This feature");
+//                    CreateLog.createJson(rs, "disburseLoanA");
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanA");
                     return rs;
                 } else {
@@ -473,7 +472,6 @@ public class DisbursementController {
             LoanType typeLoan = new LoanType();
             LoanHistory entityHistory = new LoanHistory();
             Disbursement entityDisbursement = new Disbursement();
-            Financial dataFinance = new Financial();
             OutStandingLoanB outStanding = new OutStandingLoanB();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("55");
@@ -571,26 +569,26 @@ public class DisbursementController {
                 this.loanHistoryService.create(entityHistory);
 
                 if (upDataLoan != null) {
-                    dataFinance.setDisburse_date(new Date());
-                    if (object.getOut_standing() != null) {
-                        dataFinance.setOutStanding(object.getOut_standing());
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Failed");
-                        rs.setResponse("out Standing Field can't be null");
-                        CreateLog.createJson(rs, "disburseLoanB");
-                    }
-                    Financial upd_finance = financialService.update(dataFinance);
-                    if (upd_finance != null) {
-                        rs.setResponse_code("01");
-                        rs.setInfo("Success");
-                        rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
-                        CreateLog.createJson(rs, "disburseLoanB");
-                        return rs;
-                    }
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("Loand id null, Cannot Access This feature");
+//                    dataFinance.setDisburse_date(new Date());
+//                    if (object.getOut_standing() != null) {
+//                        dataFinance.setOutStanding(object.getOut_standing());
+//                    } else {
+//                        rs.setResponse_code("55");
+//                        rs.setInfo("Failed");
+//                        rs.setResponse("out Standing Field can't be null");
+//                        CreateLog.createJson(rs, "disburseLoanB");
+//                    }
+//                    Financial upd_finance = financialService.update(dataFinance);
+//                    if (upd_finance != null) {
+//                        rs.setResponse_code("01");
+//                        rs.setInfo("Success");
+//                        rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
+//                        CreateLog.createJson(rs, "disburseLoanB");
+//                        return rs;
+//                    }
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanB");
                     return rs;
                 } else {
@@ -2062,6 +2060,11 @@ public class DisbursementController {
 
                     Double total_income_fortax_purpose_dmp = 0d;
                     Double total_income_fortax_purpose_team = 0d;
+                    Double outstanding_loan_a_dmp = 0d;
+                    Double outstanding_loan_a_team = 0d;
+                    String oldcutOffdate = null;
+                    Date oldCutOffDate = null;
+//                    
                     Double taxable_income_dmp = 0d;
                     Double taxable_income_team = 0d;
                     Double dmpPortion = 0d;
@@ -2124,6 +2127,25 @@ public class DisbursementController {
                             CreateLog.createJson(rs, "disbursement");
                             return rs;
                         }
+                        if (number == 1) {
+                            Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 1 " + String.format("%.0f", outstanding_loan_a_dmp));
+                        }
+                        if (number == 2) {
+                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 2 " + String.format("%.0f", outstanding_loan_a_dmp));
+                        }
+                        if (number == 3) {
+                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 3 " + String.format("%.0f", outstanding_loan_a_dmp));
+                        }
 
                         for (int k = 0; k < entityMember.size(); k++) {
                             Member dataMember = entityMember.get(k);
@@ -2149,6 +2171,25 @@ public class DisbursementController {
                             entityPeriod.setPrevDisbursement(amount_portion_team);
                             entityPeriod.setIncome_tax_paid_on_prior_period(taxable_income_team);
 
+                            if (number == 1) {
+                                Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 1 " + String.format("%.0f", outstanding_loan_a_team));
+                            }
+                            if (number == 2) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 2 " + String.format("%.0f", outstanding_loan_a_team));
+                            }
+                            if (number == 3) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 3 " + String.format("%.0f", outstanding_loan_a_team));
+                            }
                             this.entityPeriodService.create(entityPeriod);
                         }
                         this.entityPeriodService.create(entityPeriodDmp);

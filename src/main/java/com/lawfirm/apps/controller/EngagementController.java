@@ -21,7 +21,6 @@ import com.lawfirm.apps.service.interfaces.DocumentReimburseServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeRoleServiceIface;
 import com.lawfirm.apps.service.interfaces.EmployeeServiceIface;
 import com.lawfirm.apps.service.interfaces.EngagementServiceIface;
-import com.lawfirm.apps.service.interfaces.FinancialServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanServiceIface;
 import com.lawfirm.apps.service.interfaces.LoanTypeServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
@@ -104,8 +103,6 @@ public class EngagementController {
     EngagementServiceIface engagementService;
     @Autowired
     EngagementHistoryServiceIface engagementHistoryService;
-    @Autowired
-    FinancialServiceIface financialService;
     @Autowired
     LoanServiceIface loanService;
     @Autowired
@@ -262,7 +259,7 @@ public class EngagementController {
                 log.error("msg : " + fee_total);
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + " greater than 100");//&gt;
+                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
                 process = false;
                 return rs;
             }
@@ -270,7 +267,7 @@ public class EngagementController {
                 log.error("msg : " + fee_total);
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + " less than 100");//&lt;
+                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
                 process = false;
                 return rs;
             }
@@ -723,9 +720,11 @@ public class EngagementController {
 //                return rs;
 //            }
             List<CaseDetails> generateCaseId = caseDetailsService.generateCaseId(entity.getTahun_input());
-            Integer number = 0;
-            if (generateCaseId != null || !generateCaseId.isEmpty()) {
+            Integer number = null;
+            if (generateCaseId.size() > 0 || !generateCaseId.isEmpty()) {
                 number = generateCaseId.size();
+            } else {
+                number = 0;
             }
             System.out.println("number size : " + number);
             String check_caseId = null;
@@ -734,7 +733,7 @@ public class EngagementController {
                 number = 1;
                 check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             } else {
-                number = number + 1;
+//                number = number;
                 check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             }
 //            String caseId = null;
@@ -779,7 +778,7 @@ public class EngagementController {
                 enHistory.setUserId(entityEmp.getIdEmployee());
                 team_Id = Util.changeCase(check_caseId);
 
-                Log.info("check_caseId  findByCaseId : " + team_Id);
+                Log.info("check_caseId  team_Id : " + team_Id);
                 dataTeamMember.setDescription(team_Id);
                 this.teamMemberService.update(dataTeamMember);
             }
@@ -1449,7 +1448,18 @@ public class EngagementController {
 
                                 obj.put("employee_id_dmp", getDmp.getEmployeeId());
                                 obj.put("dmp_name", getDmp.getName());
-                                obj.put("description", dataTeam.getDescription());
+                                switch (status) {
+                                    case "s":
+                                        obj.put("description", "Need Approval By admin");
+                                        break;
+                                    case "r":
+                                        obj.put("description", "Engagement Rejected By admin");
+                                        break;
+                                    default:
+                                        obj.put("description", dataTeam.getDescription());
+                                        break;
+                                }
+
                                 obj.put("fee_share_dmp", dataTeam.getFeeShare());
 
 //                            break;
@@ -1692,7 +1702,17 @@ public class EngagementController {
 
                                 obj.put("employee_id_dmp", getDmp.getEmployeeId());
                                 obj.put("dmp_name", getDmp.getName());
-                                obj.put("description", dataTeam.getDescription());
+                                switch (status) {
+                                    case "s":
+                                        obj.put("description", "Need Approval By admin");
+                                        break;
+                                    case "r":
+                                        obj.put("description", "Engagement Rejected By admin");
+                                        break;
+                                    default:
+                                        obj.put("description", dataTeam.getDescription());
+                                        break;
+                                }
                                 obj.put("fee_share_dmp", dataTeam.getFeeShare());
 
 //                                break;
@@ -2396,6 +2416,7 @@ public class EngagementController {
                 CreateLog.createJson(rs, "update-fee-share");
                 return rs;
             }
+
             if (object.getEmployee_id() != null) {
                 emp_id = Arrays.toString(object.getEmployee_id()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
                 log.info("emp_id == " + emp_id);
@@ -2409,22 +2430,7 @@ public class EngagementController {
                 CreateLog.createJson(rs, "update-fee-share");
                 return rs;
             }
-            if (object.getEmployee_name() != null) {
-                emp_name = Arrays.toString(object.getEmployee_name()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
-//            for (int i = 0; i < object.getEmployee_id().length; i++) {
-//                emp_id = object.getEmployee_id();
-//            }
-                log.info("emp_name == " + emp_name);
-            } else {
-                emp_name = null;
-                log.info("emp_id == null ");
-                rs.setResponse_code("55");
-                rs.setInfo("failed");
-                rs.setResponse("Employee Not Found");
-                process = false;
-                CreateLog.createJson(rs, "update-fee-share");
-                return rs;
-            }
+
             if (object.getFee_share_new() != null) {
                 fee_share = Arrays.toString(object.getFee_share_new()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
             } else {
@@ -2448,7 +2454,7 @@ public class EngagementController {
                 log.error("msg : " + fee_total);
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + " greater than 100");//&gt;
+                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
                 process = false;
                 CreateLog.createJson(rs, "update-fee-share");
                 return rs;
@@ -2457,13 +2463,13 @@ public class EngagementController {
                 log.error("msg : " + fee_total);
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + " less than 100");//&lt;
+                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
                 process = false;
                 CreateLog.createJson(rs, "update-fee-share");
                 return rs;
             }
-            TeamMember dataTeam = this.teamMemberService.findByEngId(engagement_id);
-            if (dataTeam == null) {
+            TeamMember dataTeamMember = this.teamMemberService.findByEngId(engagement_id);
+            if (dataTeamMember == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("TeamMember Not Found By CASE ID : " + dataEngagement.getCaseID() + "Not Found");//&lt;
@@ -2474,9 +2480,9 @@ public class EngagementController {
             if (process) {
                 Member member = null;
 //              dataTeam.setEngagement(dataEngagement);
-                dataTeam.setFeeShare(object.getDmp_fee_new());
-                dataTeam.setIsActive(Boolean.TRUE);
-                TeamMember team = this.teamMemberService.update(dataTeam);
+                dataTeamMember.setFeeShare(object.getDmp_fee_new());
+                dataTeamMember.setIsActive(Boolean.TRUE);
+                TeamMember team = this.teamMemberService.update(dataTeamMember);
                 if (team == null) {
                     rs.setResponse_code("55");
                     rs.setInfo("failed");
@@ -2486,8 +2492,10 @@ public class EngagementController {
                 }
                 employeeId = emp_id.toString().split(",");
                 for (int l = 0; l < employeeId.length; l++) {
-                    Member dataM = new Member();
+//                    Member dataM = new Member();
                     String part = employeeId[l];
+                    Member dataM = this.memberService.findBy(dataTeamMember.getTeamMemberId(), part.trim().replaceAll("['\":<>\\[\\],-]", ""));
+
                     System.out.println("@Check Part emp_id " + l + " :" + part.trim().replaceAll("['\":<>\\[\\],-]", ""));
                     if (employeeId.length == 1) {
                         Employee dataEmployee = employeeService.findByEmployeeId(part.trim().replaceAll("['\":<>\\[\\],-]", ""));
@@ -2516,7 +2524,7 @@ public class EngagementController {
                     } else {
                         dataM.setFeeShare(Double.parseDouble(part_fee));
                     }
-//                dataTeam.addMember(dataM);
+//                  dataTeam.addMember(dataM);
                     dataM.setTeamMember(team);
                     member = memberService.update(dataM);
                 }
@@ -2524,7 +2532,7 @@ public class EngagementController {
                 if (member != null) {
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
-                    rs.setResponse("Success Create Team Member :");
+                    rs.setResponse("Success Update  Fee Share Team :");
                     CreateLog.createJson(rs, "update-fee-share");
 //                return rs;
                 }
