@@ -193,7 +193,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             List<Reimbursement> listAcquire = null;
             if (paramBy.contains("admin")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + "  JOIN FETCH r.loan AS l "
+                        + " JOIN FETCH r.loan AS l "
                         + " LEFT JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
@@ -204,22 +204,19 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
             }
             if (paramBy.contains("finance")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + "  JOIN FETCH r.loan AS l "
-                        + " LEFT JOIN FETCH r.employee AS e "
+                        + " JOIN FETCH r.loan AS l "
+                        + " JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
-                        + " WHERE "
-                        + " r.reimbursedBy = :reimbursedBy "
                         + " ORDER BY r.tgInput Desc")
-                        .setParameter("reimbursedBy", empId)
                         .getResultList();
             }
             if (paramBy.contains("dmp")) {
                 listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r"
-                        + "  JOIN FETCH r.loan AS l "
+                        + " JOIN FETCH r.loan AS l "
                         + " JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
-                        + " e.idEmployee = :idEmployee "
+                        + " e.idEmployee = :idEmployee "    
                         + " ORDER BY r.tgInput Desc")
                         .setParameter("idEmployee", empId)
                         .getResultList();

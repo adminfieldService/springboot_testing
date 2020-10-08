@@ -34,5 +34,5 @@ public interface OutStandingLoanAServiceIface {
 //    List<OutStandingLoanB> findByCaseId(Long paramLong);
     OutStandingLoanA findByCaseId(String param);
 
-    OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId);
+    OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId);
 }

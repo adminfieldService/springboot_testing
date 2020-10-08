@@ -79,7 +79,7 @@ public class OutStandingLoanAService implements OutStandingLoanAServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId) {
+    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId) {
         return outStandingLoanARepo.findBy(idEmployee, taxyear, disburseId);
     }
 }

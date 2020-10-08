@@ -28,6 +28,7 @@ import com.lawfirm.apps.service.interfaces.MemberServiceIface;
 import com.lawfirm.apps.service.interfaces.ProfessionalServiceIface;
 import com.lawfirm.apps.service.interfaces.ReimbursementServiceIface;
 import com.lawfirm.apps.service.interfaces.TeamMemberServiceIface;
+import com.lawfirm.apps.support.api.CaseApi;
 import com.lawfirm.apps.utils.CreateLog;
 import com.lawfirm.apps.utils.CustomErrorType;
 import com.xss.filter.annotation.XxsFilter;
@@ -56,6 +57,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -567,13 +569,13 @@ public class CaseController {
 
     }
 
-    @RequestMapping(value = "/case/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/case/close", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public Response closingCase(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {//@RequestBody final EngagementApi object, 
+    public Response closingCase(@RequestBody CaseApi object, Authentication authentication) {//@RequestBody final EngagementApi object, 
         try {
             rs.setResponse_code("00");
             rs.setInfo("closingCase access By : " + authentication.getName());
-            rs.setResponse("engagement_id : " + engagement_id.toString());
+            rs.setResponse("engagement_id : " + object.getEngagement_id().toString());
             CreateLog.createJson(rs, "closing-Case");
             Date now = new Date();
 //          Integer number = null;
@@ -584,7 +586,7 @@ public class CaseController {
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
+            log.info("engagement_id : " +  object.getEngagement_id());
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -599,11 +601,11 @@ public class CaseController {
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
-            CaseDetails entity = caseDetailsService.findById(engagement_id);
+            CaseDetails entity = caseDetailsService.findById( object.getEngagement_id());
             if (entity == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+                rs.setResponse("can't closing case engagement_id " +  object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
@@ -654,13 +656,13 @@ public class CaseController {
 //                this.disbursementService.create(disbursement);
                 rs.setResponse_code("00");
                 rs.setInfo("Success");
-                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
+                rs.setResponse("closing case engagement_id " +  object.getEngagement_id() + "by : " + entityEmp.getEmployeeId());
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+                rs.setResponse("can't closing case engagement_id " +  object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
 

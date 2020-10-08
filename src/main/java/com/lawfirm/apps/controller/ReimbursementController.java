@@ -957,6 +957,14 @@ public class ReimbursementController {
                 ReimbursementHistory history = new ReimbursementHistory();
                 OutStandingLoanB outStanding = new OutStandingLoanB();
 //                if (object.getDecision().contentEquals("reimburse")) {
+                if (dataReimbursement.getApprovedAmount() > dataReimbursement.getReimburseAmount()) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse(" Approved Amount : " + String.format("%.0f", dataReimbursement.getApprovedAmount()) + " Greater than Reimburse Amount : " + String.format("%.0f", dataReimbursement.getReimburseAmount()));
+                    CreateLog.createJson(rs, "reimbursement");
+                    process = false;
+                    return rs;
+                }
                 dataReimbursement.setReimbursedBy(dataEmp.getIdEmployee());
                 dataReimbursement.setStatus("reimburse");
                 dataReimbursement.setReimbursedDate(now);
@@ -1438,16 +1446,34 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
-            if (!dataEmp.getRoleName().contains("dmp")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
-                CreateLog.createJson(rs, "listReimbursementDMP");
-                process = false;
-                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
-                        HttpStatus.NOT_FOUND);
+//            if (!dataEmp.getRoleName().contains("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
+//                CreateLog.createJson(rs, "listReimbursementDMP");
+//                process = false;
+//                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
+//                        HttpStatus.NOT_FOUND);
+//            }
+//            if (!dataEmp.getRoleName().contains("finance")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
+//                CreateLog.createJson(rs, "listReimbursementDMP");
+//                process = false;
+//                return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
+//                        HttpStatus.NOT_FOUND);
+//            }
+            List<Reimbursement> listReimbursement = null;
+            if (dataEmp.getRoleName().contains("dmp")) {
+                listReimbursement = this.reimbursementService.listBy("dmp", dataEmp.getIdEmployee());
             }
-            List<Reimbursement> listReimbursement = this.reimbursementService.listBy("dmp", dataEmp.getIdEmployee());
+            if (dataEmp.getRoleName().contains("finance")) {
+                listReimbursement = this.reimbursementService.listBy("finance", dataEmp.getIdEmployee());
+            }
+            if (dataEmp.getRoleName().contains("admin")) {
+                listReimbursement = this.reimbursementService.listBy("admin", dataEmp.getIdEmployee());
+            }
             JSONArray array = new JSONArray();
             for (int i = 0; i < listReimbursement.size(); i++) {
                 JSONObject obj = new JSONObject();

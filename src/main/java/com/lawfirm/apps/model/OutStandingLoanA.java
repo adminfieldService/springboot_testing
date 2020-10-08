@@ -39,6 +39,9 @@ public class OutStandingLoanA implements Serializable {
     @Column(name = "disburse_id", length = 10)
     private String disburseId;
 
+    @Column(name = "number_disbursement", length = 10)
+    private Long numberDisbursement;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "cut_off_date", nullable = true)
     @Temporal(TemporalType.DATE)
@@ -68,10 +71,11 @@ public class OutStandingLoanA implements Serializable {
     public OutStandingLoanA() {
     }
 
-    public OutStandingLoanA(String outstandingAUUId, Long idEmployee, String disburseId, Date cutOffDate, String taxYear, Double loanAmount, Double disburseableAmount, Double outstandingADisbursement, Boolean isActive) {
+    public OutStandingLoanA(String outstandingAUUId, Long idEmployee, String disburseId, Long numberDisbursement, Date cutOffDate, String taxYear, Double loanAmount, Double disburseableAmount, Double outstandingADisbursement, Boolean isActive) {
         this.outstandingAUUId = outstandingAUUId;
         this.idEmployee = idEmployee;
         this.disburseId = disburseId;
+        this.numberDisbursement = numberDisbursement;
         this.cutOffDate = cutOffDate;
         this.taxYear = taxYear;
         this.loanAmount = loanAmount;
@@ -79,8 +83,6 @@ public class OutStandingLoanA implements Serializable {
         this.outstandingADisbursement = outstandingADisbursement;
         this.isActive = isActive;
     }
-    
-    
 
     
 
@@ -197,7 +199,14 @@ public class OutStandingLoanA implements Serializable {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    
+
+    public Long getNumberDisbursement() {
+        return numberDisbursement;
+    }
+
+    public void setNumberDisbursement(Long numberDisbursement) {
+        this.numberDisbursement = numberDisbursement;
+    }
     
 
 }

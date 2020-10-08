@@ -68,7 +68,7 @@ public class ConfigDataSource {
          */
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(env.getProperty("bar.datasource.driver-class-name"));
-        dataSource.setUrl(env.getProperty("bar.datasource.url"));
+        dataSource.setUrl(env.getProperty("bar.datasource.url"));   
         dataSource.setUsername(env.getProperty("bar.datasource.username"));
         dataSource.setPassword(env.getProperty("bar.datasource.password"));
         return dataSource;

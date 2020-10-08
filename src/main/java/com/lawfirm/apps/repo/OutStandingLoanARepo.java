@@ -178,16 +178,16 @@ public class OutStandingLoanARepo implements OutStandingLoanARepoIface {
     }
 
     @Override
-    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Integer disburseId) {
+    public OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId) {
         try {
             OutStandingLoanA listAcquire = (OutStandingLoanA) entityManager.createQuery("SELECT o FROM OutStandingLoanA o "
                     + " WHERE "
                     + " o.idEmployee = :idEmployee AND"
                     + " o.taxYear = :taxYear AND"
-                    + " o.disburseId = :disburseId ")
+                    + " o.numberDisbursement = :numberDisbursement ")
                     .setParameter("idEmployee", idEmployee)
                     .setParameter("taxYear", taxyear)
-                    .setParameter("disburseId", disburseId)
+                    .setParameter("numberDisbursement", disburseId)
                     .getSingleResult();
             //                        .setParameter("status", "d")
 
