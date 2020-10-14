@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +54,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 public class TeamController {
-
+ private static final org.slf4j.Logger log = LoggerFactory.getLogger(TeamController.class);
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;

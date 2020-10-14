@@ -6,11 +6,13 @@
 package com.lawfirm.apps.support.api;
 
 import java.io.Serializable;
+import lombok.ToString;
 
 /**
  *
  * @author newbiecihuy
  */
+@ToString
 public final class AuthenticationRequest implements Serializable {
 
     private String username;

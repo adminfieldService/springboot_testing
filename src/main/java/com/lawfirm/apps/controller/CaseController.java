@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -47,10 +46,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,9 +71,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 public class CaseController {
 
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
@@ -141,7 +141,7 @@ public class CaseController {
             rs.setResponse("engagement_id : " + engagement_id);
             CreateLog.createJson(rs, "upload-case-document");
             CaseDocument entCaseDocument = new CaseDocument();
-
+            log.info("message" + rs);
             Date todayDate = new Date();
             Date now = new Date();
             String pathDoc = null;

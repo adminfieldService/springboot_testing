@@ -67,6 +67,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 import com.lawfirm.apps.support.api.DisburseDto;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -75,10 +76,11 @@ import com.lawfirm.apps.support.api.DisburseDto;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 //@RequestMapping({"/disbursement"})//pembayaran
 public class DisbursementController {
 
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
 
     SimpleDateFormat timeFormat;
@@ -167,6 +169,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsLoans");
+                log.info("erorr : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }

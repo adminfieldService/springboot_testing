@@ -6,16 +6,18 @@
 package com.lawfirm.apps.controller;
 
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author newbiecihuy
  */
 public class Controller {
-private static Logger logger  = Logger.getLogger(Controller.class);
-   public void log(){
-      logger.info("log4j is work");
-   }
+
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
+
+    public void log() {
+        log.info("log4j is work");
+    }
 
 }

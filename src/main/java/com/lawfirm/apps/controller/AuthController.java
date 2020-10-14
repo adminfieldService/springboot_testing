@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,8 +46,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/auth")
-@Slf4j
+//@Slf4j
 public class AuthController {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -88,6 +91,7 @@ public class AuthController {
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             HttpHeaders responseHeaders = new HttpHeaders();
+
 //            Employee cekEmp = empRepository.chekUserName(authenticationRequest.getUsername());
 //            
 //            Authentication authenticate = authenticationManager.authenticate(
@@ -109,6 +113,7 @@ public class AuthController {
 //                CreateLog.createJson(rs, "signin");
                 return new ResponseEntity(new CustomErrorType("55", "Error", " Login Failed For User"),
                         HttpStatus.NOT_FOUND);
+
             }
             final String jwt = jwtTokenUtil.generateJwtToken(userDetails);
 //          log.info("jwt : " + jwt);

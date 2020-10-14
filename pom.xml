@@ -174,7 +174,6 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <!-- slf4j ==> logback -->
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
@@ -226,7 +225,7 @@
             <version>5.5.0</version>
         </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.passay/passay 
-         added 26082020-->
+        added 26082020-->
         <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>

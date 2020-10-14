@@ -61,6 +61,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.jline.utils.Log;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,9 +84,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 @RequestMapping({"/employee"})
-public class EmployeeController { //LawfirmController
+public class EmployeeController { //LawfirmController 
+
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
 
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
@@ -162,6 +165,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-employee");
+                log.info("Error msg" + rs);
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
@@ -169,6 +173,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-employee");
+                log.info("Error msg" + rs);
                 return rs;
             }
             String email = object.getEmail();
@@ -201,6 +206,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("You have entered an invalid email address :" + email);
                 rs.setResponse("Create Employee Failed");
+                log.info("Error msg" + rs);
                 CreateLog.createJson(rs, "create-employee");
 
             } else {
@@ -211,6 +217,7 @@ public class EmployeeController { //LawfirmController
                     rs.setResponse_code("55");
                     rs.setInfo("Email :" + email + "already registered ");
                     rs.setResponse("Create Employee Failed");
+                    log.info("Error msg" + rs);
                     CreateLog.createJson(rs, "create-employee");
                     process = false;
                 }
@@ -221,6 +228,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Nik :" + nik + "already registered ");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 name = name.replaceAll("\\s+", "");
@@ -229,6 +237,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Name maksimum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (object.getUser_name().isEmpty()) {
@@ -236,6 +245,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field USER Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (name.length() == 0) {
@@ -243,6 +253,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Name can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (npwp.length() == 0) {
@@ -250,6 +261,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field NPWP can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 address = address.replaceAll("\\s+", "");
@@ -258,6 +270,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Address can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (nik.length() == 0) {
@@ -265,6 +278,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Nik can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (email.length() == 0) {
@@ -272,6 +286,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Email can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (tax_status.length() == 0) {
@@ -279,6 +294,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Taxt Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (mobile_phone.length() == 0) {
@@ -286,6 +302,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Mobile Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
 
@@ -294,6 +311,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field BANK NAME Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (object.getAccount_number_p().length() == 0 || object.getAccount_number_l().length() == 0) {
@@ -301,6 +319,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field ACCOUNT NUMBER Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (object.getAccount_name_p().length() == 0 || object.getAccount_name_l().length() == 0) {
@@ -308,6 +327,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field ACCOUNT NAME Can't be empty");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
 
@@ -316,6 +336,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Email Maximum 30 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
 
@@ -324,6 +345,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Mobile  Maximum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 address = address.replaceAll("\\s+", "");
@@ -332,6 +354,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Address Maximum 200 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 account_name_l = account_name_l.replaceAll("\\s+", "");
@@ -341,6 +364,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field ACCOUNT NAME Maximum 20 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 bank_name_l = bank_name_l.replaceAll("\\s+", "");
@@ -350,6 +374,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field BANK NAME Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (account_number_l.length() > 25 || account_number_p.length() > 25) {
@@ -357,6 +382,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field ACCOUNT NUMBER Maximum 25 character");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 if (nik.length() > 16 || nik.length() < 16) {
@@ -364,6 +390,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Field Nik maximum 16 digits");
                     rs.setResponse("Create Employee Failed");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 Account cekAcp = accountService.findAccount(account_number_p);
@@ -372,6 +399,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Failed");
                     rs.setResponse("Account Number : " + account_number_p + " already Registered With Another User");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
                 Account cekAcl = accountService.findAccount(account_number_l);
@@ -397,6 +425,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Failed");
                     rs.setResponse("Your Role Name :" + role_name + ", is not registered ");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                 }
 
@@ -414,6 +443,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("Failed");
                     rs.setResponse("Field register_date date can't be NULL");
                     CreateLog.createJson(rs, "create-employee");
+                    log.info("Error msg" + rs);
                     process = false;
                     return rs;
                 }
@@ -597,6 +627,7 @@ public class EmployeeController { //LawfirmController
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-employee");
+            log.info("Error msg" + ex.getMessage());
         }
 //        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
@@ -621,6 +652,8 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
+                process = false;
                 return rs;
             }
             Employee dataEmp = employeeService.findById(entityEmp.getIdEmployee());
@@ -631,6 +664,8 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
+                process = false;
                 return rs;
             }
 //            if (!dataEmp.getRoleName().matches("admin")) {
@@ -650,6 +685,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Data null");
                 rs.setResponse("Employe not Found");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
                 process = false;
                 return rs;
             }
@@ -665,6 +701,8 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("You have entered an invalid email address :" + object.getEmail());
                 rs.setResponse("Create Employee Failed");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
+                process = false;
                 return rs;
 
             }
@@ -678,6 +716,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Field Name maksimum 25 character");
                 rs.setResponse("Create Employee Failed");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
                 process = false;
                 return rs;
             }
@@ -689,6 +728,7 @@ public class EmployeeController { //LawfirmController
                     rs.setInfo("failed");
                     rs.setResponse("Create Employee Failed, NPWP  Field max 20");
                     CreateLog.createJson(rs, "update-profile");
+                    log.info("Error msg" + rs);
                     process = false;
                     return rs;
                 }
@@ -739,6 +779,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Create Employee Failed");
                 rs.setResponse("Field Email Maximum 30 character");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
                 process = false;
                 return rs;
             }
@@ -748,6 +789,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Create Employee Failed");
                 rs.setResponse("Field Mobile  Maximum 20 character");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
                 process = false;
                 return rs;
             }
@@ -762,6 +804,7 @@ public class EmployeeController { //LawfirmController
                 rs.setInfo("Create Employee Failed");
                 rs.setResponse("Field Address Maximum 200 character");
                 CreateLog.createJson(rs, "update-profile");
+                log.info("Error msg" + rs);
                 process = false;
                 return rs;
             }
@@ -791,6 +834,7 @@ public class EmployeeController { //LawfirmController
                             rs.setInfo("Update Failed");
                             rs.setResponse("Phone Number : " + object.getCell_phone() + " Already Registered With Another User");
                             CreateLog.createJson(rs, "update-profile");
+                            log.info("Error msg" + rs);
                             return rs;
                         }
                     }
@@ -805,6 +849,7 @@ public class EmployeeController { //LawfirmController
                             rs.setInfo("Update  Failed");
                             rs.setResponse("Nik Number : " + object.getNik() + " Already Registered With Another User");
                             CreateLog.createJson(rs, "update-profile");
+                            log.info("Error msg" + rs);
                             return rs;
                         }
                     }

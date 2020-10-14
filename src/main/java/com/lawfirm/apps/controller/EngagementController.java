@@ -50,6 +50,7 @@ import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,10 +69,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 @RequestMapping({"/engagement"})
 public class EngagementController {
 
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
@@ -134,16 +136,19 @@ public class EngagementController {
             String[] feeSahre = null;
             Object fee_share = null;
             System.out.print("isi object" + object.toString());
+            log.info("jsonObject createEngagement :" + object.toString());
             Boolean process = true;
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entityEmp : " + entityEmp);
+            System.out.println("entityEmp : " + entityEmp);
+
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't createEngagement :");
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 process = false;
                 return rs;
             }
@@ -155,6 +160,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, Client name filed can't be empty");
                 CreateLog.createJson(rs, "createEngagement");
                 process = false;
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getClient_name().length() > 80) {
@@ -164,6 +170,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, Client name filed max 80");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getAddress() == null) {
@@ -173,6 +180,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, ADDRESS filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getAddress().length() > 200) {
@@ -181,6 +189,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, ADDRESS  filed max 200");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getNpwp() == null) {
@@ -190,6 +199,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, NPWP filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getNpwp().length() > 15 || object.getNpwp().length() < 15) {
@@ -198,6 +208,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, NPWP Field  filed max 15 digit");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
 
@@ -208,6 +219,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, PIC filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getPic().length() > 50) {
@@ -216,6 +228,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, PIC  filed max 50");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getProfesional_fee() == null) {
@@ -225,6 +238,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, PERSONAL FEE filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (object.getCase_over_view() == null) {
@@ -234,6 +248,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
 
@@ -244,6 +259,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, CASE OVERVIEW filed can't be empty");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             fee_share = Arrays.toString(object.getFee_share()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
@@ -261,6 +277,7 @@ public class EngagementController {
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
                 process = false;
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (fee_total < 100) {
@@ -269,6 +286,7 @@ public class EngagementController {
                 rs.setInfo("failed");
                 rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
                 process = false;
+                log.error("createEngagement : " + rs);
                 return rs;
             }
             if (process) {
@@ -396,6 +414,7 @@ public class EngagementController {
                         rs.setInfo("failed");
                         rs.setResponse("Create Engagement Failed");
                         CreateLog.createJson(rs, "createEngagement");
+                        log.error("createEngagement : " + rs);
                         return rs;
 
                     }
@@ -408,6 +427,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed");
                 process = false;
                 CreateLog.createJson(rs, "createEngagement");
+                log.error("createEngagement : " + rs);
 //                return rs;
             }
 
@@ -415,10 +435,11 @@ public class EngagementController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "manage-engagement");
+            CreateLog.createJson(ex.getMessage(), "createEngagement");
             rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
+            log.info("createEngagement : " + ex.getMessage());
             return rs;
         }
 //        rs.setResponse_code("55");
@@ -431,7 +452,7 @@ public class EngagementController {
     public Response addTeamMember(@RequestBody final EngagementApi object) {
         try {
             Date now = new Date();
-            log.info("msg obj : " + object);
+            log.info("json addTeamMember : " + object);
             String[] employeeId = null;
             String[] employeeName = null;
             String[] feeSahre = null;
@@ -450,6 +471,7 @@ public class EngagementController {
                 rs.setResponse("Failed Ad Team Member dataEngagement NULL ");
                 process = false;
                 CreateLog.createJson(rs, "add-team-member");
+                log.error("add-team-member : " + rs);
                 return rs;
             }
             if (object.getEmployee_id() != null) {
@@ -463,6 +485,7 @@ public class EngagementController {
                 rs.setResponse("Employee Not Found emp_id NULL");
                 process = false;
                 CreateLog.createJson(rs, "add-team-member");
+                log.error("add-team-member : " + rs);
                 return rs;
             }
             if (object.getEmployee_name() != null) {
@@ -479,6 +502,7 @@ public class EngagementController {
                 rs.setResponse("Employee Not Found");
                 process = false;
                 CreateLog.createJson(rs, "add-team-member");
+                log.error("add-team-member : " + rs);
                 return rs;
             }
             if (object.getFee_share() != null) {
@@ -495,6 +519,7 @@ public class EngagementController {
                 rs.setResponse("Employee Not Found");
                 process = false;
                 CreateLog.createJson(rs, "add-team-member");
+                log.error("add-team-member : " + rs);
                 return rs;
             }
 
@@ -517,6 +542,7 @@ public class EngagementController {
                     rs.setInfo("failed");
                     rs.setResponse("team null");
                     CreateLog.createJson(rs, "add-team-member");
+                    log.error("add-team-member : " + rs);
                     return rs;
                 }
                 employeeId = emp_id.toString().split(",");
@@ -562,6 +588,7 @@ public class EngagementController {
                     rs.setInfo("Sucess");
                     rs.setResponse("Success Create Engagment :");
                     CreateLog.createJson(rs, "add-team-member");
+                    log.info("add-team-member : " + rs);
 //                return rs;
                 }
 
@@ -575,6 +602,7 @@ public class EngagementController {
             rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
+            log.error("add-team-member : " + ex.getMessage());
             return rs;
         }
 //        rs.setResponse_code("55");
@@ -586,6 +614,7 @@ public class EngagementController {
     @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
     public Response updateEngagement(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
+            log.info("updateEngagement : " + object);
             Date now = new Date();
             Boolean process = true;
             String name = authentication.getName();
@@ -599,6 +628,7 @@ public class EngagementController {
                 rs.setResponse("can't update data Engagement :");
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
                 return rs;
             }
             if (!entityEmp.getRoleName().contentEquals("dmp")) {
@@ -607,6 +637,7 @@ public class EngagementController {
                 rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
                 return rs;
             }
 //            if (!entityEmp.getRoleName().contentEquals("admin")) {
@@ -625,6 +656,7 @@ public class EngagementController {
                 rs.setResponse("Engagement data Null");
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
                 return rs;
             }
             if (!editEngagement.getStatus().contains("s")) {
@@ -633,6 +665,7 @@ public class EngagementController {
                 rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
                 return rs;
             }
             if (editEngagement.getStatus().contains("closed")) {
@@ -641,6 +674,7 @@ public class EngagementController {
                 rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
                 return rs;
             }
             if (process) {
@@ -760,7 +794,8 @@ public class EngagementController {
                         rs.setResponse_code("55");
                         rs.setInfo("failed");
                         rs.setResponse("Create Engagement Failed");
-                        CreateLog.createJson(rs, "createEngagement");
+                        CreateLog.createJson(rs, "updateEngagement");
+                        log.error("updateEngagement : " + rs);
                         return rs;
 
                     }
@@ -774,6 +809,7 @@ public class EngagementController {
                     rs.setInfo("Success");
                     rs.setResponse("Update Success");
                     CreateLog.createJson(rs, "updateEngagement");
+                    log.info("updateEngagement : " + rs);
                     return rs;
                 }
             }
@@ -785,6 +821,7 @@ public class EngagementController {
             rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
+            log.error("updateEngagement : " + ex.getMessage());
             return rs;
         }
 
@@ -793,6 +830,7 @@ public class EngagementController {
     @RequestMapping(value = "/edit-member", method = RequestMethod.POST, produces = {"application/json"})
     public Response editTeamMember(@RequestBody final EngagementApi object) {
         try {
+            log.info("jsonObject editTeamMember : " + object);
             Date now = new Date();
             String[] memberId = null;
             String[] employeeId = null;
@@ -813,7 +851,8 @@ public class EngagementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
-                CreateLog.createJson(rs, "update-fee-share");
+                CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 process = false;
 
             }
@@ -823,7 +862,8 @@ public class EngagementController {
                 rs.setInfo("failed");
                 rs.setResponse("Failed Ad Team Member dataEngagement NULL ");
                 process = false;
-                CreateLog.createJson(rs, "update-fee-share");
+                CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
 
@@ -838,6 +878,7 @@ public class EngagementController {
                 rs.setResponse("Employee Not Found emp_id NULL");
                 process = false;
                 CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
 
@@ -851,6 +892,7 @@ public class EngagementController {
                 rs.setResponse("Employee Not Found");
                 process = false;
                 CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
             feeSahre = fee_share.toString().split(",");
@@ -867,6 +909,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
                 process = false;
                 CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
             if (fee_total < 100) {
@@ -876,6 +919,7 @@ public class EngagementController {
                 rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
                 process = false;
                 CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
             TeamMember dataTeamMember = this.teamMemberService.findByEngId(object.getEngagement_id());
@@ -885,6 +929,7 @@ public class EngagementController {
                 rs.setResponse("TeamMember Not Found By CASE ID : " + dataEngagement.getCaseID() + "Not Found");//&lt;
                 process = false;
                 CreateLog.createJson(rs, "edit-teamMember");
+                log.error("edit-teamMember : " + rs);
                 return rs;
             }
             if (process) {
@@ -898,6 +943,7 @@ public class EngagementController {
                     rs.setInfo("failed");
                     rs.setResponse("team null");
                     CreateLog.createJson(rs, "edit-teamMember");
+                    log.error("edit-teamMember : " + rs);
                     return rs;
                 }
 
@@ -943,6 +989,7 @@ public class EngagementController {
                     rs.setInfo("Sucess");
                     rs.setResponse("Success Update  Engagement :");
                     CreateLog.createJson(rs, "edit-teamMember");
+                    log.error("edit-teamMember : " + rs);
                     return rs;
                 }
 
@@ -955,6 +1002,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "edit-teamMember");
+            log.error("edit-teamMember : " + rs);
             return rs;
 
         }
@@ -964,6 +1012,7 @@ public class EngagementController {
     @XxsFilter
     public Response approveByAdmin(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
+            log.info("approval-ByAdmin JSON : " + object);
             Date now = new Date();
 //            Integer number = null;
             EngagementHistory enHistory = new EngagementHistory();
@@ -977,6 +1026,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't approveByAdmin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
             if (!entityEmp.getRoleName().contentEquals("admin")) {
@@ -984,6 +1034,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
             CaseDetails entity = caseDetailsService.findById(engagement_id);
@@ -992,6 +1043,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't approveByAdmin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
 //            if (entity.getStatus().contains("r")) {
@@ -1006,6 +1058,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Already approve By Admin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
             if (entity.getIsActive().contains("2")) {
@@ -1013,6 +1066,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("reject ByAdmin :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
             if (entity.getIsActive().contains("4")) {
@@ -1020,6 +1074,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Case Status Close :");
                 CreateLog.createJson(rs, "approval-ByAdmin");
+                log.error("approval-ByAdmin : " + rs);
                 return rs;
             }
 
@@ -1073,6 +1128,7 @@ public class EngagementController {
                     rs.setInfo("Error");
                     rs.setResponse("TeamMember EngagagemenId  : " + entity.getEngagementId() + " Not Found ");
                     CreateLog.createJson(rs, "approval-ByAdmin");
+                    log.error("approval-ByAdmin : " + rs);
                     return rs;
                 }
 
@@ -1114,6 +1170,7 @@ public class EngagementController {
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
                     rs.setResponse("Reject BY : " + entityEmp.getEmployeeId());
+                    log.error("approval-ByAdmin : " + rs);
                     CreateLog.createJson(rs, "approval-ByAdmin");
                 }
                 if (object.getDecision().contains("a")) {
@@ -1121,6 +1178,7 @@ public class EngagementController {
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
                     rs.setResponse("approval BY : " + entityEmp.getEmployeeId());
+                    log.error("approval-ByAdmin : " + rs);
                     CreateLog.createJson(rs, "approval-ByAdmin");
                 }
             }
@@ -1133,6 +1191,7 @@ public class EngagementController {
             rs.setResponse_code("55");
             rs.setInfo("failed");
             rs.setResponse(ex.getMessage());
+            log.error("approval-ByAdmin : " + rs);
             CreateLog.createJson(rs, "approval-ByAdmin");
             return rs;
         }
@@ -1149,7 +1208,8 @@ public class EngagementController {
         try {
             String name = authentication.getName();
             String status = null;
-            log.info("name : " + name);
+            log.info("by-employee id_employee : " + id_employee);
+            log.info("by-employee name : " + name);
             Employee entity = employeeService.findByEmployee(name);
             log.info("entity : " + entity);
             if (entity == null) {
@@ -1157,6 +1217,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "by-employee");
+                log.error("by-employee id_employee : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1165,6 +1226,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "by-employee");
+                log.error("by-employee id_employee : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "role : " + entity.getRoleName() + " permission deny "),
                         HttpStatus.NOT_FOUND);
             }
@@ -1173,6 +1235,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "by-employee");
+                log.error("by-employee id_employee : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "role : " + entity.getRoleName() + " permission deny "),
                         HttpStatus.NOT_FOUND);
             }
@@ -1361,7 +1424,9 @@ public class EngagementController {
                         array.put(obj);
                     }
                 }
+                log.info("by-employee  : " + array.toString());
                 return ResponseEntity.ok(array.toString());
+
             }
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
@@ -1388,6 +1453,7 @@ public class EngagementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
+                log.error("lit-engagement" + rs);
                 CreateLog.createJson(rs, "lit-engagement");
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -1565,12 +1631,14 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
+            log.debug("lit-engagement" + array.toString());
             return ResponseEntity.ok(array.toString());
 //            }
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
-            CreateLog.createJson(ex.getMessage(), "list-of-engagement");
+            CreateLog.createJson(ex.getMessage(), "lit-engagement");
+            log.error("lit-engagement" + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1583,6 +1651,7 @@ public class EngagementController {
         try {
 
             String name = authentication.getName();
+            log.info("engagement_id : " + engagement_id);
             log.info("name : " + name);
             Employee entity = employeeService.findByEmployee(name);
             log.info("entity : " + entity);
@@ -1591,6 +1660,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "listByEngagementId");
+                log.error("listByEngagementId : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1818,12 +1888,14 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
+            log.info("listByEngagementId : " + array.toString());
             return ResponseEntity.ok(array.toString());
 //            }
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-by-employee");
+            log.error("listByEngagementId : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1834,6 +1906,7 @@ public class EngagementController {
     @XxsFilter
     public ResponseEntity<String> byAdmin(@PathVariable("id_employee_admin") Long id_employee_admin, Authentication authentication) {
         try {
+            log.info("view-by-admin: " + id_employee_admin);
             String name = authentication.getName();
             String status = null;
             log.info("name : " + name);
@@ -1844,6 +1917,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "view-by-admin");
+                log.error("view-by-admin: " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1852,6 +1926,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "view-by-admin");
+                log.error("view-by-admin: " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "role : " + entity.getRoleName() + " permission deny "),
                         HttpStatus.NOT_FOUND);
             }
@@ -2067,12 +2142,14 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
+            log.info("view-by-admin: " + array.toString());
             return ResponseEntity.ok(array.toString());
 
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-by-admin");
+            log.error("view-by-admin: " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -2083,7 +2160,8 @@ public class EngagementController {
     @XxsFilter
     public Response createEvent(@PathVariable("engagement_id") Long engagement_id, @RequestBody EventsApi object, Authentication authentication) {
         try {
-
+            log.info("engagement_id : " + engagement_id);
+            log.info("create-event jsonObject : " + object);
             Events enEvent = new Events();
             Boolean process = true;
             String name = authentication.getName();
@@ -2096,6 +2174,7 @@ public class EngagementController {
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (!entity.getRoleName().contentEquals("dmp")) {
@@ -2104,6 +2183,7 @@ public class EngagementController {
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
 
@@ -2114,6 +2194,7 @@ public class EngagementController {
                 rs.setResponse("can't acces this feature Engagement Id Not Found : " + engagement_id);
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (!dataCase.getStatus().contentEquals("a")) {
@@ -2122,6 +2203,7 @@ public class EngagementController {
                 rs.setResponse("Case Status : " + dataCase.getStatus());
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (dataCase.getIsActive().contentEquals("4")) {
@@ -2129,6 +2211,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + dataCase.getCaseID() + " Status Closed ");
                 CreateLog.createJson(rs, "create-event");
+                log.error("create-event  : " + rs);
                 return rs;
             }
             System.out.println("isi : " + object.getSchedule_date());
@@ -2145,6 +2228,7 @@ public class EngagementController {
                 rs.setResponse("Field schedule date can't be NULL");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (object.getEvent_name() == null) {
@@ -2153,6 +2237,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Name, can't be NULL");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (object.getEvent_name().length() > 30) {
@@ -2161,6 +2246,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Name Max Length 30");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (object.getEvent_type() == null) {
@@ -2169,6 +2255,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Type, can't be NULL");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (object.getEvent_type().length() > 10) {
@@ -2177,6 +2264,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Type Maximum 10 character");
                 CreateLog.createJson(rs, "create-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (object.getEvent_name().length() > 20) {
@@ -2185,6 +2273,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Name Maximum 20 character");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
+                log.error("create-event  : " + rs);
                 return rs;
             }
             if (process) {
@@ -2205,6 +2294,7 @@ public class EngagementController {
                     rs.setInfo("Succes");
                     rs.setResponse("Succes create new events");
                     CreateLog.createJson(rs, "create-event");
+                    log.info("create-event  : " + rs);
                     return rs;
                 }
             }
@@ -2215,6 +2305,7 @@ public class EngagementController {
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
+            log.error("create-event  : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-event");
             return rs;
 
@@ -2223,6 +2314,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-event");
+            log.error("create-event  : " + ex.getMessage());
             Logger.getLogger(EngagementController.class.getName()).log(Level.SEVERE, null, ex);
             return rs;
 
@@ -2235,6 +2327,8 @@ public class EngagementController {
         try {
 
 //            Events enEvent = new Events();
+            log.info("event_id  : " + event_id);
+            log.info("update-event json  : " + object);
             Boolean process = true;
             String name = authentication.getName();
             log.info("name : " + name);
@@ -2245,6 +2339,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "update-event");
+                log.error("update-event : " + rs);
                 process = false;
                 return rs;
             }
@@ -2254,6 +2349,7 @@ public class EngagementController {
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
+                log.error("update-event : " + rs);
                 return rs;
             }
             System.out.println("isi : " + object.getSchedule_date());
@@ -2266,6 +2362,7 @@ public class EngagementController {
                 rs.setResponse("Field schedule date can't be NULL");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
+                log.error("update-event : " + rs);
                 return rs;
             }
             if (object.getEvent_type().length() > 10) {
@@ -2274,6 +2371,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Type Maximum 10 character");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
+                log.error("update-event : " + rs);
                 return rs;
             }
             if (object.getEvent_name().length() > 20) {
@@ -2282,6 +2380,7 @@ public class EngagementController {
                 rs.setResponse("Field Event Name Maximum 20 character");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
+                log.error("update-event : " + rs);
                 return rs;
             }
             Events enEvent = this.eventService.findById(event_id);
@@ -2304,6 +2403,7 @@ public class EngagementController {
                     rs.setInfo("Succes");
                     rs.setResponse("Succes Update events");
                     CreateLog.createJson(rs, "update-event");
+                    log.info("update-event : " + rs);
                     return rs;
                 }
             }
@@ -2315,11 +2415,13 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "update-event");
+            log.error("update-event : " + ex.getMessage());
             return rs;
         } catch (ParseException ex) {
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
+            log.error("update-event : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "update-event");
             Logger.getLogger(EngagementController.class.getName()).log(Level.SEVERE, null, ex);
             return rs;
@@ -2332,8 +2434,8 @@ public class EngagementController {
     @XxsFilter
     public ResponseEntity<?> viewEvent(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
+            log.info("engagement_id : " + engagement_id);
 
-//            Events enEvent = new Events();
             Boolean process = true;
             String name = authentication.getName();
             log.info("name : " + name);
@@ -2344,6 +2446,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "view-Event");
+                log.error("view-Event : " + rs);
                 process = false;
 //                return rs;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
@@ -2356,6 +2459,7 @@ public class EngagementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature Engagement Id Not Found : " + engagement_id);
                 CreateLog.createJson(rs, "view-Event");
+                log.error("view-Event : " + rs);
                 process = false;
 //                return rs;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
@@ -2369,6 +2473,7 @@ public class EngagementController {
                 rs.setResponse("CaseID == NULL");
                 CreateLog.createJson(rs, "view-Event");
                 process = false;
+                log.error("view-Event : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature Engagement Id Not Found : " + engagement_id),
                         HttpStatus.FORBIDDEN);
 
@@ -2424,6 +2529,7 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
+            log.info("view-Event : " + array.toString());
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
@@ -2432,6 +2538,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "view-Event");
+            log.info("view-Event : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -2442,6 +2549,7 @@ public class EngagementController {
     @XxsFilter
     public ResponseEntity<?> listEvents(Authentication authentication) {
         try {
+            log.info("listEvents authentication : " + authentication.getName());
             Boolean process = true;
             String name = authentication.getName();
             log.info("name : " + name);
@@ -2507,6 +2615,7 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
+            log.info("listEvents authentication : " + array.toString());
             return ResponseEntity.ok(array.toString());
 
         } catch (JSONException ex) {
@@ -2516,6 +2625,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listEvents");
+            log.error("listEvents authentication : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", null),
                     HttpStatus.NOT_FOUND);
         }
