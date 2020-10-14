@@ -434,16 +434,37 @@ public class EmployeeController { //LawfirmController
                     newEmployee.setNik(nik);
                     newEmployee.setEmail(email);
                     newEmployee.setNpwp(npwp);
-                    if (tax_status.contentEquals("TK")) {
-                        newEmployee.setTaxStatus("TK0");
-                    } else if (tax_status.contentEquals("TK1")) {
-                        newEmployee.setTaxStatus("TK1");
-                    } else if (tax_status.contentEquals("TK2")) {
-                        newEmployee.setTaxStatus("TK2");
-                    } else if (tax_status.contentEquals("TK3")) {
-                        newEmployee.setTaxStatus("TK3");
-                    } else {
-                        newEmployee.setTaxStatus(tax_status);
+                    switch (tax_status) {
+                        case "TK":
+                            newEmployee.setTaxStatus("TK0");
+                            break;
+                        case "TK0":
+                            newEmployee.setTaxStatus("TK0");
+                            break;
+                        case "TK1":
+                            newEmployee.setTaxStatus("TK1");
+                            break;
+                        case "TK2":
+                            newEmployee.setTaxStatus("TK2");
+                            break;
+                        case "TK3":
+                            newEmployee.setTaxStatus("TK3");
+                            break;
+                        case "K0":
+                            newEmployee.setTaxStatus("K0");
+                            break;
+                        case "K1":
+                            newEmployee.setTaxStatus("K1");
+                            break;
+                        case "K2":
+                            newEmployee.setTaxStatus("K2");
+                            break;
+                        case "K3":
+                            newEmployee.setTaxStatus("K3");
+                            break;
+                        default:
+                            newEmployee.setTaxStatus(tax_status);
+                            break;
                     }
 
 //                    newEmployee.setSalary(object.getSalary());
@@ -823,6 +844,9 @@ public class EmployeeController { //LawfirmController
                         case "TK":
                             updateEmployee.setTaxStatus("TK0");
                             break;
+                        case "TK0":
+                            updateEmployee.setTaxStatus("TK0");
+                            break;
                         case "TK1":
                             updateEmployee.setTaxStatus("TK1");
                             break;
@@ -831,6 +855,18 @@ public class EmployeeController { //LawfirmController
                             break;
                         case "TK3":
                             updateEmployee.setTaxStatus("TK3");
+                            break;
+                        case "K0":
+                            updateEmployee.setTaxStatus("K0");
+                            break;
+                        case "K1":
+                            updateEmployee.setTaxStatus("K1");
+                            break;
+                        case "K2":
+                            updateEmployee.setTaxStatus("K2");
+                            break;
+                        case "K3":
+                            updateEmployee.setTaxStatus("K3");
                             break;
                         default:
                             updateEmployee.setTaxStatus(tax_status);
@@ -870,6 +906,7 @@ public class EmployeeController { //LawfirmController
                 Employee newEmployee = employeeService.update(updateEmployee);
                 log.info("isi" + newEmployee.getIdEmployee().toString());
                 if (newEmployee != null) {
+
                     rs.setResponse_code("00");
                     rs.setInfo("Succes");
                     rs.setResponse("Employee : " + newEmployee.getEmployeeId() + "Success");//dataAdmin.getName());
@@ -892,7 +929,194 @@ public class EmployeeController { //LawfirmController
 //        rs.setResponse("Create Employee Failed");
         return rs;
     }
-//
+
+    @RequestMapping(value = "/managed-employee/account", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response updateAccount(@RequestBody final DataEmployee object, Integer val, Authentication authentication) {
+        try {
+            Boolean process = true;
+            String nama = authentication.getName();
+            log.info("nama : " + nama);
+            Employee entityEmp = employeeService.findByEmployee(nama);
+            log.info("entityEmp : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "update-account");
+                return rs;
+            }
+            Employee updateEmployee = employeeService.findById(entityEmp.getIdEmployee());
+            if (updateEmployee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Data Employee not found");
+                CreateLog.createJson(rs, "update-account");
+                process = false;
+            }
+            Account cekAcp = accountService.findAccount(object.getAccount_number_p());
+            if (cekAcp != null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Account Number : " + object.getAccount_number_p() + " already Registered With Another User");
+                CreateLog.createJson(rs, "update-account");
+                process = false;
+            }
+            Account cekAcl = accountService.findAccount(object.getAccount_number_l());
+            if (cekAcl != null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Account Number : " + object.getAccount_number_l() + " already Registered With Another User");
+                CreateLog.createJson(rs, "create-employee");
+                process = false;
+            }
+            if (process) {
+                List<Account> accoutList = accountService.findByEmployee(entityEmp.getIdEmployee().toString());
+                for (int k = 0; k < accoutList.size(); k++) {
+
+                    if (accoutList.get(k).getTypeAccount().equalsIgnoreCase("payroll")) {
+                        Account upd_acc_payroll = accountService.findById(accoutList.get(k).getAccountId());
+                        System.out.println("upd_acc_payroll" + upd_acc_payroll.toString());
+                        if (object.getAccount_name_p() != null) {
+                            upd_acc_payroll.setAccountName(object.getAccount_name_p());
+                        }
+                        if (object.getBank_name_p() != null) {
+                            upd_acc_payroll.setBankName(object.getBank_name_p());
+                        }
+                        if (object.getAccount_number_p() != null) {
+                            upd_acc_payroll.setAccountNumber(object.getAccount_number_p());
+                            upd_acc_payroll.setIsActive(false);
+                        }
+                        upd_acc_payroll.setTypeAccount("payroll");
+                        upd_acc_payroll = this.accountService.update(upd_acc_payroll);
+//                      updateEmployee.addAccount(upd_acc_payroll);
+//                      log.info("upd_acc_payroll" + upd_acc_payroll.toString());
+                    }
+//                        
+//                    accl.setEmployee(newEmployee);
+
+                    if (accoutList.get(k).getTypeAccount().equalsIgnoreCase("loan")) {
+
+                        Account upd_acc_loan = accountService.findById(accoutList.get(k).getAccountId());
+                        System.out.println("upd_acc_loan" + upd_acc_loan.toString());
+                        if (object.getAccount_name_l() != null) {
+                            upd_acc_loan.setAccountName(object.getAccount_name_l());
+                        }
+                        if (object.getBank_name_l() != null) {
+                            upd_acc_loan.setBankName(object.getBank_name_l());
+                        }
+                        if (object.getAccount_number_l() != null) {
+                            upd_acc_loan.setAccountNumber(object.getAccount_number_l());
+                            upd_acc_loan.setIsActive(false);
+                        }
+                        upd_acc_loan.setTypeAccount("loan");
+                        upd_acc_loan = this.accountService.update(upd_acc_loan);
+//                      updateEmployee.addAccount(upd_acc_loan);
+//                      log.info("upd_acc_loan" + upd_acc_loan.toString());
+                    }
+                }
+                updateEmployee = employeeService.update(updateEmployee);
+                rs.setResponse_code("00");
+                rs.setInfo("Success");
+                rs.setResponse("Update account employee Id :" + updateEmployee.getEmployeeId());
+                CreateLog.createJson(rs, "update-account");
+            } else {
+
+                CreateLog.createJson(rs, "update-account");
+                return rs;
+            }
+            return rs;
+        } catch (Exception ex) {
+//            System.out.println("ERROR: " + ex.getMessage());
+            rs.setResponse_code("55");
+            rs.setInfo("failes");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "upload-account");
+            return rs;
+        }
+//            return rs;
+//        return rs;
+
+    }
+
+    @RequestMapping(value = "/approval/account", method = RequestMethod.POST)
+    @XxsFilter
+    public Response approvedAccount(@RequestBody final AproveAcc object, Authentication authentication) {
+        try {
+
+            Boolean process = true;
+            String nama = authentication.getName();
+            log.info("nama : " + nama);
+            Employee entityAdmin = employeeService.findByEmployee(nama);
+            log.info("entityEmp : " + entityAdmin);
+            if (entityAdmin == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "approved-account");
+                return rs;
+            }
+//            Employee updateEmployee = employeeService.findById(entityEmp.getIdEmployee());
+            if (!entityAdmin.getRoleName().equals("admin")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Cannot Access This feature");
+                CreateLog.createJson(rs, "approved-account");
+                process = false;
+                return rs;
+            }
+            Employee employee = employeeService.findById(object.getId_employee());
+            if (employee == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee NUll");
+                CreateLog.createJson(rs, "approved-account");
+                process = false;
+                return rs;
+            }
+            if (process) {
+                List<Account> listAccount = accountService.findByEmployee(employee.getIdEmployee().toString());
+                for (int i = 0; i < listAccount.size(); i++) {
+                    Account upd_account = accountService.findById(listAccount.get(i).getAccountId());
+                    if (listAccount.get(i).getTypeAccount().contentEquals("loan")) {
+                        if (!listAccount.get(i).getAccountNumber().isEmpty()) {
+                            upd_account.setAccountNumberFinance(listAccount.get(i).getAccountNumber());
+                        }
+                        upd_account.setAccountNumber("");
+                        upd_account.setIsActive(true);
+                    }
+                    if (listAccount.get(i).getTypeAccount().contentEquals("payroll")) {
+                        if (!listAccount.get(i).getAccountNumber().isEmpty()) {
+                            upd_account.setAccountNumberFinance(listAccount.get(i).getAccountNumber());
+                        }
+                        upd_account.setAccountNumber("");
+                        upd_account.setIsActive(true);
+                    }
+                    upd_account = accountService.update(upd_account);
+
+                    if (upd_account != null) {
+                        rs.setResponse_code("00");
+                        rs.setInfo("Succes");
+                        rs.setResponse("Account approved By : " + entityAdmin.getEmployeeId());
+                        CreateLog.createJson(rs, "approved-account");
+                    } else {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Warning");
+                        rs.setResponse("Employee Null");
+                        CreateLog.createJson(rs, "approved-account");
+                    }
+                }
+            }
+            return rs;
+        } catch (Exception ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            CreateLog.createJson(ex.getMessage(), "approved-by-admin");
+        }
+        return null;
+
+    }
+    //
 //    @PutMapping(path = "/managed-employee/set-password/{id_employee}", produces = {"application/json"})
 
     @RequestMapping(path = "/managed-employee/{id_employee}/set-password", produces = {"application/json"}, method = RequestMethod.POST)
@@ -1151,193 +1375,6 @@ public class EmployeeController { //LawfirmController
             return rs;
         }
         return rs;
-
-    }
-
-    @RequestMapping(value = "/managed-employee/account", method = RequestMethod.POST, produces = {"application/json"})
-    @XxsFilter
-    public Response updateAccount(@RequestBody final DataEmployee object, Authentication authentication) {
-        try {
-            Boolean process = true;
-            String nama = authentication.getName();
-            log.info("nama : " + nama);
-            Employee entityEmp = employeeService.findByEmployee(nama);
-            log.info("entityEmp : " + entityEmp);
-            if (entityEmp == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "update-account");
-                return rs;
-            }
-            Employee updateEmployee = employeeService.findById(entityEmp.getIdEmployee());
-            if (updateEmployee == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Data Employee not found");
-                CreateLog.createJson(rs, "update-account");
-                process = false;
-            }
-            Account cekAcp = accountService.findAccount(object.getAccount_number_p());
-            if (cekAcp != null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Account Number : " + object.getAccount_number_p() + " already Registered With Another User");
-                CreateLog.createJson(rs, "update-account");
-                process = false;
-            }
-            Account cekAcl = accountService.findAccount(object.getAccount_number_l());
-            if (cekAcl != null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Account Number : " + object.getAccount_number_l() + " already Registered With Another User");
-                CreateLog.createJson(rs, "create-employee");
-                process = false;
-            }
-            if (process) {
-                List<Account> accoutList = accountService.findByEmployee(entityEmp.getIdEmployee().toString());
-                for (int k = 0; k < accoutList.size(); k++) {
-
-                    if (accoutList.get(k).getTypeAccount().equalsIgnoreCase("payroll")) {
-                        Account upd_acc_payroll = accountService.findById(accoutList.get(k).getAccountId());
-                        System.out.println("upd_acc_payroll" + upd_acc_payroll.toString());
-                        if (object.getAccount_name_p() != null) {
-                            upd_acc_payroll.setAccountName(object.getAccount_name_p());
-                        }
-                        if (object.getBank_name_p() != null) {
-                            upd_acc_payroll.setBankName(object.getBank_name_p());
-                        }
-                        if (object.getAccount_number_p() != null) {
-                            upd_acc_payroll.setAccountNumber(object.getAccount_number_p());
-                            upd_acc_payroll.setIsActive(false);
-                        }
-                        upd_acc_payroll.setTypeAccount("payroll");
-                        upd_acc_payroll = this.accountService.update(upd_acc_payroll);
-//                      updateEmployee.addAccount(upd_acc_payroll);
-//                      log.info("upd_acc_payroll" + upd_acc_payroll.toString());
-                    }
-//                        
-//                    accl.setEmployee(newEmployee);
-
-                    if (accoutList.get(k).getTypeAccount().equalsIgnoreCase("loan")) {
-
-                        Account upd_acc_loan = accountService.findById(accoutList.get(k).getAccountId());
-                        System.out.println("upd_acc_loan" + upd_acc_loan.toString());
-                        if (object.getAccount_name_l() != null) {
-                            upd_acc_loan.setAccountName(object.getAccount_name_l());
-                        }
-                        if (object.getBank_name_l() != null) {
-                            upd_acc_loan.setBankName(object.getBank_name_l());
-                        }
-                        if (object.getAccount_number_l() != null) {
-                            upd_acc_loan.setAccountNumber(object.getAccount_number_l());
-                            upd_acc_loan.setIsActive(false);
-                        }
-                        upd_acc_loan.setTypeAccount("loan");
-                        upd_acc_loan = this.accountService.update(upd_acc_loan);
-//                      updateEmployee.addAccount(upd_acc_loan);
-//                      log.info("upd_acc_loan" + upd_acc_loan.toString());
-                    }
-                }
-                updateEmployee = employeeService.update(updateEmployee);
-                rs.setResponse_code("00");
-                rs.setInfo("Success");
-                rs.setResponse("Update account employee Id :" + updateEmployee.getEmployeeId());
-                CreateLog.createJson(rs, "update-account");
-            } else {
-
-                CreateLog.createJson(rs, "update-account");
-                return rs;
-            }
-            return rs;
-        } catch (Exception ex) {
-//            System.out.println("ERROR: " + ex.getMessage());
-            rs.setResponse_code("55");
-            rs.setInfo("failes");
-            rs.setResponse(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "upload-account");
-            return rs;
-        }
-//            return rs;
-//        return rs;
-
-    }
-
-    @RequestMapping(value = "/approval/account", method = RequestMethod.POST)
-    @XxsFilter
-    public Response approvedAccount(@RequestBody final AproveAcc object, Authentication authentication) {
-        try {
-
-            Boolean process = true;
-            String nama = authentication.getName();
-            log.info("nama : " + nama);
-            Employee entityAdmin = employeeService.findByEmployee(nama);
-            log.info("entityEmp : " + entityAdmin);
-            if (entityAdmin == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "approved-account");
-                return rs;
-            }
-//            Employee updateEmployee = employeeService.findById(entityEmp.getIdEmployee());
-            if (!entityAdmin.getRoleName().equals("admin")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Cannot Access This feature");
-                CreateLog.createJson(rs, "approved-account");
-                process = false;
-                return rs;
-            }
-            Employee employee = employeeService.findById(object.getId_employee());
-            if (employee == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Employee NUll");
-                CreateLog.createJson(rs, "approved-account");
-                process = false;
-                return rs;
-            }
-            if (process) {
-                List<Account> listAccount = accountService.findByEmployee(employee.getIdEmployee().toString());
-                for (int i = 0; i < listAccount.size(); i++) {
-                    Account upd_account = accountService.findById(listAccount.get(i).getAccountId());
-                    if (listAccount.get(i).getTypeAccount().contentEquals("loan")) {
-                        if (!listAccount.get(i).getAccountNumber().isEmpty()) {
-                            upd_account.setAccountNumberFinance(listAccount.get(i).getAccountNumber());
-                        }
-                        upd_account.setAccountNumber("");
-                        upd_account.setIsActive(true);
-                    }
-                    if (listAccount.get(i).getTypeAccount().contentEquals("payroll")) {
-                        if (!listAccount.get(i).getAccountNumber().isEmpty()) {
-                            upd_account.setAccountNumberFinance(listAccount.get(i).getAccountNumber());
-                        }
-                        upd_account.setAccountNumber("");
-                        upd_account.setIsActive(true);
-                    }
-                    upd_account = accountService.update(upd_account);
-
-                    if (upd_account != null) {
-                        rs.setResponse_code("00");
-                        rs.setInfo("Succes");
-                        rs.setResponse("Account approved By : " + entityAdmin.getEmployeeId());
-                        CreateLog.createJson(rs, "approved-account");
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Warning");
-                        rs.setResponse("Employee Null");
-                        CreateLog.createJson(rs, "approved-account");
-                    }
-                }
-            }
-            return rs;
-        } catch (Exception ex) {
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-            CreateLog.createJson(ex.getMessage(), "approved-by-admin");
-        }
-        return null;
 
     }
 
@@ -2476,7 +2513,7 @@ public class EmployeeController { //LawfirmController
                 rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("can't acces this feature :");
-                CreateLog.createJson(rs, "download-cv");
+                CreateLog.createJson(rs, "find-by-employee-id");
 //                process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);

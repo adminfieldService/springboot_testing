@@ -22,9 +22,11 @@ public interface MemberServiceIface {
 
     Member delete(Member entity);
 
+    Integer deleteBy(Long team_member_id);
+
     void remove(Member entity);
 
-    Member findById(Long paramLong);
+    Member findById(String paramString);
 
     List<Member> findByIdTeam(Long paramLong);
 
@@ -33,7 +35,7 @@ public interface MemberServiceIface {
     List<Member> findByEmpId(String param);//@Repository
 
     Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
-    
+
     Member findBy(Long idTeamMember, String employeeId);
 
 }

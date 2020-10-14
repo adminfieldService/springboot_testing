@@ -22,9 +22,11 @@ public interface MemberRepoIface {
 
     Member delete(Member entity);
 
+    Integer deleteBy(Long team_member_id);
+
     void remove(Member entity);
 
-    Member findById(Long paramLong);
+    Member findById(String paramString);
 
     List<Member> findByIdTeam(Long paramLong);
 

@@ -427,185 +427,6 @@ public class EngagementController {
 
     }
 
-    @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
-    public Response editEngagement(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
-        try {
-            Date now = new Date();
-            Boolean process = true;
-            String name = authentication.getName();
-            log.info("name : " + name);
-            Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
-            if (entityEmp == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("can't update data Engagement :");
-                process = false;
-                CreateLog.createJson(rs, "updateEngagement");
-                return rs;
-            }
-            if (!entityEmp.getRoleName().contentEquals("dmp") || !entityEmp.getRoleName().contentEquals("admin")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
-                process = false;
-                CreateLog.createJson(rs, "updateEngagement");
-                return rs;
-            }
-
-            Engagement editEngagement = this.engagementService.findById(engagement_id);
-            if (editEngagement == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Engagement data Null");
-                process = false;
-                CreateLog.createJson(rs, "updateEngagement");
-            }
-            if (process) {
-                log.info("process");
-
-                ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
-//                Integer numberClient = 0;
-                String client_id = "CLIENT";
-                if (dataClient != null) {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
-                    log.info("dataClient : " + dataClient);
-                    Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
-                    if (numberClient == 0) {
-                        numberClient = 1;
-                    } else {
-                        numberClient = numberClient + 1;
-                    }
-                    ClientData check = clientDataService.checkCI(client_id + Util.setNumber(numberClient.toString()));
-                    if (check == null) {
-                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    } else {
-                        numberClient = numberClient + 1;
-                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    }
-                    this.clientDataService.update(dataClient);
-
-//                  CaseDetails dataCaseDetails = new CaseDetails();
-                    CaseDetails editCaseDetails = this.caseDetailsService.findById(engagement_id);
-                    editCaseDetails.setProfesionalFee(object.getProfesional_fee());
-                    editCaseDetails.setCaseOverview(object.getCase_over_view());
-                    editCaseDetails.setNote(object.getNotes());
-                    editCaseDetails.setStrategy(object.getStrategy());
-                    editCaseDetails.setPanitera(object.getPanitera());
-                    editCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
-//                    editCaseDetails.setDmpPortion(dmpProtion);
-//                    editCaseDetails.setEmployee(cekDMP);
-                    editCaseDetails.setClient(dataClient);
-                    editCaseDetails.setTahun_input(sdfYear.format(now));
-                    editCaseDetails.setStatus("s");
-                    editCaseDetails = this.caseDetailsService.update(editCaseDetails);
-                    if (editCaseDetails != null) {
-//                        rs.setResponse_code("01");
-//                        rs.setInfo("success");
-//                        rs.setResponse("Create Engagement Success");
-//                        return rs;
-                        EngagementApi ObjectEngagement = new EngagementApi();
-                        ObjectEngagement.setEngagement_id(engagement_id);
-                        ObjectEngagement.setDescription(object.getDescription());
-//                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
-                        ObjectEngagement.setEmployee_id(object.getEmployee_id());
-                        ObjectEngagement.setEmployee_name(object.getEmployee_name());
-                        ObjectEngagement.setDmp_fee(object.getDmp_fee());
-                        ObjectEngagement.setFee_share(object.getFee_share());
-                        ObjectEngagement.setPanitera(object.getPanitera());
-                        ObjectEngagement.setStrategy(object.getStrategy());
-
-//                        editTeamMember(ObjectEngagement);
-                    }
-                } else {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
-                    log.info("dataClient nulls");
-                    ClientData newClient = new ClientData();
-                    newClient.setClientName(object.getClient_name());
-                    newClient.setAddress(object.getAddress());
-                    newClient.setNpwp(object.getNpwp());
-                    newClient.setPic(object.getPic());
-                    Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
-                    if (numberClient == 0) {
-                        numberClient = 1;
-                    } else {
-                        numberClient = numberClient + 1;
-                    }
-                    ClientData check = clientDataService.checkCI(client_id + Util.setNumber(numberClient.toString()));
-                    if (check == null) {
-                        newClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    } else {
-                        numberClient = numberClient + 1;
-                        newClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    }
-
-                    log.info("newClient : " + newClient);
-
-                    CaseDetails dataCaseDetails = new CaseDetails();
-
-                    dataCaseDetails.setProfesionalFee(object.getProfesional_fee());
-                    dataCaseDetails.setCaseOverview(object.getCase_over_view());
-                    dataCaseDetails.setNote(object.getNotes());
-                    dataCaseDetails.setStrategy(object.getStrategy());
-                    dataCaseDetails.setPanitera(object.getPanitera());
-//                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
-                    dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
-                    dataCaseDetails.setDmpPortion(dmpProtion);
-                    dataCaseDetails.setTahun_input(sdfYear.format(now));
-//                    dataCaseDetails.setEmployee(cekDMP);
-                    dataCaseDetails.setStatus("s");
-                    newClient.addEngagement(dataCaseDetails);
-                    ClientData dClient = clientDataService.create(newClient);
-                    log.info("isi : " + dClient.getClientName());
-
-                    if (dClient != null) {
-                        EngagementApi ObjectEngagement = new EngagementApi();
-                        ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
-                        ObjectEngagement.setDescription(object.getDescription());
-//                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
-                        ObjectEngagement.setEmployee_id(object.getEmployee_id());
-                        ObjectEngagement.setEmployee_name(object.getEmployee_name());
-                        ObjectEngagement.setDmp_fee(object.getDmp_fee());
-                        ObjectEngagement.setFee_share(object.getFee_share());
-                        ObjectEngagement.setProfesional_fee_net(dataCaseDetails.getProfesionalFeeNet());
-//                        ObjectEngagement.setPanitera(object.getPanitera());
-//                        ObjectEngagement.setStrategy();
-//                        addTeamMember(ObjectEngagement);
-//                        editTeamMember(ObjectEngagement);
-                    } else {
-                        rs.setResponse_code("55");
-                        rs.setInfo("failed");
-                        rs.setResponse("Create Engagement Failed");
-                        CreateLog.createJson(rs, "createEngagement");
-                        return rs;
-
-                    }
-//                    }
-
-                }
-
-                Engagement update = this.engagementService.update(editEngagement);
-                if (update != null) {
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("Engagement data Null");
-                    CreateLog.createJson(rs, "updateEngagement");
-                }
-            }
-            return rs;
-        } catch (JSONException ex) {
-            // TODO Auto-generated catch block
-            System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "updateEngagement");
-            rs.setResponse_code("55");
-            rs.setInfo("failed");
-            rs.setResponse(ex.getMessage());
-            return rs;
-        }
-
-    }
-
     @RequestMapping(value = "/add-member", method = RequestMethod.POST, produces = {"application/json"})
     public Response addTeamMember(@RequestBody final EngagementApi object) {
         try {
@@ -739,7 +560,7 @@ public class EngagementController {
                 if (member != null) {
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
-                    rs.setResponse("Success Create Team Member :");
+                    rs.setResponse("Success Create Engagment :");
                     CreateLog.createJson(rs, "add-team-member");
 //                return rs;
                 }
@@ -760,6 +581,383 @@ public class EngagementController {
 //        rs.setInfo("Data null");
 //        rs.setResponse("Create Employee Failed");
 
+    }
+
+    @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
+    public Response updateEngagement(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+        try {
+            Date now = new Date();
+            Boolean process = true;
+            String name = authentication.getName();
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            log.info("engagement_id : " + engagement_id);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't update data Engagement :");
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                return rs;
+            }
+            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                return rs;
+            }
+//            if (!entityEmp.getRoleName().contentEquals("admin")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
+//                process = false;
+//                CreateLog.createJson(rs, "updateEngagement");
+//                return rs;
+//            }
+
+            Engagement editEngagement = this.engagementService.findById(engagement_id);
+            if (editEngagement == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Engagement data Null");
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                return rs;
+            }
+            if (!editEngagement.getStatus().contains("s")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                return rs;
+            }
+            if (editEngagement.getStatus().contains("closed")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                return rs;
+            }
+            if (process) {
+                log.info("process");
+
+                ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
+//                Integer numberClient = 0;
+                String client_id = "CLIENT";
+                if (dataClient != null) {
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+                    log.info("dataClient : " + dataClient);
+                    Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
+                    if (numberClient == 0) {
+                        numberClient = 1;
+                    } else {
+                        numberClient = numberClient + 1;
+                    }
+                    ClientData check = clientDataService.checkCI(client_id + Util.setNumber(numberClient.toString()));
+                    if (check == null) {
+                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
+                    } else {
+                        numberClient = numberClient + 1;
+                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
+                    }
+                    this.clientDataService.update(dataClient);
+
+//                  CaseDetails dataCaseDetails = new CaseDetails();
+                    CaseDetails editCaseDetails = this.caseDetailsService.findById(engagement_id);
+                    editCaseDetails.setProfesionalFee(object.getProfesional_fee());
+                    editCaseDetails.setCaseOverview(object.getCase_over_view());
+                    editCaseDetails.setNote(object.getNotes());
+                    editCaseDetails.setStrategy(object.getStrategy());
+                    editCaseDetails.setPanitera(object.getPanitera());
+                    editCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
+//                    editCaseDetails.setDmpPortion(dmpProtion);
+//                    editCaseDetails.setEmployee(cekDMP);
+                    editCaseDetails.setClient(dataClient);
+                    editCaseDetails.setTahun_input(sdfYear.format(now));
+                    editCaseDetails.setStatus("s");
+                    editCaseDetails = this.caseDetailsService.update(editCaseDetails);
+                    if (editCaseDetails != null) {
+//                        rs.setResponse_code("01");
+//                        rs.setInfo("success");
+//                        rs.setResponse("Create Engagement Success");
+//                        return rs;
+                        EngagementApi ObjectEngagement = new EngagementApi();
+                        ObjectEngagement.setEngagement_id(engagement_id);
+                        ObjectEngagement.setDescription(object.getDescription());
+//                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
+                        ObjectEngagement.setEmployee_id(object.getEmployee_id());
+                        ObjectEngagement.setEmployee_name(object.getEmployee_name());
+                        ObjectEngagement.setDmp_fee(object.getDmp_fee());
+                        ObjectEngagement.setFee_share(object.getFee_share());
+                        ObjectEngagement.setPanitera(object.getPanitera());
+                        ObjectEngagement.setStrategy(object.getStrategy());
+                        ObjectEngagement.setMember_id(object.getMember_id());
+
+                        editTeamMember(ObjectEngagement);
+                    }
+                } else {
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+                    log.info("dataClient nulls");
+                    ClientData newClient = new ClientData();
+                    newClient.setClientName(object.getClient_name());
+                    newClient.setAddress(object.getAddress());
+                    newClient.setNpwp(object.getNpwp());
+                    newClient.setPic(object.getPic());
+                    Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
+                    if (numberClient == 0) {
+                        numberClient = 1;
+                    } else {
+                        numberClient = numberClient + 1;
+                    }
+                    ClientData check = clientDataService.checkCI(client_id + Util.setNumber(numberClient.toString()));
+                    if (check == null) {
+                        newClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
+                    } else {
+                        numberClient = numberClient + 1;
+                        newClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
+                    }
+
+                    log.info("newClient : " + newClient);
+
+                    CaseDetails dataCaseDetails = new CaseDetails();
+
+                    dataCaseDetails.setProfesionalFee(object.getProfesional_fee());
+                    dataCaseDetails.setCaseOverview(object.getCase_over_view());
+                    dataCaseDetails.setNote(object.getNotes());
+                    dataCaseDetails.setStrategy(object.getStrategy());
+                    dataCaseDetails.setPanitera(object.getPanitera());
+//                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
+                    dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
+                    dataCaseDetails.setDmpPortion(dmpProtion);
+                    dataCaseDetails.setTahun_input(sdfYear.format(now));
+//                    dataCaseDetails.setEmployee(cekDMP);
+                    dataCaseDetails.setStatus("s");
+                    newClient.addEngagement(dataCaseDetails);
+                    ClientData dClient = clientDataService.create(newClient);
+                    log.info("isi : " + dClient.getClientName());
+
+                    if (dClient != null) {
+                        EngagementApi ObjectEngagement = new EngagementApi();
+                        ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
+                        ObjectEngagement.setDescription(object.getDescription());
+//                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
+                        ObjectEngagement.setEmployee_id(object.getEmployee_id());
+                        ObjectEngagement.setEmployee_name(object.getEmployee_name());
+                        ObjectEngagement.setDmp_fee(object.getDmp_fee());
+                        ObjectEngagement.setFee_share(object.getFee_share());
+                        ObjectEngagement.setProfesional_fee_net(dataCaseDetails.getProfesionalFeeNet());
+                        ObjectEngagement.setMember_id(object.getMember_id());
+//                        ObjectEngagement.setPanitera(object.getPanitera());
+//                        ObjectEngagement.setStrategy();
+//                        addTeamMember(ObjectEngagement);
+                        editTeamMember(ObjectEngagement);
+                    } else {
+                        rs.setResponse_code("55");
+                        rs.setInfo("failed");
+                        rs.setResponse("Create Engagement Failed");
+                        CreateLog.createJson(rs, "createEngagement");
+                        return rs;
+
+                    }
+//                    }
+
+                }
+
+                Engagement update = this.engagementService.update(editEngagement);
+                if (update != null) {
+                    rs.setResponse_code("00");
+                    rs.setInfo("Success");
+                    rs.setResponse("Update Success");
+                    CreateLog.createJson(rs, "updateEngagement");
+                    return rs;
+                }
+            }
+            return rs;
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+            System.out.println("ERROR: " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "updateEngagement");
+            rs.setResponse_code("55");
+            rs.setInfo("failed");
+            rs.setResponse(ex.getMessage());
+            return rs;
+        }
+
+    }
+
+    @RequestMapping(value = "/edit-member", method = RequestMethod.POST, produces = {"application/json"})
+    public Response editTeamMember(@RequestBody final EngagementApi object) {
+        try {
+            Date now = new Date();
+            String[] memberId = null;
+            String[] employeeId = null;
+            String[] employeeName = null;
+            String[] feeSahre = null;
+            Object emp_id = null;
+            Object member_id = null;
+            Object emp_name = null;
+            Object fee_share = null;
+            Boolean process = true;
+//            String name = authentication.getName();
+//            log.info("name : " + name);
+//            TeamMember dataTeam = new TeamMember();
+//            Employee entity = employeeService.findByEmployee(name);
+            Engagement dataEngagement = engagementService.findById(object.getEngagement_id());//object.getEngagement_id()
+            log.info("entity : " + dataEngagement);
+            if (dataEngagement == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "update-fee-share");
+                process = false;
+
+            }
+
+            if (dataEngagement == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Failed Ad Team Member dataEngagement NULL ");
+                process = false;
+                CreateLog.createJson(rs, "update-fee-share");
+                return rs;
+            }
+
+            if (object.getEmployee_id() != null) {
+                emp_id = Arrays.toString(object.getEmployee_id()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+                log.info("emp_id == " + emp_id);
+            } else {
+                emp_id = null;
+                log.info("emp_id == null ");
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Employee Not Found emp_id NULL");
+                process = false;
+                CreateLog.createJson(rs, "edit-teamMember");
+                return rs;
+            }
+
+            if (object.getFee_share() != null) {
+                fee_share = Arrays.toString(object.getFee_share()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+            } else {
+                fee_share = null;
+                log.info("emp_id == null ");
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Employee Not Found");
+                process = false;
+                CreateLog.createJson(rs, "edit-teamMember");
+                return rs;
+            }
+            feeSahre = fee_share.toString().split(",");
+            Double jumlah = 0d;
+            Double fee_total = 0d;
+            for (String num : feeSahre) {
+                jumlah = jumlah + Double.parseDouble(num);
+            }
+            fee_total = jumlah + object.getDmp_fee();
+            if (fee_total > 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
+                process = false;
+                CreateLog.createJson(rs, "edit-teamMember");
+                return rs;
+            }
+            if (fee_total < 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
+                process = false;
+                CreateLog.createJson(rs, "edit-teamMember");
+                return rs;
+            }
+            TeamMember dataTeamMember = this.teamMemberService.findByEngId(object.getEngagement_id());
+            if (dataTeamMember == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("TeamMember Not Found By CASE ID : " + dataEngagement.getCaseID() + "Not Found");//&lt;
+                process = false;
+                CreateLog.createJson(rs, "edit-teamMember");
+                return rs;
+            }
+            if (process) {
+                Member member = null;
+//              dataTeam.setEngagement(dataEngagement);
+                dataTeamMember.setFeeShare(object.getDmp_fee());
+                dataTeamMember.setIsActive(Boolean.TRUE);
+                TeamMember team = this.teamMemberService.update(dataTeamMember);
+                if (team == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("failed");
+                    rs.setResponse("team null");
+                    CreateLog.createJson(rs, "edit-teamMember");
+                    return rs;
+                }
+
+                int deleteMember = this.memberService.deleteBy(team.getTeamMemberId());
+
+                employeeId = emp_id.toString().split(",");
+                for (int l = 0; l < employeeId.length; l++) {
+                    String partEmp = employeeId[l];
+                    Member dataM = new Member();
+                    System.out.println("@Check Part emp_id " + l + " :" + partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                    if (employeeId.length == 1) {
+                        Employee dataEmployee = employeeService.findByEmployeeId(partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                        dataM.setEmployee(dataEmployee);
+
+                    } else {
+                        Employee dataEmployee = employeeService.findByEmployeeId(partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                        dataM.setEmployee(dataEmployee);
+                    }
+//            }
+                    if (emp_name != null) {
+                        employeeName = emp_name.toString().split(",");
+                        String part_emp = employeeName[l].trim().replaceAll("['\":<>\\[\\],-]", "");
+                        System.out.println("@Check Part emp_name " + l + " :" + part_emp);
+                        if (employeeName.length == 1) {
+
+                        }
+                    }
+                    feeSahre = fee_share.toString().split(",");
+                    String part_fee = feeSahre[l].trim().replaceAll("['\":<>\\[\\],-]", "");
+                    System.out.println("@Check Part fee_share " + l + " :" + partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
+                    if (feeSahre.length == 1) {
+                        dataM.setFeeShare(Double.parseDouble(part_fee));
+                    } else {
+                        dataM.setFeeShare(Double.parseDouble(part_fee));
+                    }
+                    dataM.setTeamMember(team);
+                    member = memberService.update(dataM);
+
+                }
+
+                if (member != null) {
+                    rs.setResponse_code("00");
+                    rs.setInfo("Sucess");
+                    rs.setResponse("Success Update  Engagement :");
+                    CreateLog.createJson(rs, "edit-teamMember");
+                    return rs;
+                }
+
+            }
+            return rs;
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "edit-teamMember");
+            return rs;
+
+        }
     }
 
     @RequestMapping(value = "/approval/{engagement_id}/by-admin", method = RequestMethod.POST, produces = {"application/json"})
@@ -1009,12 +1207,6 @@ public class EngagementController {
                             obj.put("approved_by", entityEmp.getName());
 
                         }
-//                        if (data.getOperational_cost() == null) {
-//                            obj.put("operational_cost", "");
-//                        } else {
-//                            obj.put("operational_cost", data.getOperational_cost());
-//
-//                        }
                         if (data.getProfesionalFee() == null) {
                             obj.put("professionalFee", "");
                         } else {
@@ -1144,10 +1336,12 @@ public class EngagementController {
                                 Member dataMember = entityMember.get(k);
 
                                 if (dataMember == null) {
+                                    objMember.put("member_id", "");
                                     objMember.put("member_name", "");
                                     objMember.put("employee_id", "");
                                     objMember.put("fee_share", "");
                                 } else {
+                                    objMember.put("member_id", dataMember.getMemberId());
                                     objMember.put("member_name", dataMember.getEmployee().getName());
                                     objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
                                     objMember.put("fee_share", dataMember.getFeeShare());
@@ -1157,6 +1351,7 @@ public class EngagementController {
 //                                    
                             }
                         } else {
+                            objMember.put("member_id", "");
                             objMember.put("member_name", "");
                             objMember.put("employee_id", "");
                             objMember.put("fee_share", "");
@@ -1598,10 +1793,12 @@ public class EngagementController {
                             Member dataMember = entityMember.get(k);
 
                             if (dataMember == null) {
+                                objMember.put("member_id", "");
                                 objMember.put("member_name", "");
                                 objMember.put("employee_id", "");
                                 objMember.put("fee_share", "");
                             } else {
+                                objMember.put("member_id", dataMember.getMemberId());
                                 objMember.put("member_name", dataMember.getEmployee().getName());
                                 objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
                                 objMember.put("fee_share", dataMember.getFeeShare());
@@ -1611,6 +1808,7 @@ public class EngagementController {
 //                                    
                         }
                     } else {
+                        objMember.put("member_id", "");
                         objMember.put("member_name", "");
                         objMember.put("employee_id", "");
                         objMember.put("fee_share", "");
@@ -1636,7 +1834,6 @@ public class EngagementController {
     @XxsFilter
     public ResponseEntity<String> byAdmin(@PathVariable("id_employee_admin") Long id_employee_admin, Authentication authentication) {
         try {
-//          Engagement entity = engagementService.findById(id_employee_admin);
             String name = authentication.getName();
             String status = null;
             log.info("name : " + name);
@@ -1658,8 +1855,6 @@ public class EngagementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "role : " + entity.getRoleName() + " permission deny "),
                         HttpStatus.NOT_FOUND);
             }
-
-//            List<CaseDetails> listData = caseDetailsService.findByAdmin(id_employee_admin);
             List<CaseDetails> listData = caseDetailsService.findByAdmin(entity.getIdEmployee());
             JSONArray array = new JSONArray();
 //            JSONArray arrayM = new JSONArray();
@@ -1827,16 +2022,9 @@ public class EngagementController {
                                         break;
                                 }
                                 obj.put("fee_share_dmp", dataTeam.getFeeShare());
-
-//                                break;
-//                            obj.put("member_name", entityMember.getDescription());
-//                                arrayM.put(objMember);
                             }
 
                         }
-//                        arrayM.put(objMember);
-//                        obj.put("team", objTeam);
-//                        obj.put("members", arrayM);
 
                     }
 
@@ -1852,20 +2040,22 @@ public class EngagementController {
                             Member dataMember = entityMember.get(k);
 
                             if (dataMember == null) {
-
+                                objMember.put("member_id", "");
                                 objMember.put("member_name", "");
                                 objMember.put("employee_id", "");
                                 objMember.put("fee_share", "");
-
                             } else {
+                                objMember.put("member_id", dataMember.getMemberId());
                                 objMember.put("member_name", dataMember.getEmployee().getName());
                                 objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
                                 objMember.put("fee_share", dataMember.getFeeShare());
+
                             }
                             arrayM.put(objMember);
                             obj.put("members", arrayM);
                         }
                     } else {
+                        objMember.put("member_id", "");
                         objMember.put("member_name", "");
                         objMember.put("employee_id", "");
                         objMember.put("fee_share", "");
@@ -1981,6 +2171,22 @@ public class EngagementController {
                 process = false;
                 return rs;
             }
+            if (object.getEvent_type().length() > 10) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Field Event Type Maximum 10 character");
+                CreateLog.createJson(rs, "create-event");
+                process = false;
+                return rs;
+            }
+            if (object.getEvent_name().length() > 20) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Field Event Name Maximum 20 character");
+                CreateLog.createJson(rs, "update-event");
+                process = false;
+                return rs;
+            }
             if (process) {
                 enEvent.setCaseDetails(dataCase);
                 enEvent.setScheduleDate(schedule);
@@ -2058,6 +2264,22 @@ public class EngagementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Field schedule date can't be NULL");
+                CreateLog.createJson(rs, "update-event");
+                process = false;
+                return rs;
+            }
+            if (object.getEvent_type().length() > 10) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Field Event Type Maximum 10 character");
+                CreateLog.createJson(rs, "update-event");
+                process = false;
+                return rs;
+            }
+            if (object.getEvent_name().length() > 20) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Field Event Name Maximum 20 character");
                 CreateLog.createJson(rs, "update-event");
                 process = false;
                 return rs;
@@ -2172,7 +2394,12 @@ public class EngagementController {
                     if (events.getEventType() == null) {
                         obj.put("event_type", "");
                     } else {
-                        obj.put("event_type", events.getEventType());
+                        if (events.getEventType().equalsIgnoreCase("m")) {
+                            obj.put("event_type", "meeting");
+                        }
+                        if (events.getEventType().equalsIgnoreCase("t")) {
+                            obj.put("event_type", "trial");
+                        }
                     }
                     if (events.getScheduleDate() == null) {
                         obj.put("schedule_date", "");
@@ -2230,15 +2457,6 @@ public class EngagementController {
                         HttpStatus.FORBIDDEN);
             }
             List<Events> listEvent = eventService.listEvents("0");
-//            if (listEvent == null) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("entity.getIdEmployee() not found");
-//                CreateLog.createJson(rs, "listEvents");
-//                process = false;
-//                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature "),
-//                        HttpStatus.FORBIDDEN);
-//            }
             JSONArray array = new JSONArray();
             if (process) {
 
@@ -2259,7 +2477,12 @@ public class EngagementController {
                     if (events.getEventType() == null) {
                         obj.put("event_type", "");
                     } else {
-                        obj.put("event_type", events.getEventType());
+                        if (events.getEventType().equalsIgnoreCase("m")) {
+                            obj.put("event_type", "meeting");
+                        }
+                        if (events.getEventType().equalsIgnoreCase("t")) {
+                            obj.put("event_type", "trial");
+                        }
                     }
                     if (events.getScheduleDate() == null) {
                         obj.put("schedule_date", "");
@@ -2299,197 +2522,10 @@ public class EngagementController {
 
     }
 
-//    @RequestMapping(value = "/manage-engagement/{engagement_id}/document", method = RequestMethod.POST, produces = {"application/json"})
-//    @XxsFilter
-//    public Response uploadCaseDocument(@RequestPart("case_doc") MultipartFile file, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
-//        try {
-//
-//            CaseDocument entCaseDocument = new CaseDocument();
-//
-//            Date todayDate = new Date();
-//            Date now = new Date();
-//            String pathDoc = null;
-//            Boolean process = true;
-//            String name = authentication.getName();
-//            log.info("name : " + name);
-//            Employee entity = employeeService.findByEmployee(name);
-//            log.info("entity : " + entity);
-//            if (entity == null) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("can't acces this feature :");
-//                process = false;
-//                CreateLog.createJson(rs, "upload-case-document");
-//                return rs;
-//            }
-//            if (!entity.getRoleName().contentEquals("dmp")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
-//                process = false;
-//                CreateLog.createJson(rs, "upload-case-document");
-//                return rs;
-//            }
-//
-//            CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
-//            if (caseDetails == null) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("case Id Not Found ");
-//                process = false;
-//                CreateLog.createJson(rs, "upload-case-document");
-//                return rs;
-//            }
-//            pathDoc = basepathUpload + "/" + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
-//
-//            if (process) {
-//                if (!file.isEmpty()) {
-//
-//                    File newFolder = new File(pathDoc);
-//                    boolean created = newFolder.mkdir();
-//                    if (!newFolder.getParentFile().exists()) {
-//                        newFolder.getParentFile().mkdirs();
-//                    } else {
-//                        newFolder.getParentFile().mkdirs();
-//                    }
-//                    if (!newFolder.exists()) {
-//                        if (created) {
-//                            System.out.println("Folder was created !");
-//                        } else {
-//                            System.out.println("Folder exists");
-//                        }
-//                    }
-//
-//                    byte[] bytes = file.getBytes();
-//                    Path path = Paths.get(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
-//                    Files.write(path, bytes);
-//                    String fileName = file.getOriginalFilename().replaceAll(" ", "");
-//                    log.info("file getOriginalFilename : " + file.getOriginalFilename().replaceAll(" ", ""));
-//                    entCaseDocument.setLinkDocument(pathDoc + file.getOriginalFilename().replaceAll(" ", ""));
-//                    entCaseDocument.setCaseDetails(caseDetails);
-//                    CaseDocument cerateCaseDocument = this.caseDocumentService.create(entCaseDocument);
-//                    if (cerateCaseDocument != null) {
-//                        rs.setResponse_code("00");
-//                        rs.setInfo("Succes");
-//                        rs.setResponse("Upload: Succes : " + fileName);
-//                        CreateLog.createJson(rs, "upload-case-document");
-//                        return rs;
-//                    } else {
-//                        rs.setResponse_code("55");
-//                        rs.setInfo("Error");
-//                        rs.setResponse("Error Upload Document");
-//                        CreateLog.createJson(rs, "upload-case-document");
-//                        return rs;
-//                    }
-//
-//                }
-//            }
-//            return rs;
-//        } catch (JSONException ex) {
-//            // TODO Auto-generated catch block
-////            e.printStackTrace();
-//            rs.setResponse_code("55");
-//            rs.setInfo("Error");
-//            rs.setResponse(ex.getMessage());
-//            CreateLog.createJson(ex.getMessage(), "upload-case-document");
-//            return rs;
-//
-//        }
-//
-//    }
-//    @RequestMapping(value = "/manage-engagement/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
-//    @XxsFilter
-//    public Response listDocument(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
-//        Date todayDate = new Date();
-//        Date now = new Date();
-//        String pathDoc = null;
-//        Boolean process = true;
-//        String name = authentication.getName();
-//        log.info("name : " + name);
-//        Employee entity = employeeService.findByEmployee(name);
-//        log.info("entity : " + entity);
-//        if (entity == null) {
-//            rs.setResponse_code("55");
-//            rs.setInfo("Failed");
-//            rs.setResponse("can't acces this feature :");
-//            process = false;
-//            CreateLog.createJson(rs, "upload-case-document");
-//            return rs;
-//        }
-//        return null;
-//    }
-//    @RequestMapping(value = "/manage-engagement/{engagement_id}/done", method = RequestMethod.POST, produces = {"application/json"})
-//    @XxsFilter
-//    public Response closingCase(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
-//        try {
-//            Date now = new Date();
-////          Integer number = null;
-//            EngagementHistory enHistory = new EngagementHistory();
-//            String name = authentication.getName();
-//            log.info("name : " + name);
-//            Employee entityEmp = employeeService.findByEmployee(name);
-//            log.info("entityEmp : " + entityEmp);
-//            log.info("engagement_id : " + engagement_id);
-//            if (entityEmp == null) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("can't closing case :");
-//                CreateLog.createJson(rs, "closing-Case");
-//                return rs;
-//            }
-//            if (!entityEmp.getRoleName().contentEquals("dmp")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
-//                CreateLog.createJson(rs, "closing-Case");
-//                return rs;
-//            }
-//            CaseDetails entity = caseDetailsService.findById(engagement_id);
-//            if (entity == null) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
-//                CreateLog.createJson(rs, "closing-Case");
-//                return rs;
-//            }
-//            if (entity.getStatus().contains("4")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
-//                CreateLog.createJson(rs, "closing-Case");
-//                return rs;
-//            }
-//
-//            entity.setIsActive("4");
-//            entity.setStatus("closed");
-//            enHistory.setEngagement(entity);
-//            enHistory.setUserId(entityEmp.getIdEmployee());
-//            enHistory.setResponse("closed By : " + entityEmp.getEmployeeId());
-//            CaseDetails closeCase = this.caseDetailsService.update(entity);
-//            if (closeCase != null) {
-//                this.engagementHistoryService.create(enHistory);
-//                rs.setResponse_code("00");
-//                rs.setInfo("Success");
-//                rs.setResponse("closing case engagement_id " + engagement_id + "by : " + entityEmp.getEmployeeId());
-//                CreateLog.createJson(rs, "closing-Case");
-//                return rs;
-//            }
-//
-//        } catch (JSONException ex) {
-//            // TODO Auto-generated catch block
-////            e.printStackTrace();
-//            rs.setResponse_code("55");
-//            rs.setInfo("Error");
-//            rs.setResponse(ex.getMessage());
-//            CreateLog.createJson(ex.getMessage(), "upload-case-document");
-//            return rs;
-//
-//        }
-//        return null;
-//    }
     @RequestMapping(value = "/managed-fee-share/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
     public Response updateFeeShare(@RequestBody final FeeShareDto object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
+            log.info("object : " + object);
             Date now = new Date();
             String[] employeeId = null;
             String[] employeeName = null;
@@ -2512,7 +2548,7 @@ public class EngagementController {
                 process = false;
 
             }
-            if (!entity.getRoleName().contains("admin")) {
+            if (!entity.getRoleName().contains("dmp")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
@@ -2608,7 +2644,7 @@ public class EngagementController {
 //                    Member dataM = new Member();
                     String partEmp = employeeId[l];
                     Member dataM = this.memberService.findBy(dataTeamMember.getTeamMemberId(), partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
-
+                    System.out.println("dataM" + dataM);
                     System.out.println("@Check Part emp_id " + l + " :" + partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
                     if (employeeId.length == 1) {
                         Employee dataEmployee = employeeService.findByEmployeeId(partEmp.trim().replaceAll("['\":<>\\[\\],-]", ""));
@@ -2645,7 +2681,7 @@ public class EngagementController {
                     rs.setInfo("Sucess");
                     rs.setResponse("Success Update  Fee Share Team :");
                     CreateLog.createJson(rs, "update-fee-share");
-//                return rs;
+                    return rs;
                 }
 
             }
@@ -2661,4 +2697,10 @@ public class EngagementController {
 
         }
     }
+
+//    @RequestMapping(value = "/managed-fee-share/{engagement_id}/{employee_id}", method = RequestMethod.POST, produces = {"application/json"})
+//    public Response removeTeam(@RequestBody final FeeShareDto object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+//
+//        return rs;
+//    }
 }

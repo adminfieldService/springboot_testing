@@ -410,7 +410,7 @@ public class CaseController {
 
     @RequestMapping(value = "/case/{engagement_id}/documents", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> listDocumentByEngId(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+    public ResponseEntity<?> listDocumentByEngId(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) throws IOException {
         try {
             rs.setResponse_code("00");
             rs.setInfo("listDocumentByEngId Acces by : " + authentication.getName());
@@ -586,7 +586,7 @@ public class CaseController {
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " +  object.getEngagement_id());
+            log.info("engagement_id : " + object.getEngagement_id());
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -601,11 +601,11 @@ public class CaseController {
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
-            CaseDetails entity = caseDetailsService.findById( object.getEngagement_id());
+            CaseDetails entity = caseDetailsService.findById(object.getEngagement_id());
             if (entity == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " +  object.getEngagement_id() + "Not Found");
+                rs.setResponse("can't closing case engagement_id " + object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
@@ -656,13 +656,13 @@ public class CaseController {
 //                this.disbursementService.create(disbursement);
                 rs.setResponse_code("00");
                 rs.setInfo("Success");
-                rs.setResponse("closing case engagement_id " +  object.getEngagement_id() + "by : " + entityEmp.getEmployeeId());
+                rs.setResponse("closing case engagement_id " + object.getEngagement_id() + "by : " + entityEmp.getEmployeeId());
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " +  object.getEngagement_id() + "Not Found");
+                rs.setResponse("can't closing case engagement_id " + object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
 

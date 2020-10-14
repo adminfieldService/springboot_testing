@@ -44,14 +44,20 @@ public class MemberService implements MemberServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Integer deleteBy(Long team_member_id) {
+        return memberRepo.deleteBy(team_member_id);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public void remove(Member entity) {
         memberRepo.remove(entity);
     }
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Member findById(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Member findById(String paramString) {
+        return memberRepo.findById(paramString);
     }
 
     @Override

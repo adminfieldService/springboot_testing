@@ -1298,7 +1298,8 @@ public class DisbursementController {
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                 this.outStandingLoanAService.update(updateOutStandingLoanA);
                             }
                             if (number_of_disbursement == 2) {
@@ -1307,7 +1308,8 @@ public class DisbursementController {
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                 this.outStandingLoanAService.update(updateOutStandingLoanA);
                             }
                             if (number_of_disbursement == 3) {
@@ -1316,7 +1318,8 @@ public class DisbursementController {
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                 this.outStandingLoanAService.update(updateOutStandingLoanA);
                             }
 
@@ -1467,7 +1470,8 @@ public class DisbursementController {
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                    outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                     this.outStandingLoanAService.update(updateOutStandingLoanA);
                                 }
                                 if (number_of_disbursement == 2) {
@@ -1476,7 +1480,8 @@ public class DisbursementController {
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                    outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                     this.outStandingLoanAService.update(updateOutStandingLoanA);
                                 }
                                 if (number_of_disbursement == 3) {
@@ -1485,7 +1490,8 @@ public class DisbursementController {
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                    outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                     this.outStandingLoanAService.update(updateOutStandingLoanA);
                                 }
 
@@ -1772,7 +1778,8 @@ public class DisbursementController {
                                         outstanding_loan_a_dmp = outStandingAteam;
                                         OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                         updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                        outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                        outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                        updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                         this.outStandingLoanAService.update(updateOutStandingLoanA);
 
                                     }
@@ -1782,7 +1789,8 @@ public class DisbursementController {
                                         outstanding_loan_a_dmp = outStandingAteam;
                                         OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                         updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                        outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                        outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                        updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                         this.outStandingLoanAService.update(updateOutStandingLoanA);
                                     }
                                     if (number_of_disbursement == 3) {
@@ -1791,7 +1799,8 @@ public class DisbursementController {
                                         outstanding_loan_a_dmp = outStandingAteam;
                                         OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                         updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                        outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp);
+                                        outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                        updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                         this.outStandingLoanAService.update(updateOutStandingLoanA);
                                     }
                                     obj.put("outstanding_loan_a_dmp", String.format("%.0f", outstanding_loan_a_dmp));
@@ -1939,7 +1948,8 @@ public class DisbursementController {
                                             outstanding_loan_a_team = outStandingAteam;
                                             OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                             updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                            outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                            outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                            updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                             this.outStandingLoanAService.update(updateOutStandingLoanA);
                                         }
                                         if (number_of_disbursement == 2) {
@@ -1948,7 +1958,8 @@ public class DisbursementController {
                                             outstanding_loan_a_team = outStandingAteam;
                                             OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                             updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                            outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                            outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                            updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                             this.outStandingLoanAService.update(updateOutStandingLoanA);
                                         }
                                         if (number_of_disbursement == 3) {
@@ -1957,7 +1968,8 @@ public class DisbursementController {
                                             outstanding_loan_a_team = outStandingAteam;
                                             OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                             updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                            outstanding_after_disbursement_amount = (updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team);
+                                            outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                            updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
                                             this.outStandingLoanAService.update(updateOutStandingLoanA);
                                         }
                                         objMember.put("outstanding_loan_a_team", String.format("%.0f", outstanding_loan_a_team));

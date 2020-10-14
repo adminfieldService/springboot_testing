@@ -81,6 +81,16 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
+    public Integer deleteBy(Long team_member_id) {
+        int nilai = entityManager.createQuery(
+                "DELETE FROM Member m "
+                + "WHERE "
+                + "m.teamMember.teamMemberId = :teamMemberId ")
+                .setParameter("teamMemberId", team_member_id).executeUpdate();
+        return nilai;
+    }
+
+    @Override
     public void remove(Member entity) {
         try {
             entityManager.remove(entity);
@@ -98,8 +108,26 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
-    public Member findById(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Member findById(String paramString) {
+        try {
+            String sql = "SELECT m FROM Member m "
+                    + " JOIN FETCH m.teamMember AS t "
+                    + " JOIN FETCH m.employee AS e "
+                    + " WHERE "
+                    + " m.memberId = :memberId ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("memberId", paramString);
+            return (Member) query.getSingleResult();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override
