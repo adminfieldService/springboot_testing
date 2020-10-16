@@ -13,8 +13,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -27,7 +26,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Professional create(Professional entity) {
@@ -41,7 +40,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
@@ -65,7 +64,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             System.out.println("ERROR: " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return null;
         } finally {
@@ -87,7 +86,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
         } catch (Exception ex) {
 //	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -105,7 +104,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
         } catch (Exception ex) {
 // 	            LogSystem.error(getClass(), e);
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
 
         } finally {
@@ -121,7 +120,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             return (Professional) entityManager.find(Professional.class, paramLong);
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -149,7 +148,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -169,7 +168,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -189,7 +188,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {
@@ -211,7 +210,7 @@ public class ProfessionalRepo implements ProfessionalRepoIface {
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());
-            CreateLog.createJson(ex.getMessage(),"ERROR_professionalRepo");
+            CreateLog.createJson(ex.getMessage(), "ERROR_professionalRepo");
             System.out.println("ERROR: " + ex.getMessage());
             return null;
         } finally {

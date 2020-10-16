@@ -34,7 +34,7 @@ public interface LoanRepoIface {
 
     Loan findByLoanIdB(String param);
 
-    List<Loan> listLoan(int max, int start, String type);
+    List<Loan> listLoan(int max, int start, String type, Long empId, String role);
 
 //    List<Loan> listLoanB(int max, int start);
     List<Loan> listLoanPaging(int max, int start);
@@ -50,6 +50,8 @@ public interface LoanRepoIface {
     Integer count();
 
     Double loanEmp(String param1, String param2);
+
+    Double loanB(Long engagementId);
 
     List<Loan> getLoanB(String param);
 

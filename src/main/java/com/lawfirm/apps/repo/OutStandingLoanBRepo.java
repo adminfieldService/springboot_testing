@@ -13,11 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.lawfirm.apps.repo.interfaces.OutStandingLoanBRepoIface;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,7 +28,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public OutStandingLoanB create(OutStandingLoanB entity) {

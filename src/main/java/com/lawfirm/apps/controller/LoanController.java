@@ -7,6 +7,7 @@ package com.lawfirm.apps.controller;
 
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Employee;
+import com.lawfirm.apps.model.Engagement;
 import com.lawfirm.apps.model.Financial;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.LoanHistory;
@@ -131,12 +132,13 @@ public class LoanController {
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entityEmp : " + entityEmp);
+            log.info("createLoana jsonObject: " + object);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't access this feature");
-                CreateLog.createJson(rs, "acreateLoana");
+                log.error("createLoana : " + rs);
+                CreateLog.createJson(rs, "createLoana");
                 return rs;
             }
             log.info("isi object " + object.toString());
@@ -150,7 +152,9 @@ public class LoanController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Type Not found");
+                log.error("createLoana : " + rs);
                 process = false;
+                return rs;
             }
             if ("A".equalsIgnoreCase(object.getLoan_type())) {
                 if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) == 0) {
@@ -158,7 +162,8 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("repayment_date not permission, " + "repayment_date : " + dateFormat.format(object.getRepayment_date()) + " equals  todayDate : " + dateFormat.format(todayDate));
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoana");
+                    log.error("createLoana : " + rs);
                     return rs;
                 }
                 if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) > 0) {
@@ -166,7 +171,8 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("repayment_date : " + dateFormat.format(object.getRepayment_date()) + " before  todayDate : " + dateFormat.format(todayDate));
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoana");
+                    log.error("createLoana : " + rs);
                     return rs;
                 }
                 if (object.getLoan_amount() == 0 || object.getLoan_amount() == null) {
@@ -174,20 +180,22 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("laon value : 0");
                     process = false;
-                    CreateLog.createJson(rs, "createLoan-employee");
+                    CreateLog.createJson(rs, "createLoana");
+                    log.error("createLoana : " + rs);
                     return rs;
                 }
                 if (process) {
 
-                    log.info("isi process " + process);
+                    System.out.println("isi process " + process);
 
                     Double balance = 0d;
-                    String isi_tgl_repayment = null;
-                    Date tgl_repayment = null;
-                    Integer number = 0;
+
                     String year_val = sdfYear.format(now);
+                    Integer number = 0;
                     Date y_val = sdfYear.parse(year_val);
                     String load_id = null;
+                    String isi_tgl_repayment = null;
+                    Date tgl_repayment = null;
                     String isi_tgl_pengajuan = null;
                     Date tgl_pengajuan = null;
                     if (object.getRepayment_date() != null) {
@@ -200,10 +208,26 @@ public class LoanController {
                         tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
                     } else if (object.getCreated_date() != null) {
                         isi_tgl_pengajuan = dateFormat.format(object.getCreated_date());
-
                         tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
                     }
-
+                    if (tgl_repayment.compareTo(tgl_pengajuan) < 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl_pengajuan > tgl_repayment");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoana");
+                        log.error("createLoana : " + rs);
+                        return rs;
+                    }
+                    if (tgl_repayment.compareTo(tgl_pengajuan) == 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl repayment == tgl_pengajuan");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoana");
+                        log.error("createLoana : " + rs);
+                        return rs;
+                    }
                     dataLoan.setEmployee(entityEmp);
                     dataLoan.setLoantype(typeLoan);
                     dataLoan.setTgl_input(sdfYear2.format(now));
@@ -218,22 +242,15 @@ public class LoanController {
                     if (entityEmp.getLoanAmount().compareTo(object.getLoan_amount()) < 0) {
                         rs.setResponse_code("55");
                         rs.setInfo("Failed");
-                        rs.setResponse("limit loan : " + entityEmp.getLoanAmount());
+                        rs.setResponse("limit loan : " + String.format("%.0f", entityEmp.getLoanAmount()));
                         process = false;
-                        CreateLog.createJson(rs, "createLoan-employee");
+                        CreateLog.createJson(rs, "createLoana");
+                        log.error("createLoana : " + rs);
                         return rs;
                     }
 //                    }
                     Double cek_loan = this.loanService.loanEmp(entityEmp.getIdEmployee().toString(), sdfMY.format(object.getCreated_date()));
-//                    if (cek_loan != null) {
-//                        log.info("cek_loan" + cek_loan);
-//                        rs.setResponse_code("55");
-//                        rs.setInfo("cek_loan");
-//                        rs.setResponse("cek_loan: " + cek_loan);
-//                        return rs;
-//                    }
                     if (cek_loan != null || !cek_loan.equals(0)) {
-
                         balance = object.getLoan_amount() + cek_loan;
                     } else {
                         balance = object.getLoan_amount();
@@ -251,60 +268,51 @@ public class LoanController {
                         rs.setInfo("Failed");
                         rs.setResponse("limit loan : " + String.format("%.0f", entityEmp.getLoanAmount()) + " Total Loan this month : " + String.format("%.0f", cek_loan));
                         process = false;
-                        CreateLog.createJson(rs, "createLoan-employee");
+                        CreateLog.createJson(rs, "createLoana");
+                        log.error("createLoana : " + rs);
                         return rs;
                     }
 
 //                    
 //                    }
                     dataLoan.setLoanAmount(object.getLoan_amount());
-                    if (sdfYear.format(now).compareTo(sdfYear.format(object.getCreated_date())) == 0) {
-//                        number = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));//dateFormat.format(todayDate));
-                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));
-
-                        if (list != null || !list.isEmpty()) {
-                            number = list.size();
-                        }
-                        if (number == 0) {
-                            number = 1;
-                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        } else {
-                            number = number + 1;
-                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        }
-                    } else {
-                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear2.format(object.getCreated_date()));
-
-                        if (list != null || !list.isEmpty()) {
-                            number = list.size();
-                        }
-                        if (number == 0) {
-                            number = 1;
-                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        } else {
-                            number = number + 1;
-                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                        }
-                    }
-
-//                    Loan entity = loanService.findByLoanId("A" + dataEMploye.getEmployeeId() + year_val + Util.setNumbering(number.toString()));
-                    log.info("load_id : " + load_id);
-                    Loan entity = loanService.findByLoanId(load_id);
-//                    if (entity == null) {
-//                        number = 1;
-//                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-//                        dataLoan.setLoanId(load_id);
+//                    if (sdfYear.format(now).compareTo(sdfYear.format(object.getCreated_date())) == 0) {
+////                        number = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));//dateFormat.format(todayDate));
+//                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear.format(object.getCreated_date()));
+//
+//                        if (list != null || !list.isEmpty()) {
+//                            number = list.size();
+//                        }
+//                        if (number == 0) {
+//                            number = 1;
+//                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        } else {
+//                            number = number + 1;
+//                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        }
 //                    } else {
+//                        List<Loan> list = loanService.generateLoanId("A", entityEmp.getEmployeeId(), sdfYear2.format(object.getCreated_date()));
+//
+//                        if (list != null || !list.isEmpty()) {
+//                            number = list.size();
+//                        }
+//                        if (number == 0) {
+//                            number = 1;
+//                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        } else {
+//                            number = number + 1;
+//                            load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+//                        }
+//                    }
+//
+//                    log.info("load_id : " + load_id);
+//                    Loan entity = loanService.findByLoanId(load_id);
+//                    if (entity != null) {
 //                        number = number + 1;
 //                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-//                        dataLoan.setLoanId(load_id);
 //                    }
-                    if (entity != null) {
-                        number = number + 1;
-                        load_id = "A" + entityEmp.getEmployeeId() + year_val + Util.setNumbering(number.toString());
-                    }
-                    log.info("load_id now : " + load_id);
-                    dataLoan.setLoanId(load_id);
+//                    log.info("load_id now : " + load_id);
+//                    dataLoan.setLoanId(load_id);
                     dataLoan.addAHistory(entityHistory);
                     dataLoan = loanService.create(dataLoan);
 //                   typeLoan.addLoan(dataLoan);
@@ -312,7 +320,8 @@ public class LoanController {
                         rs.setResponse_code("01");
                         rs.setInfo("Success");
                         rs.setResponse("Create Loan Apps Success");
-                        CreateLog.createJson(rs, "createLoan-employee");
+                        CreateLog.createJson(rs, "createLoana");
+                        log.info("createLoana : " + rs);
                         return rs;
 //                        }
                     } else {
@@ -320,7 +329,8 @@ public class LoanController {
                         rs.setInfo("Failed");
                         rs.setResponse("Create Loan Apps Failed");
                         process = false;
-                        CreateLog.createJson(rs, "createLoan-employee");
+                        CreateLog.createJson(rs, "createLoana");
+                        log.error("createLoana : " + rs);
                     }
 
                 }
@@ -333,7 +343,8 @@ public class LoanController {
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
-            CreateLog.createJson(rs, "createLoan-employee");
+            CreateLog.createJson(rs, "createLoana");
+            log.error("createLoana : " + ex.getMessage());
             return rs;
         }
 
@@ -343,6 +354,7 @@ public class LoanController {
     @XxsFilter
     public Response createLoanb(@RequestBody final LoanApi object, Authentication authentication) {
         try {
+            log.info("createLoanb jsonObject: " + object);
             Date todayDate = new Date();
             Date now = new Date();
             String name = authentication.getName();
@@ -353,7 +365,8 @@ public class LoanController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't access this feature");
-                CreateLog.createJson(rs, "createLoanb-employee");
+                CreateLog.createJson(rs, "createLoanb");
+                log.error("createLoanb" + rs);
                 return rs;
             }
             log.info("isi object " + object.toString());
@@ -367,15 +380,20 @@ public class LoanController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Type Not found");
+                log.error("createLoanb" + rs);
                 process = false;
+                return rs;
             }
             if ("B".equalsIgnoreCase(object.getLoan_type())) {
+
                 if (object.getCase_id() == null) {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Create Loan Apps Type B Failed");
                     process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
+                    log.error("createLoanb" + rs);
+                    CreateLog.createJson(rs, "createLoanb");
+                    return rs;
                 }
 //                Loan dataLoan = new Loan();
 //                LoanType typeLoan = new LoanType();
@@ -386,14 +404,18 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("Can't Access Loan Apps Type B");
                     process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
+                    log.error("createLoanb" + rs);
+                    CreateLog.createJson(rs, "createLoanb");
+                    return rs;
                 }
                 if (!dataEMploye.getRoleName().contentEquals("dmp")) {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Create Loan Apps Type B Failed");
+                    log.error("createLoanb" + rs);
                     process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
+                    CreateLog.createJson(rs, "createLoanb");
+                    return rs;
                 }
 //                CaseDetails dataCase = new CaseDetails();
                 if (object.getCase_id() == null) {
@@ -401,44 +423,51 @@ public class LoanController {
                     rs.setInfo("Failed");
                     rs.setResponse("Can't Access Loan Apps Type B");
                     process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
+                    log.error("createLoanb" + rs);
+                    CreateLog.createJson(rs, "createLoanb");
+                    return rs;
                 }
-//                if (!dataEMploye.getRoleName().equalsIgnoreCase("lawyer")) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Failed");
-//                    rs.setResponse("Can't Access Loan Apps Type B");
-//                    process = false;
-//                }
-                if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) == 0) {
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("repayment_date not permission" + "repayment_date : " + dateFormat.format(object.getRepayment_date()) + " equals  todayDate : " + dateFormat.format(todayDate));
-                    process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
-                }
-                if (dateFormat.format(todayDate).compareTo(dateFormat.format(object.getRepayment_date())) > 0) {
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("repayment_date : " + dateFormat.format(object.getRepayment_date()) + " before  todayDate : " + dateFormat.format(todayDate));
-                    process = false;
-                    CreateLog.createJson(rs, "createLoanb-employee");
-                }
+
                 if (process) {
 
                     CaseDetails dataCase = caseDetailsService.findCaseId(object.getCase_id());
+                    Double dmpPortion = dataCase.getDmpPortion();
+
                     if (dataCase.getStatus().contains("r")) {
                         rs.setResponse_code("55");
                         rs.setInfo("Failed");
                         rs.setResponse("CASE ID : " + dataCase.getCaseID() + "rejected ");
                         process = false;
-                        CreateLog.createJson(rs, "createLoanb-employee");
+                        log.error("createLoanb" + rs);
+                        CreateLog.createJson(rs, "createLoanb");
+                        return rs;
                     }
                     if (dataCase.getStatus().contains("d")) {
                         rs.setResponse_code("55");
                         rs.setInfo("Failed");
                         rs.setResponse("CASE ID : " + dataCase.getCaseID() + "already disbursement ");
                         process = false;
-                        CreateLog.createJson(rs, "createLoanb-employee");
+                        log.error("createLoanb" + rs);
+                        CreateLog.createJson(rs, "createLoanb");
+                        return rs;
+                    }
+                    if (dataCase.getStatus().contains("s")) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("CASE ID : " + dataCase.getCaseID() + " Need Approval by Admin ");
+                        process = false;
+                        log.error("createLoanb" + rs);
+                        CreateLog.createJson(rs, "createLoanb");
+                        return rs;
+                    }
+                    if (dataCase.getStatus().contains("closed")) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("CASE ID : " + dataCase.getCaseID() + " Status closed ");
+                        process = false;
+                        log.error("createLoanb" + rs);
+                        CreateLog.createJson(rs, "createLoanb");
+                        return rs;
                     }
                     dataLoan.setEmployee(dataEMploye);
                     String isi_tgl_repayment = null;
@@ -457,6 +486,86 @@ public class LoanController {
 
                     dataLoan.setTgl_input(sdfYear2.format(now));
                     dataLoan.setRepayment_date(tgl_repayment);
+                    log.info("dataCase.getEngagementId()" + dataCase.getEngagementId());
+                    Double cek_loan = this.loanService.loanB(dataCase.getEngagementId());
+                    Double balance = 0.0;
+                    if (cek_loan != null || !cek_loan.equals(0)) {
+                        balance = object.getLoan_amount() + cek_loan;
+                    } else {
+                        balance = object.getLoan_amount();
+                    }
+                    if (object.getRepayment_date() != null) {
+                        isi_tgl_repayment = dateFormat.format(object.getRepayment_date());
+
+                        tgl_repayment = dateFormat.parse(isi_tgl_repayment);
+                    }
+                    if (object.getCreated_date() == null) {
+                        isi_tgl_pengajuan = dateFormat.format(new Date());
+                        tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
+                    } else if (object.getCreated_date() != null) {
+                        isi_tgl_pengajuan = dateFormat.format(object.getCreated_date());
+                        tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
+                    }
+                    if (tgl_repayment.compareTo(tgl_pengajuan) < 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl_pengajuan > tgl_repayment");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb");
+                        log.error("createLoanb : " + rs);
+                        return rs;
+                    }
+                    if (tgl_repayment.compareTo(tgl_pengajuan) == 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl repayment == tgl_pengajuan");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb");
+                        log.error("createLoanb : " + rs);
+                        return rs;
+                    }
+
+                    if (object.getRepayment_date() != null) {
+                        isi_tgl_repayment = dateFormat.format(object.getRepayment_date());
+
+                        tgl_repayment = dateFormat.parse(isi_tgl_repayment);
+                    }
+                    if (object.getCreated_date() == null) {
+                        isi_tgl_pengajuan = dateFormat.format(new Date());
+                        tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
+                    } else if (object.getCreated_date() != null) {
+                        isi_tgl_pengajuan = dateFormat.format(object.getCreated_date());
+                        tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
+                    }
+                    if (tgl_repayment.compareTo(tgl_pengajuan) < 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl_pengajuan > tgl_repayment");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb");
+                        log.error("createLoanb : " + rs);
+                        return rs;
+                    }
+                    if (tgl_repayment.compareTo(tgl_pengajuan) == 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("tgl repayment == tgl_pengajuan");
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb");
+                        log.error("createLoanb : " + rs);
+                        return rs;
+                    }
+
+                    if (dmpPortion.compareTo(balance) < 0) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("limit loan B CASE ID" + dataCase.getCaseID() + " : " + String.format("%.0f", dmpPortion) + " Total Loan : " + String.format("%.0f", balance));
+                        process = false;
+                        CreateLog.createJson(rs, "createLoanb");
+                        log.error("createLoanb : " + rs);
+                        return rs;
+                    }
+
                     dataLoan.setLoanAmount(object.getLoan_amount());
                     dataLoan.setLoantype(typeLoan);
                     dataLoan.setStatus("s");
@@ -465,26 +574,26 @@ public class LoanController {
                     entityHistory.setUserId(dataEMploye.getIdEmployee());
                     entityHistory.setResponse(typeLoan + " submit");
                     dataLoan.setEngagement(dataCase);//BCS200101
-                    Integer number = 0;
-                    List<Loan> list = loanService.generateLoanIdB(dataCase.getCaseID(), null, null);
-                    if (list != null || !list.isEmpty()) {
-                        number = list.size();
-                    }
-                    if (number == 0) {
-                        number = 1;
-                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
-                    } else {
-                        number = number + 1;
-                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
-                    }
-                    Loan entity = loanService.findByLoanIdB(load_id);
-                    Log.info("entity b : " + entity);
-                    if (entity != null) {
-                        number = number + 1;
-                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
-                    }
-                    Log.info("check_load_id b : " + load_id);
-                    dataLoan.setLoanId(load_id);
+//                    Integer number = 0;
+//                    List<Loan> list = loanService.generateLoanIdB(dataCase.getCaseID(), null, null);
+//                    if (list != null || !list.isEmpty()) {
+//                        number = list.size();
+//                    }
+//                    if (number == 0) {
+//                        number = 1;
+//                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
+//                    } else {
+//                        number = number + 1;
+//                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
+//                    }
+//                    Loan entity = loanService.findByLoanIdB(load_id);
+//                    Log.info("entity b : " + entity);
+//                    if (entity != null) {
+//                        number = number + 1;
+//                        load_id = "BCS" + Util.removeCase(dataCase.getCaseID()) + Util.setNumbering(number.toString());
+//                    }
+//                    Log.info("check_load_id b : " + load_id);
+//                    dataLoan.setLoanId(load_id);
                     dataLoan.addAHistory(entityHistory);
                     Loan dLoan = loanService.create(dataLoan);
                     if (dLoan != null) {
@@ -512,6 +621,7 @@ public class LoanController {
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse(ex.getMessage());
+            log.error("createLoanb" + ex.getMessage());
             CreateLog.createJson(rs, "createLoan-employee");
             return rs;
         }
@@ -602,14 +712,90 @@ public class LoanController {
                     dataLoan.setIsActive("2");
                     entityHistory.setResponse(object.getRemarks());
                 } else if (object.getDecision().contains("a")) {
-                    dataLoan.setStatus(object.getDecision());
-                    dataLoan.setIsActive("0");
-                    entityHistory.setResponse("approve");
+                    if (dataLoan.getLoantype().getTypeLoan().contentEquals("a")) {
+                        Employee employee = employeeService.findById(dataLoan.getEmployee().getIdEmployee());
+                        String year_val = sdfYear.format(now);
+                        Integer number = 0;
+                        Date y_val = sdfYear.parse(year_val);
+                        String load_id = null;
+                        dataLoan.setStatus(object.getDecision());
+                        dataLoan.setIsActive("0");
+                        if (sdfYear.format(now).compareTo(sdfYear.format(dataLoan.getDate_created())) == 0) {
+                            List<Loan> list = loanService.generateLoanId("A", employee.getEmployeeId(), dataLoan.getTgl_input());
+
+                            if (list != null || !list.isEmpty()) {
+                                number = list.size();
+                            }
+                            if (number == 0) {
+                                number = 1;
+                                load_id = "A" + employee.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                            } else {
+                                number = number + 1;
+                                load_id = "A" + employee.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                            }
+                        } else {
+                            List<Loan> list = loanService.generateLoanId("A", employee.getEmployeeId(), dataLoan.getTgl_input());
+
+                            if (list != null || !list.isEmpty()) {
+                                number = list.size();
+                            }
+                            if (number == 0) {
+                                number = 1;
+                                load_id = "A" + employee.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                            } else {
+                                number = number + 1;
+                                load_id = "A" + employee.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                            }
+                        }
+
+                        log.info("load_id : " + load_id);
+                        Loan entity = loanService.findByLoanId(load_id);
+                        if (entity != null) {
+                            number = number + 1;
+                            load_id = "A" + employee.getEmployeeId() + year_val + Util.setNumbering(number.toString());
+                        }
+                        log.info("load_id now : " + load_id);
+                        dataLoan.setLoanId(load_id);
+                        entityHistory.setResponse("approve");
+                    }
+                    if (dataLoan.getLoantype().getTypeLoan().contentEquals("b")) {
+                        Integer number = 0;
+                        String load_id = null;
+                        Engagement engagement = engagementService.findById(dataLoan.getEngagement().getEngagementId());
+                        if (engagement == null) {
+                            rs.setResponse_code("55");
+                            rs.setInfo("Failed");
+                            rs.setResponse("Engagement Id Not Found");
+                            CreateLog.createJson(rs, "loan-approval-ByAdmin");
+                            return rs;
+                        }
+                        String caseId = engagement.getCaseID();
+                        List<Loan> list = loanService.generateLoanIdB(caseId, null, null);
+                        if (list != null || !list.isEmpty()) {
+                            number = list.size();
+                        }
+                        if (number == 0) {
+                            number = 1;
+                            load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                        } else {
+                            number = number + 1;
+                            load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                        }
+                        Loan entity = loanService.findByLoanIdB(load_id);
+                        Log.info("entity b : " + entity);
+                        if (entity != null) {
+                            number = number + 1;
+                            load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                        }
+                        Log.info("check_load_id b : " + load_id);
+                        dataLoan.setLoanId(load_id);
+                        entityHistory.setResponse("approve");
+                    }
                 }
                 entityHistory.setLoan(dataLoan);
                 entityHistory.setUserId(object.getId_employee_admin());
-//        dataLoan.setIsActive("0");
-//        dataLoan.addAHistory(entityHistory);
+//              dataLoan.setIsActive("0");
+//              dataLoan.addAHistory(entityHistory);
                 loanHistoryService.create(entityHistory);
                 Loan upDataLoan = loanService.update(dataLoan);
                 if (upDataLoan.getIsActive().contentEquals("0")) {
@@ -640,8 +826,18 @@ public class LoanController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "loan-approve-ByAdmin");
             CreateLog.createJson(ex.getMessage(), "loan-approve-ByAdmin");
+            log.error("loan-approve-ByAdmin : " + ex.getMessage());
             return rs;
 
+        } catch (ParseException ex) {
+            Logger.getLogger(LoanController.class.getName()).log(Level.SEVERE, null, ex);
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse(ex.getMessage());
+            CreateLog.createJson(rs, "loan-approve-ByAdmin");
+            CreateLog.createJson(ex.getMessage(), "loan-approve-ByAdmin");
+            log.error("loan-approve-ByAdmin : " + ex.getMessage());
+            return rs;
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
@@ -725,7 +921,39 @@ public class LoanController {
                 } else if (object.getDecision().contains("a")) {
                     dataLoan.setStatus(object.getDecision());
                     dataLoan.setIsActive("0");
+
+                    Integer number = 0;
+                    String load_id = null;
+                    Engagement engagement = engagementService.findById(dataLoan.getEngagement().getEngagementId());
+                    if (engagement == null) {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("Engagement Id Not Found");
+                        CreateLog.createJson(rs, "loan-approval-ByAdmin");
+                        return rs;
+                    }
+                    String caseId = engagement.getCaseID();
+                    List<Loan> list = loanService.generateLoanIdB(caseId, null, null);
+                    if (list != null || !list.isEmpty()) {
+                        number = list.size();
+                    }
+                    if (number == 0) {
+                        number = 1;
+                        load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                    } else {
+                        number = number + 1;
+                        load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                    }
+                    Loan entity = loanService.findByLoanIdB(load_id);
+                    Log.info("entity b : " + entity);
+                    if (entity != null) {
+                        number = number + 1;
+                        load_id = "BCS" + Util.removeCase(caseId) + Util.setNumbering(number.toString());
+                    }
+                    Log.info("check_load_id b : " + load_id);
+                    dataLoan.setLoanId(load_id);
                     entityHistory.setResponse("approve");
+
                 }
                 entityHistory.setLoan(dataLoan);
                 entityHistory.setUserId(object.getId_employee_admin());
@@ -931,33 +1159,6 @@ public class LoanController {
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
 //                HttpStatus.NOT_FOUND);
     }
-//
-//    @PermitAll
-//    @PutMapping(value = "/deleteLoan/{loan_id}", produces = {"application/json"})
-//    public Response deleteLoan(@RequestBody final LoanApi object, @PathVariable("loan_id") Long loan_id) {
-//        Loan entity = loanService.findById(loan_id);
-//        Employee dataEMploye = employeeService.findById(object.getId_employee_admin());
-//        if (dataEMploye == null) {
-//            rs.setResponse_code("55");
-//            rs.setInfo("Failed");
-//            rs.setResponse("Employee Id Not found");
-//        }
-////        if (dataEMploye.getRoleName().contentEquals("admin")) {
-////            rs.setResponse_code("55");
-////            rs.setInfo("Failed");
-////            rs.setResponse("Cannot Access This feature");
-////        }
-//        if (entity != null) {
-//            entity.setIsDelete(true);
-//            entity.setIsActive("0");
-//
-//            rs.setResponse_code("01");
-//            rs.setInfo("Succes");
-//            rs.setResponse("Loan Deleted");
-//        }
-//        return rs;
-//    }
-//
 
     @RequestMapping(value = "/view/list-of-loan-a", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
@@ -981,9 +1182,9 @@ public class LoanController {
             int start = 0;
             List<Loan> entityList = null;
             if (start == 0) {
-                entityList = this.loanService.listLoan(0, 0, "a");
+                entityList = this.loanService.listLoan(0, 0, "a", entityEmp.getIdEmployee(), entityEmp.getRoleName());
             } else {
-                entityList = this.loanService.listLoan(max, start, "a");
+                entityList = this.loanService.listLoan(max, start, "a", entityEmp.getIdEmployee(), entityEmp.getRoleName());
             }
 
             JSONArray array = new JSONArray();
@@ -995,11 +1196,7 @@ public class LoanController {
                 } else {
                     jsonobj.put("id_loan", entity.getId());
                 }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
-                }
+
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
                     jsonobj.put("loan_limit", "");
@@ -1077,9 +1274,20 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
+
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
                 } else {
@@ -1120,11 +1328,6 @@ public class LoanController {
                     jsonobj.put("id_loan", "");
                 } else {
                     jsonobj.put("id_loan", entity.getId());
-                }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
                 }
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
@@ -1194,8 +1397,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
@@ -1274,11 +1487,7 @@ public class LoanController {
                 } else {
                     jsonobj.put("id_loan", entity.getId());
                 }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
-                }
+
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
                     jsonobj.put("loan_limit", "");
@@ -1355,8 +1564,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
@@ -1433,11 +1652,6 @@ public class LoanController {
                     jsonobj.put("id_loan", "");
                 } else {
                     jsonobj.put("id_loan", entity.getId());
-                }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
                 }
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
@@ -1516,8 +1730,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
@@ -1563,9 +1787,9 @@ public class LoanController {
             int start = 0;
             List<Loan> entityList = null;
             if (start == 0) {
-                entityList = this.loanService.listLoan(0, 0, "b");
+                entityList = this.loanService.listLoan(0, 0, "b", entityEmp.getIdEmployee(), entityEmp.getRoleName());
             } else {
-                entityList = this.loanService.listLoan(max, start, "b");
+                entityList = this.loanService.listLoan(max, start, "b", entityEmp.getIdEmployee(), entityEmp.getRoleName());
             }
 
             JSONArray array = new JSONArray();
@@ -1576,11 +1800,6 @@ public class LoanController {
                     jsonobj.put("id_loan", "");
                 } else {
                     jsonobj.put("id_loan", entity.getId());
-                }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
                 }
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
@@ -1660,8 +1879,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
@@ -1712,11 +1941,6 @@ public class LoanController {
                 } else {
                     jsonobj.put("id_loan", entity.getId());
                 }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
-                }
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
                 } else {
@@ -1794,8 +2018,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");
@@ -1865,11 +2099,6 @@ public class LoanController {
                 } else {
                     jsonobj.put("id_loan", entity.getId());
                 }
-                if (entity.getLoanId() == null) {
-                    jsonobj.put("loan_id", "");
-                } else {
-                    jsonobj.put("loan_id", entity.getLoanId());
-                }
                 if (entity.getLoanAmount() == null) {
                     jsonobj.put("amount", "");
                 } else {
@@ -1947,8 +2176,18 @@ public class LoanController {
                 }
                 if (entity.getStatus() == null) {
                     jsonobj.put("status_loan", "");
+                    jsonobj.put("loan_id", "");
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
+                    if (entity.getLoanId() == null) {
+                        if (entity.getStatus().contains("s")) {
+                            jsonobj.put("loan_id", "Need Admin Approval");
+                        } else if (entity.getStatus().contains("r")) {
+                            jsonobj.put("loan_id", "Rejected By Admin");
+                        }
+                    } else {
+                        jsonobj.put("loan_id", entity.getLoanId());
+                    }
                 }
                 if (entity.getTgl_input() == null) {
                     jsonobj.put("tahun_input", "");

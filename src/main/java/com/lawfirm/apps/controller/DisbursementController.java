@@ -10,7 +10,6 @@ import com.lawfirm.apps.model.Disbursement;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.EntityPTKP;
 import com.lawfirm.apps.model.EntityPeriod;
-import com.lawfirm.apps.model.Financial;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.LoanHistory;
 import com.lawfirm.apps.model.LoanType;
@@ -51,7 +50,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +74,6 @@ import org.slf4j.LoggerFactory;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-//@Slf4j
 //@RequestMapping({"/disbursement"})//pembayaran
 public class DisbursementController {
 
@@ -161,7 +158,7 @@ public class DisbursementController {
         try {
             Boolean process = true;
             String name = authentication.getName();
-            log.info("name : " + name);
+            log.info("disbursementsLoans : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entity : " + entityEmp);
             if (entityEmp == null) {
@@ -169,7 +166,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsLoans");
-                log.info("erorr : " + rs);
+                log.info("disbursementsLoans : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -178,6 +175,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
+                log.info("disbursementsLoans : " + rs);
                 CreateLog.createJson(rs, "disbursementsLoans");
                 process = false;
 
@@ -268,12 +266,14 @@ public class DisbursementController {
                     }
                     array.put(jsonobj);
                 }
+                log.info("disbursementsLoans : " + array.toString());
                 return ResponseEntity.ok(array.toString());
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsLoans");
+                log.error("disbursementsLoans : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -281,6 +281,7 @@ public class DisbursementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "disbursementsLoans");
+            log.error("disbursementsLoans : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -291,6 +292,7 @@ public class DisbursementController {
     @XxsFilter
     public Response disburseLoanA(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
         try {
+            log.info("disburseLoanA jsonObject : " + object);
             Date now = new Date();
             Date dateDisburs = new Date();
 
@@ -316,6 +318,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
+                log.error("disburseLoanA : " + rs);
                 CreateLog.createJson(rs, "disburseLoanA");
 //                process = false;
                 return rs;
@@ -325,6 +328,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
                 CreateLog.createJson(rs, "disburse");
+                log.error("disburseLoanA : " + rs);
 //                process = false;
                 return rs;
             }
@@ -336,7 +340,9 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disburseLoanA");
+                log.error("disburseLoanA : " + rs);
                 process = false;
+                return rs;
             }
 //        if (dataEMploye.getRoleName().contentEquals("finance")) {
 //            rs.setResponse_code("55");
@@ -351,7 +357,9 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "disburseLoanA");
+                log.error("disburseLoanA : " + rs);
                 process = false;
+                return rs;
             }
             if (dataLoan.getStatus().contentEquals("r")) {
                 rs.setResponse_code("55");
@@ -365,14 +373,18 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
                 CreateLog.createJson(rs, "disburseLoanA");
+                log.error("disburseLoanA : " + rs);
                 process = false;
+                return rs;
             }
             if (dataLoan.getIsActive().contentEquals("4")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Id : " + dataLoan.getLoanId() + " Already disbursed");
                 CreateLog.createJson(rs, "disburseLoanA");
+                log.error("disburseLoanA : " + rs);
                 process = false;
+                return rs;
             }
             if (process) {
                 dataLoan.setAprovedByFinance(dataEMploye.getIdEmployee().toString());//dataEMploye.getName()
@@ -426,12 +438,14 @@ public class DisbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanA");
+                    log.info("disburseLoanA : " + rs);
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburseLoanA");
+                    log.error("disburseLoanA : " + rs);
                     return rs;
                 }
             }
@@ -444,6 +458,7 @@ public class DisbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburseLoanA");
             CreateLog.createJson(ex.getMessage(), "disburseLoanA");
+            log.error("disburseLoanA : " + ex.getMessage());
             return rs;
 
         } catch (ParseException ex) {
@@ -454,6 +469,7 @@ public class DisbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburseLoanA");
             CreateLog.createJson(ex.getMessage(), "disburseLoanA");
+            log.error("disburseLoanA : " + ex.getMessage());
             return rs;
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
@@ -464,10 +480,11 @@ public class DisbursementController {
     @XxsFilter
     public Response disburseLoanB(@RequestBody final LoanApi object, @PathVariable("id_loan") Long id_loan, Authentication authentication) {
         try {
+            log.info("disburseLoanB jsonObject " + object);
             Date now = new Date();
             Date dateDisburs = new Date();
             String name = authentication.getName();
-            log.info("name : " + name);
+//            log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entity : " + entityEmp);
 
@@ -489,6 +506,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
 //                process = false;
                 return rs;
             }
@@ -497,6 +515,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
 //                process = false;
                 return rs;
             }
@@ -508,6 +527,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
                 process = false;
             }
 //        if (dataEMploye.getRoleName().contentEquals("finance")) {
@@ -523,6 +543,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
                 process = false;
             }
             if (dataLoan.getStatus().contentEquals("r")) {
@@ -530,6 +551,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps are rejected");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("1")) {
@@ -537,6 +559,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("4")) {
@@ -544,6 +567,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Id : " + dataLoan.getLoanId() + " Already Disbursed ");
                 CreateLog.createJson(rs, "disburseLoanB");
+                log.error("disburseLoanB : " + rs);
                 process = false;
             }
             if (process) {
@@ -594,12 +618,15 @@ public class DisbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanB");
+                    log.info("disburseLoanB : " + rs);
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburseLoanB");
+                    log.error("disburseLoanB : " + rs);
+                    log.error("disburseLoanB : " + rs);
                     return rs;
                 }
             }
@@ -612,6 +639,7 @@ public class DisbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburseLoanB");
             CreateLog.createJson(ex.getMessage(), "disburseLoanB");
+            log.error("disburseLoanB : " + ex.getMessage());
             return rs;
 
         } catch (ParseException ex) {
@@ -622,6 +650,7 @@ public class DisbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "disburseLoanB");
             CreateLog.createJson(ex.getMessage(), "disburseLoanB");
+            log.error("disburseLoanB : " + ex.getMessage());
             return rs;
         }
 //        return new ResponseEntity(new CustomErrorType("Data Not Found "),
@@ -634,14 +663,15 @@ public class DisbursementController {
         try {
             Boolean process = true;
             String name = authentication.getName();
-            log.info("name : " + name);
+//            log.info("disbursementsFinance-loanA : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entity : " + entityEmp);
+            log.info("disbursementsFinance-loanA : " + entityEmp);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
+                log.error("disbursementsFinance-loanA : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -649,17 +679,23 @@ public class DisbursementController {
             if (dataEMploye == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("Employee Id Not found");
+                rs.setResponse("Employee Id Not found,Can't acces this feature");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
+                log.error("disbursementsFinance-loanA : " + rs);
                 process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
 
             }
             if (!dataEMploye.getRoleName().contains("finance")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("YOur Role can't acces this feature : ");
+                rs.setResponse("YOur Role can't acces this feature : " + dataEMploye.getRoleName());
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
+                log.error("disbursementsFinance-loanA : " + rs);
                 process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
 
             }
             if (process) {
@@ -748,18 +784,21 @@ public class DisbursementController {
                     }
                     array.put(jsonobj);
                 }
+                log.info("disbursementsFinance-loanA : " + array.toString());
                 return ResponseEntity.ok(array.toString());
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
+                log.error("disbursementsFinance-loanA : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (NumberFormatException | org.json.JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
+            log.error("disbursementsFinance-loanA : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "disbursementsFinance-loanA");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -781,6 +820,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
+                log.error("disbursementsFinance-loanB : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -790,6 +830,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
+                log.error("disbursementsFinance-loanB : " + rs);
                 process = false;
 
             }
@@ -798,6 +839,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("YOur Role can't acces this feature : ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
+                log.error("disbursementsFinance-loanB : " + rs);
                 process = false;
 
             }
@@ -887,12 +929,14 @@ public class DisbursementController {
                     }
                     array.put(jsonobj);
                 }
+                log.info("disbursementsFinance-loanB : " + array.toString());
                 return ResponseEntity.ok(array.toString());
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
+                log.error("disbursementsFinance-loanB : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -900,6 +944,7 @@ public class DisbursementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "disbursementsFinance-loanB");
+            log.error("disbursementsFinance-loanB : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -910,16 +955,18 @@ public class DisbursementController {
     @XxsFilter
     public ResponseEntity<?> viewDisbursementsbyLoan(Authentication authentication, @PathVariable("id_loan") Long id_loan) {
         try {
+            log.info("view-disbursements-by-loan id_loan : " + id_loan);
             Boolean process = true;
             String name = authentication.getName();
-            log.info("name : " + name);
+//            log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entity : " + entityEmp);
+            log.info("view-disbursements-by-loan : " + entityEmp);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
+                log.error("view-disbursements-by-loan : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -930,6 +977,9 @@ public class DisbursementController {
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
                 process = false;
+                log.error("view-disbursements-by-loan : " + rs);
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
 
             }
             if (process) {
@@ -1017,12 +1067,14 @@ public class DisbursementController {
                 } else {
                     jsonobj.put("status_loan", entity.getStatus());
                 }
+                log.info("view-disbursements-by-loan" + jsonobj.toString());
                 return ResponseEntity.ok(jsonobj.toString());
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
+                log.error("view-disbursements-by-loan" + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1030,6 +1082,7 @@ public class DisbursementController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "view-disbursements-by-loan");
+            log.error("view-disbursements-by-loan" + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1040,11 +1093,12 @@ public class DisbursementController {
     @XxsFilter
     public ResponseEntity<?> disbursementbyCaseId(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
         try {
+            log.info("disbursementbyCaseId jsonObiect" + object);
             Date now = new Date();
             Date dateDisburs = new Date();
             Boolean process = true;
             String name = authentication.getName();
-            log.info("name : " + name);
+//            log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entity : " + entityEmp);
             if (entityEmp == null) {
@@ -1052,6 +1106,8 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementbyCaseId");
+                log.error("disbursementbyCaseId : " + rs);
+                process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1062,6 +1118,7 @@ public class DisbursementController {
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementbyCaseId");
                 process = false;
+                log.error("disbursementbyCaseId : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Id Not found"),
                         HttpStatus.NOT_FOUND);
 
@@ -1153,6 +1210,7 @@ public class DisbursementController {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("caseId : " + caseId + " Not found");
+                    log.error("disbursementbyCaseId : " + rs);
                     CreateLog.createJson(rs, "disbursementbyCaseId");
                     process = false;
                     return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
@@ -1514,6 +1572,7 @@ public class DisbursementController {
                     }
                     obj.put("members", arrayM);
 //                    array.put(obj);
+                    log.info("disbursementbyCaseId : " + obj.toString());
                     return ResponseEntity.ok(obj.toString());
                 }
             }
@@ -1524,6 +1583,7 @@ public class DisbursementController {
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         } catch (ParseException ex) {
+            log.error("disbursementbyCaseId : " + ex.getMessage());
             Logger.getLogger(DisbursementController.class.getName()).log(Level.SEVERE, null, ex);
         }
 //
@@ -1534,6 +1594,7 @@ public class DisbursementController {
     @XxsFilter
     public ResponseEntity<?> disbursements(Authentication authentication) {
         try {
+            log.info("disbursements : " + authentication.getName());
             Date now = new Date();
             Date dateDisburs = new Date();
             Boolean process = true;
@@ -1546,6 +1607,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursements");
+                log.error("disbursements : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1555,7 +1617,10 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursements");
+                log.error("disbursements : " + rs);
                 process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
 
             }
             if (process) {
@@ -1635,6 +1700,7 @@ public class DisbursementController {
                             rs.setResponse("caseId : " + caseId + " Not found");
                             CreateLog.createJson(rs, "disbursements");
                             process = false;
+                            log.error("disbursements : " + rs);
                             return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
                                     HttpStatus.NOT_FOUND);
                         }
@@ -2000,6 +2066,7 @@ public class DisbursementController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
+            log.error("disbursements" + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "disbursements");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -2018,6 +2085,8 @@ public class DisbursementController {
             rs.setInfo("disbursement access By : " + authentication.getName());
             rs.setResponse("engagement_id : " + engagement_id.toString());
             CreateLog.createJson(rs, "disbursement");
+            log.info("disbursement PathVariable engagement_id : " + engagement_id);
+            log.info("disbursement jsonObject: " + object);
             Date now = new Date();
 //          Integer number = null;
             Integer number = 0;
@@ -2037,6 +2106,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't disbursement :");
                 CreateLog.createJson(rs, "disbursement");
+                log.error("disbursement jsonObject: " + rs);
                 return rs;
             }
             if (!entityEmp.getRoleName().contentEquals("finance")) {
@@ -2045,6 +2115,7 @@ public class DisbursementController {
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
+                log.error("disbursement jsonObject: " + rs);
                 return rs;
             }
             CaseDetails entity = caseDetailsService.findById(engagement_id);
@@ -2054,6 +2125,7 @@ public class DisbursementController {
                 rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
+                log.error("disbursement : " + rs);
                 return rs;
             }
             if (entity.getStatus().contentEquals("s")) {
@@ -2062,6 +2134,7 @@ public class DisbursementController {
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Need Approve By  Admin");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
+                log.error("disbursement : " + rs);
                 return rs;
             }
             if (entity.getStatus().contentEquals("r")) {
@@ -2070,6 +2143,7 @@ public class DisbursementController {
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Rejected By  Admin");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
+                log.error("disbursement : " + rs);
                 return rs;
             }
             Disbursement disbursementFindbyCaseId = this.disbursementService.disbursementFindbyCaseId(entity.getCaseID());
@@ -2079,6 +2153,7 @@ public class DisbursementController {
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Already Disburse");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
+                log.error("disbursement : " + rs);
                 return rs;
             }
             if (process) {
@@ -2137,6 +2212,7 @@ public class DisbursementController {
                         rs.setInfo("Failed");
                         rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
                         CreateLog.createJson(rs, "disbursement");
+                        log.error("disbursement : " + rs);
                         return rs;
                     }
                     Long id_team = 0l;
@@ -2208,6 +2284,7 @@ public class DisbursementController {
                             rs.setInfo("Failed");
                             rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
                             CreateLog.createJson(rs, "disbursement");
+                            log.error("disbursement : " + rs);
                             return rs;
                         }
                         if (number == 1) {
@@ -2324,12 +2401,14 @@ public class DisbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("disbursement  engagement_id : " + engagement_id + "by : " + entityEmp.getEmployeeId());
                     CreateLog.createJson(rs, "disbursement");
+                    log.info("disbursement : " + rs);
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
                     CreateLog.createJson(rs, "disbursement");
+                    log.error("disbursement : " + rs);
                     return rs;
                 }
             }
@@ -2339,6 +2418,7 @@ public class DisbursementController {
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
+            log.error("disbursement : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "disbursement");
             return rs;
 
@@ -2347,6 +2427,7 @@ public class DisbursementController {
         rs.setInfo("Failed");
         rs.setResponse("can't disbursement engagemet " + engagement_id + "Not Found");
         CreateLog.createJson(rs, "disbursement");
+        log.error("disbursement : " + rs);
         return rs;
 
     }

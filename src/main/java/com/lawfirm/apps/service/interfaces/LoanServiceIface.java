@@ -32,7 +32,7 @@ public interface LoanServiceIface {
 
     Loan findByLoanIdB(String param);
 
-    List<Loan> listLoan(int max, int start, String type);
+    List<Loan> listLoan(int max, int start, String type, Long idEmployee, String role);
 
 //    List<Loan> listLoanB(int max, int start);
     List<Loan> listLoanPaging(int max, int start);
@@ -54,6 +54,8 @@ public interface LoanServiceIface {
     Loan findByIdLoan(Long paramLong);
 
     Double loanEmp(String param1, String param2);
+
+    Double loanB(Long engagementId);
 
     Double sumLoanB(Long paramLong);
 

@@ -156,6 +156,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "upload-case-document");
+                log.error("upload-case-document : " + rs);
                 return rs;
             }
             if (!entity.getRoleName().contentEquals("dmp")) {
@@ -164,6 +165,7 @@ public class CaseController {
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 process = false;
                 CreateLog.createJson(rs, "upload-case-document");
+                log.error("upload-case-document : " + rs);
                 return rs;
             }
 
@@ -174,6 +176,7 @@ public class CaseController {
                 rs.setResponse("case Id Not Found ");
                 process = false;
                 CreateLog.createJson(rs, "upload-case-document");
+                log.error("upload-case-document : " + rs);
                 return rs;
             }
             if (!caseDetails.getStatus().contentEquals("a")) {
@@ -181,6 +184,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("Case Status : " + caseDetails.getStatus());
                 CreateLog.createJson(rs, "create-event");
+                log.error("upload-case-document : " + rs);
                 process = false;
                 return rs;
             }
@@ -189,6 +193,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + caseDetails.getCaseID() + " Status Closed ");
                 CreateLog.createJson(rs, "upload-case-document");
+                log.error("upload-case-document : " + rs);
                 return rs;
             }
             pathDoc = basepathUpload + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
@@ -225,12 +230,14 @@ public class CaseController {
                         rs.setInfo("Succes");
                         rs.setResponse("Upload: Succes : " + fileName);
                         CreateLog.createJson(rs, "upload-case-document");
+                        log.info("upload-case-document : " + rs);
                         return rs;
                     } else {
                         rs.setResponse_code("55");
                         rs.setInfo("Error");
                         rs.setResponse("Error Upload Document");
                         CreateLog.createJson(rs, "upload-case-document");
+                        log.error("upload-case-document : " + rs);
                         return rs;
                     }
 
@@ -244,6 +251,7 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "upload-case-document");
+            log.error("upload-case-document : " + ex.getMessage());
             return rs;
 
         }
@@ -257,6 +265,7 @@ public class CaseController {
             rs.setResponse_code("00");
             rs.setInfo("uploadMultipleDocument Acces by : " + authentication.getName());
             rs.setResponse("engagement_id : " + engagement_id);
+            log.info("uploadMultipleDocument : " + rs);
             CreateLog.createJson(rs, "uploadMultipleDocument");
             CaseDocument entCaseDocument = new CaseDocument();
 
@@ -274,6 +283,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "uploadMultipleDocument");
+                log.error("uploadMultipleDocument : " + rs);
                 return rs;
             }
             if (!entity.getRoleName().contentEquals("dmp")) {
@@ -282,6 +292,7 @@ public class CaseController {
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 process = false;
                 CreateLog.createJson(rs, "uploadMultipleDocument");
+                log.error("uploadMultipleDocument : " + rs);
                 return rs;
             }
 
@@ -292,6 +303,7 @@ public class CaseController {
                 rs.setResponse("case Id Not Found ");
                 process = false;
                 CreateLog.createJson(rs, "uploadMultipleDocument");
+                log.error("uploadMultipleDocument : " + rs);
                 return rs;
             }
             if (caseDetails.getStatus().contains("4")) {
@@ -299,6 +311,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + caseDetails.getCaseID() + " Status Closed ");
                 CreateLog.createJson(rs, "uploadMultipleDocument");
+                log.error("uploadMultipleDocument : " + rs);
                 return rs;
             }
             pathDoc = basepathUpload + "engagemet" + caseDetails.getCaseID() + "/" + "file" + "/";
@@ -316,6 +329,7 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "upload-case-document");
+            log.error("uploadMultipleDocument : " + ex.getMessage());
             return rs;
 
         }
@@ -329,6 +343,7 @@ public class CaseController {
             rs.setResponse_code("00");
             rs.setInfo("listDocument Acces by : " + authentication.getName());
             rs.setResponse("");
+            log.info("list-case-document : " + rs);
             CreateLog.createJson(rs, "list-case-document");
             Date todayDate = new Date();
             Date now = new Date();
@@ -344,6 +359,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "list-case-document");
+                log.error("list-case-document : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -355,6 +371,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "list-case-document");
+                log.error("list-case-document : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -402,6 +419,7 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "list-case-document");
+            log.error("list-case-document : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -415,6 +433,7 @@ public class CaseController {
             rs.setResponse_code("00");
             rs.setInfo("listDocumentByEngId Acces by : " + authentication.getName());
             rs.setResponse("engagement_id : " + engagement_id);
+            log.info("list-case-document-by-engagement_id : " + rs);
             CreateLog.createJson(rs, "list-case-document-by-engagement_id");
             Date todayDate = new Date();
             Date now = new Date();
@@ -430,6 +449,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 process = false;
                 CreateLog.createJson(rs, "list-case-document-by-engagement_id");
+                log.error("list-case-document-by-engagement_id : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -441,6 +461,7 @@ public class CaseController {
                 rs.setResponse("engagement_id : " + engagement_id + " Not Found");
                 process = false;
                 CreateLog.createJson(rs, "list-case-document-by-engagement_id");
+                log.error("list-case-document-by-engagement_id : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -480,6 +501,7 @@ public class CaseController {
                     array.put(obj);
                 }
             }
+            log.info("list-case-document-by-engagement_id : " + array.toString());
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
@@ -488,6 +510,7 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "list-case-document-by-engagement_id");
+            log.error("list-case-document-by-engagement_id : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -501,6 +524,7 @@ public class CaseController {
             rs.setResponse_code("00");
             rs.setInfo("viewDocument access By : " + authentication.getName());
             rs.setResponse("case_document_id : " + case_document_id);
+            log.error("view-Document : " + rs);
             CreateLog.createJson(rs, "view-Document");
             JSONObject jsonobj = new JSONObject();
             Date todayDate = new Date();
@@ -516,6 +540,7 @@ public class CaseController {
                 rs.setInfo("Error");
                 rs.setResponse("can't acces this feature");
                 process = false;
+                log.error("view-Document : " + rs);
                 CreateLog.createJson(rs, "view-Document");
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -525,6 +550,7 @@ public class CaseController {
                 rs.setResponse_code("55");
                 rs.setInfo("Error");
                 rs.setResponse("case_document_id : " + case_document_id + "Not Found");
+                log.error("view-Document : " + rs);
                 process = false;
                 CreateLog.createJson(rs, "view-Document");
                 return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
@@ -544,15 +570,17 @@ public class CaseController {
                     jsonobj.put("info", linkDoc);
                 } catch (JSONException ex) {
                     Logger.getLogger(CaseController.class.getName()).log(Level.SEVERE, null, ex);
+                    log.error("view-Document : " + ex.getMessage());
                     return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
                             HttpStatus.NOT_FOUND);
                 }
-
+                log.info("view-Document : Success");
                 return ResponseEntity.ok(jsonobj.toString());
             }
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse("case_document_id : " + case_document_id + "Not Found");
+            log.error("view-Document : " + rs);
             CreateLog.createJson(rs, "view-Document");
             return new ResponseEntity(new CustomErrorType("55", "Error", "case_document_id : " + case_document_id + "Not Found"),
                     HttpStatus.NOT_FOUND);
@@ -562,6 +590,7 @@ public class CaseController {
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
+            log.error("view-Document : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "view-Document");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -576,6 +605,7 @@ public class CaseController {
             rs.setResponse_code("00");
             rs.setInfo("closingCase access By : " + authentication.getName());
             rs.setResponse("engagement_id : " + object.getEngagement_id().toString());
+            log.info("closing-Case : " + rs);
             CreateLog.createJson(rs, "closing-Case");
             Date now = new Date();
 //          Integer number = null;
@@ -592,12 +622,14 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't closing case :");
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
             }
             if (!entityEmp.getRoleName().contentEquals("admin")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                log.error("closing-Case : " + rs);
                 CreateLog.createJson(rs, "closing-Case");
                 return rs;
             }
@@ -607,6 +639,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't closing case engagement_id " + object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
             }
             if (entity.getStatus().contains("closed")) {
@@ -614,6 +647,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
             }
             if (entity.getIsActive().contains("4")) {
@@ -621,6 +655,7 @@ public class CaseController {
                 rs.setInfo("Failed");
                 rs.setResponse("case Case Id : " + entity.getCaseID() + " Status Closed ");
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
             }
 
@@ -658,12 +693,14 @@ public class CaseController {
                 rs.setInfo("Success");
                 rs.setResponse("closing case engagement_id " + object.getEngagement_id() + "by : " + entityEmp.getEmployeeId());
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
             } else {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't closing case engagement_id " + object.getEngagement_id() + "Not Found");
                 CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs);
                 return rs;
 
             }
@@ -675,6 +712,7 @@ public class CaseController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "closing-Case");
+            log.error("closing-Case : " + ex.getMessage());
             return rs;
 
         }
@@ -688,6 +726,7 @@ public class CaseController {
             rs.setInfo("getCaseId acces By : " + authentication.getName());
             rs.setResponse("");
             CreateLog.createJson(rs, "getCaseId");
+            log.info("getCaseId : " + rs);
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -698,6 +737,7 @@ public class CaseController {
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "getCaseId");
 //                process = false;
+                log.error("getCaseId : " + rs);
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -718,6 +758,7 @@ public class CaseController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "find-by-employee-id");
+            log.error("getCaseId : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
 

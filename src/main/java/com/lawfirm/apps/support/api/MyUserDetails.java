@@ -27,6 +27,7 @@ public class MyUserDetails implements UserDetails {
     private boolean active;
     private String employeeId;
     private String roleName;
+    private Double loanLimit;
     private List<GrantedAuthority> authorities;
     //new fields for the info
 //    private String company;
@@ -39,10 +40,10 @@ public class MyUserDetails implements UserDetails {
         this.active = user.IsActive();
         this.employeeId = user.getEmployeeId();
         this.roleName = user.getRoleName();
-
-        //new fields addition
-//        this.company = user.getCompany();
-//        this.department = user.getDepartment();
+        this.loanLimit = user.getLoanAmount();
+         //new fields addition
+        //        this.company = user.getCompany();
+        //        this.department = user.getDepartment();
         this.authorities = Arrays.stream(user.getRoleName().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -114,6 +115,16 @@ public class MyUserDetails implements UserDetails {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+    public Double getLoanLimit() {
+        return loanLimit;
+    }
+
+    public void setLoanLimit(Double loanLimit) {
+        this.loanLimit = loanLimit;
+    }
+
+   
     
 
 }

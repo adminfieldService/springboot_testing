@@ -97,7 +97,7 @@ public class AuthController {
 //            Authentication authenticate = authenticationManager.authenticate(
 //                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), "lawfirm" + cekEmp.getEmail() + authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
 //            );
-            log.info("getPassword : " + authenticationRequest.getUsername());
+            log.info("getUname : " + authenticationRequest.getUsername());
             log.info("getPassword : " + authenticationRequest.getPassword());
             Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
@@ -123,15 +123,18 @@ public class AuthController {
             response.setUsername(userDetails.getUsername());
             response.setActive(userDetails.isEnabled());
             response.setEmployeeId(userDetails.getEmployeeId());
+//            response.setLoanLimit(userDetails.getLoanLimit());
             List<String> roles = new ArrayList<>();
             userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
             response.setRoles(roles);
+            log.error("info : " + responseHeaders + HttpStatus.OK);
             return new ResponseEntity(response, responseHeaders, HttpStatus.OK);
 
         } catch (AuthenticationException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.toString());
             CreateLog.createJson(ex.toString(), "signin");
+            log.error("ERROR : " + ex.toString());
             return new ResponseEntity(new CustomErrorType("55", "Error", "Invalid username or password"),
                     HttpStatus.NOT_FOUND);
         }

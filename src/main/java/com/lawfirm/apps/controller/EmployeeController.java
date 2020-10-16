@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import javax.annotation.security.PermitAll;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -644,6 +643,7 @@ public class EmployeeController { //LawfirmController
             Boolean cheking = false;
 
             String nama = authentication.getName();
+            log.info("update-profile jsonOject : " + object);
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
@@ -734,46 +734,6 @@ public class EmployeeController { //LawfirmController
                 }
             }
 
-//                if (object.getAddress().length() == 0) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Field Address can't be empty");
-//                    rs.setResponse("Create Employee Failed");
-//                    CreateLog.createJson(rs, "update-profile");
-//                    process = false;
-//                    return rs;
-//                }
-//                if (object.getNik().length() == 0) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Field Nik can't be empty");
-//                    rs.setResponse("Create Employee Failed");
-//                    CreateLog.createJson(rs, "update-profile");
-//                    process = false;
-//                    return rs;
-//                }
-//                if (object.getEmail().length() == 0) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Field Email can't be empty");
-//                    rs.setResponse("Create Employee Failed");
-//                    CreateLog.createJson(rs, "update-profile");
-//                    process = false;
-//                    return rs;
-//                }
-//                if (object.getTax_status().length() == 0) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Field Taxt Can't be empty");
-//                    rs.setResponse("Create Employee Failed");
-//                    CreateLog.createJson(rs, "update-profile");
-//                    process = false;
-//                    return rs;
-//                }
-//                if (object.getCell_phone().length() == 0) {
-//                    rs.setResponse_code("55");
-//                    rs.setInfo("Create Employee Failed");
-//                    rs.setResponse("Field Mobile Can't be empty");
-//                    CreateLog.createJson(rs, "update-profile");
-//                    process = false;
-//                    return rs;
-//                }
             if (object.getEmail().length() > 30) {
                 rs.setResponse_code("55");
                 rs.setInfo("Create Employee Failed");
@@ -946,6 +906,9 @@ public class EmployeeController { //LawfirmController
 
                     }
                     updateEmployee.setGender(gdr);
+                }
+                if (object.getLoan_limit()!= null) {
+                    updateEmployee.setLoanAmount(object.getLoan_limit());
                 }
 
                 Employee newEmployee = employeeService.update(updateEmployee);

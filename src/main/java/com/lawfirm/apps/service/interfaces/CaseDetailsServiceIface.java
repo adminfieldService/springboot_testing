@@ -40,7 +40,7 @@ public interface CaseDetailsServiceIface {
 
     List<CaseDetails> getCaseId();
 
-    List<CaseDetails> listCaseDetails();
+    List<CaseDetails>listCaseDetails(String role, Long idEmployee);
 
     List<CaseDetails> listActive(Boolean isActive);
 

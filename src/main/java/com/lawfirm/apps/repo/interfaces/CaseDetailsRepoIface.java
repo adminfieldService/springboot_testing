@@ -45,7 +45,7 @@ public interface CaseDetailsRepoIface {
 
     List<CaseDetails> findByAdmin(Long paramLong);
 
-    List<CaseDetails> listCaseDetails();
+    List<CaseDetails> listCaseDetails(String role, Long idEmployee);
 
     List<CaseDetails> listActive(Boolean isActive);
 

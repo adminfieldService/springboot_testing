@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -289,15 +288,18 @@ public class EngagementController {
                 log.error("createEngagement : " + rs);
                 return rs;
             }
+            Double dmpPortion = 0.0;
             if (process) {
-
+                if (object.getDmp_portion()!= null) {
+                    dmpPortion = object.getDmp_portion();
+                }
                 log.info("process");
 
                 ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
 //                Integer numberClient = 0;
                 String client_id = "CLIENT";
                 if (dataClient != null) {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPortion) / 100;
                     log.info("dataClient : " + dataClient);
                     Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
                     if (numberClient == 0) {
@@ -349,7 +351,7 @@ public class EngagementController {
                         addTeamMember(ObjectEngagement);
                     }
                 } else {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPortion) / 100;
                     log.info("dataClient nulls");
                     ClientData newClient = new ClientData();
                     newClient.setClientName(object.getClient_name());
@@ -631,7 +633,7 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs);
                 return rs;
             }
-            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+            if (entityEmp.getRoleName().contentEquals("lawyer")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
@@ -640,6 +642,24 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs);
                 return rs;
             }
+            if (entityEmp.getRoleName().contentEquals("support")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
+                process = false;
+                CreateLog.createJson(rs, "updateEngagement");
+                log.error("updateEngagement : " + rs);
+                return rs;
+            }
+//            if (!entityEmp.getRoleName().contentEquals("dmp")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("role : " + authentication.getAuthorities() + ", cannot access update-engagement, Permission denied");
+//                process = false;
+//                CreateLog.createJson(rs, "updateEngagement");
+//                log.error("updateEngagement : " + rs);
+//                return rs;
+//            }
 //            if (!entityEmp.getRoleName().contentEquals("admin")) {
 //                rs.setResponse_code("55");
 //                rs.setInfo("Failed");
@@ -659,15 +679,15 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs);
                 return rs;
             }
-            if (!editEngagement.getStatus().contains("s")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
-                process = false;
-                CreateLog.createJson(rs, "updateEngagement");
-                log.error("updateEngagement : " + rs);
-                return rs;
-            }
+//            if (!editEngagement.getStatus().contains("s")) {
+//                rs.setResponse_code("55");
+//                rs.setInfo("Failed");
+//                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
+//                process = false;
+//                CreateLog.createJson(rs, "updateEngagement");
+//                log.error("updateEngagement : " + rs);
+//                return rs;
+//            }
             if (editEngagement.getStatus().contains("closed")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -677,14 +697,18 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs);
                 return rs;
             }
+            Double dmpPortion = 0.0;
             if (process) {
+                if (object.getDmp_portion()!= null) {
+                    dmpPortion = object.getDmp_portion();
+                }
                 log.info("process");
 
                 ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
 //                Integer numberClient = 0;
                 String client_id = "CLIENT";
                 if (dataClient != null) {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPortion) / 100;
                     log.info("dataClient : " + dataClient);
                     Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
                     if (numberClient == 0) {
@@ -709,7 +733,7 @@ public class EngagementController {
                     editCaseDetails.setStrategy(object.getStrategy());
                     editCaseDetails.setPanitera(object.getPanitera());
                     editCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
-//                    editCaseDetails.setDmpPortion(dmpProtion);
+                    editCaseDetails.setDmpPortion(dmpProtion);
 //                    editCaseDetails.setEmployee(cekDMP);
                     editCaseDetails.setClient(dataClient);
                     editCaseDetails.setTahun_input(sdfYear.format(now));
@@ -735,7 +759,10 @@ public class EngagementController {
                         editTeamMember(ObjectEngagement);
                     }
                 } else {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * 40) / 100;
+//                    if (object.getDmPercent() != null) {
+//                        dmPercent = object.getDmPercent();
+//                    }
+                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPortion) / 100;
                     log.info("dataClient nulls");
                     ClientData newClient = new ClientData();
                     newClient.setClientName(object.getClient_name());
@@ -1329,7 +1356,7 @@ public class EngagementController {
                             status = data.getStatus();
                             if (data.getCaseID() == null) {
                                 if (status.equals("s")) {
-                                    obj.put("case_id", "Need Approval By admin");
+                                    obj.put("case_id", "Need Admin Approval");
                                 }
                                 if (status.equals("r")) {
                                     obj.put("case_id", "Engagement Rejected By admin");
@@ -1461,7 +1488,7 @@ public class EngagementController {
 //            Employee entity = employeeService.findById(id_employee);
 //            if (entity != null) {
             String status = null;
-            List<CaseDetails> listData = caseDetailsService.listCaseDetails();
+            List<CaseDetails> listData = caseDetailsService.listCaseDetails(entity.getRoleName(), entity.getIdEmployee());
             JSONArray array = new JSONArray();
             Long id_team = 0l;
             if (listData != null) {
@@ -1580,7 +1607,7 @@ public class EngagementController {
                         status = data.getStatus();
                         if (data.getCaseID() == null) {
                             if (status.equals("s")) {
-                                obj.put("case_id", "Need Approval By admin");
+                                obj.put("case_id", "Need Admin Approval");
                             }
                             if (status.equals("r")) {
                                 obj.put("case_id", "Engagement Rejected By admin");
@@ -1631,13 +1658,13 @@ public class EngagementController {
                     array.put(obj);
                 }
             }
-            log.debug("lit-engagement" + array.toString());
+            log.debug("list-engagement : " + array.toString());
             return ResponseEntity.ok(array.toString());
 //            }
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
-            CreateLog.createJson(ex.getMessage(), "lit-engagement");
+            CreateLog.createJson(ex.getMessage(), "list-engagement");
             log.error("lit-engagement" + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -1791,7 +1818,7 @@ public class EngagementController {
                         status = data.getStatus();
                         if (data.getCaseID() == null) {
                             if (status.equals("s")) {
-                                obj.put("case_id", "Need Approval By admin");
+                                obj.put("case_id", "Need Admin Approval");
                             }
                             if (status.equals("r")) {
                                 obj.put("case_id", "Engagement Rejected By admin");
@@ -1828,7 +1855,7 @@ public class EngagementController {
                                 obj.put("dmp_name", getDmp.getName());
                                 switch (status) {
                                     case "s":
-                                        obj.put("description", "Need Approval By admin");
+                                        obj.put("description", "Need Admin Approval");
                                         break;
                                     case "r":
                                         obj.put("description", "Engagement Rejected By admin");
@@ -2050,7 +2077,7 @@ public class EngagementController {
 
                         if (data.getCaseID() == null) {
                             if (status.equals("s")) {
-                                obj.put("case_id", "Need Approval By admin");
+                                obj.put("case_id", "Need Admin Approval");
                             }
                             if (status.equals("r")) {
                                 obj.put("case_id", "Engagement Rejected By admin");
@@ -2087,7 +2114,7 @@ public class EngagementController {
                                 obj.put("dmp_name", getDmp.getName());
                                 switch (status) {
                                     case "s":
-                                        obj.put("description", "Need Approval By admin");
+                                        obj.put("description", "Need Admin Approval");
                                         break;
                                     case "r":
                                         obj.put("description", "Engagement Rejected By admin");
@@ -2220,6 +2247,15 @@ public class EngagementController {
 //            String dt = dateFormat.format(object.getSchedule_date());
             Date schedule = dateFormat.parse(object.getSchedule_date());
             System.out.println(schedule);
+            if (dateFormat.format(new Date()).compareTo(dateFormat.format(object.getSchedule_date())) > 0) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("schedule Date : " + dateFormat.format(object.getSchedule_date()) + " before  today Date : " + dateFormat.format(new Date()));
+                process = false;
+                CreateLog.createJson(rs, "createLoana");
+                log.error("createLoana : " + rs);
+                return rs;
+            }
 
 //            System.out.println("dateFormat.format(object.getSchedule_date()) : " + schedule);
             if (schedule == null) {

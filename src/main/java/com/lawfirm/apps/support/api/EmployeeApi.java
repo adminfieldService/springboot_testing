@@ -31,7 +31,7 @@ public class EmployeeApi {
     protected String passUser;
     protected Date dateRegister;
     protected Double salary;
-    protected Double loanAmount;
+    protected Double loan_limit;
     protected String gender;
     protected char isActive;
     protected Employee approvedBy;

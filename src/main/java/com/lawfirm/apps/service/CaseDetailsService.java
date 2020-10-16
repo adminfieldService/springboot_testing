@@ -82,8 +82,8 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public List<CaseDetails> listCaseDetails() {
-        return caseDetailsRepo.listCaseDetails();
+    public List<CaseDetails> listCaseDetails(String role, Long idEmployee) {
+        return caseDetailsRepo.listCaseDetails( role, idEmployee);
     }
 
     @Override

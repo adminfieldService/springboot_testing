@@ -18,9 +18,10 @@ public class AuthenticationResponse implements Serializable {
 
     private final String jwt;
     private int id;
-    private String username;    
-     private String employeeId;
+    private String username;
+    private String employeeId;
     private boolean active;
+    private Double loanLimit;
     private List<String> roles;
 
     public AuthenticationResponse(String jwt) {
@@ -54,7 +55,6 @@ public class AuthenticationResponse implements Serializable {
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
-    
 
     public boolean isActive() {
         return active;
@@ -70,6 +70,14 @@ public class AuthenticationResponse implements Serializable {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public Double getLoanLimit() {
+        return loanLimit;
+    }
+
+    public void setLoanLimit(Double loanLimit) {
+        this.loanLimit = loanLimit;
     }
 
 }

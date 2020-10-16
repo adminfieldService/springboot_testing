@@ -80,7 +80,7 @@ public class CaseDetails extends Engagement implements Serializable {
     protected void onCreate() {
         isActive = "0";
         created_date = new Date();
-        dmPercent = 40;
+//        dmPercent = 40;
     }
 
     public CaseDetails() {

@@ -15,8 +15,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -29,7 +28,7 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public CaseDetails create(CaseDetails entity) {
@@ -261,12 +260,32 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CaseDetails> listCaseDetails() {
+    public List<CaseDetails> listCaseDetails(String role, Long idEmployee) {
         try {
-            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
-                    + " JOIN FETCH c.employee  e"
-                    + " JOIN FETCH c.client t "
-                    + " ORDER BY c.engagementId DESC").getResultList();
+            List<CaseDetails> listAcquire = null;
+            if (role.contentEquals("dmp")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee e"
+                        + " JOIN FETCH c.client t "
+                        + " WHERE "
+                        + " e.idEmployee = :idEmployee"
+                        + " ORDER BY c.engagementId DESC")
+                        .setParameter("idEmployee", idEmployee)
+                        .getResultList();
+            }
+            if (role.contentEquals("admin")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t "
+                        + " ORDER BY c.engagementId DESC").getResultList();
+            }
+            if (role.contentEquals("lawyer")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t "
+                        + " ORDER BY c.engagementId DESC").getResultList();
+            }
+
 //            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "
 //                    + " JOIN FETCH c.employee AS e").getResultList();
             return (List<CaseDetails>) listAcquire;
