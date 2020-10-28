@@ -6,11 +6,6 @@
 package com.lawfirm.apps.utils;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.UnsupportedEncodingException;
-import java.io.FileNotFoundException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.PrintWriter;

@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.repo.interfaces.CaseDetailsRepoIface;
 import com.lawfirm.apps.service.interfaces.CaseDetailsServiceIface;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -83,7 +84,7 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<CaseDetails> listCaseDetails(String role, Long idEmployee) {
-        return caseDetailsRepo.listCaseDetails( role, idEmployee);
+        return caseDetailsRepo.listCaseDetails(role, idEmployee);
     }
 
     @Override
@@ -143,6 +144,18 @@ public class CaseDetailsService implements CaseDetailsServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<CaseDetails> getCaseId() {
         return caseDetailsRepo.getCaseId();
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<CaseDetails> listCaseDetailsPaging(String role, Long idEmployee, int max, int start) {
+        return caseDetailsRepo.listCaseDetailsPaging(role, idEmployee, max, start);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<CaseDetails> findByDate(Date cutoff) {
+        return caseDetailsRepo.findByDate(cutoff);
     }
 
 }

@@ -65,6 +65,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 import com.lawfirm.apps.support.api.DisburseDto;
+import com.lawfirm.apps.support.api.DisburseEmpDto;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -166,7 +167,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsLoans");
-                log.info("disbursementsLoans : " + rs);
+                log.info("disbursementsLoans : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -175,7 +176,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
-                log.info("disbursementsLoans : " + rs);
+                log.info("disbursementsLoans : " + rs.toString());
                 CreateLog.createJson(rs, "disbursementsLoans");
                 process = false;
 
@@ -273,7 +274,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsLoans");
-                log.error("disbursementsLoans : " + rs);
+                log.error("disbursementsLoans : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -318,7 +319,7 @@ public class DisbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
                 CreateLog.createJson(rs, "disburseLoanA");
 //                process = false;
                 return rs;
@@ -328,7 +329,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
                 CreateLog.createJson(rs, "disburse");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
 //                process = false;
                 return rs;
             }
@@ -340,7 +341,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disburseLoanA");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -357,7 +358,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "disburseLoanA");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -373,7 +374,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
                 CreateLog.createJson(rs, "disburseLoanA");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -382,7 +383,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Id : " + dataLoan.getLoanId() + " Already disbursed");
                 CreateLog.createJson(rs, "disburseLoanA");
-                log.error("disburseLoanA : " + rs);
+                log.error("disburseLoanA : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -438,14 +439,14 @@ public class DisbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanA");
-                    log.info("disburseLoanA : " + rs);
+                    log.info("disburseLoanA : " + rs.toString());
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburseLoanA");
-                    log.error("disburseLoanA : " + rs);
+                    log.error("disburseLoanA : " + rs.toString());
                     return rs;
                 }
             }
@@ -506,7 +507,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
 //                process = false;
                 return rs;
             }
@@ -515,7 +516,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature : " + entityEmp.getRoleName().toUpperCase());
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
 //                process = false;
                 return rs;
             }
@@ -527,7 +528,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
                 process = false;
             }
 //        if (dataEMploye.getRoleName().contentEquals("finance")) {
@@ -543,7 +544,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loand id null, Cannot Access This feature");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
                 process = false;
             }
             if (dataLoan.getStatus().contentEquals("r")) {
@@ -551,7 +552,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps are rejected");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("1")) {
@@ -559,7 +560,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan apps Must approve by ADMIN");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
                 process = false;
             }
             if (dataLoan.getIsActive().contentEquals("4")) {
@@ -567,7 +568,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Id : " + dataLoan.getLoanId() + " Already Disbursed ");
                 CreateLog.createJson(rs, "disburseLoanB");
-                log.error("disburseLoanB : " + rs);
+                log.error("disburseLoanB : " + rs.toString());
                 process = false;
             }
             if (process) {
@@ -618,15 +619,15 @@ public class DisbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("Loan apps Approved By :" + dataEMploye.getEmployeeId());//dataLoan.getAprovedByFinance()
                     CreateLog.createJson(rs, "disburseLoanB");
-                    log.info("disburseLoanB : " + rs);
+                    log.info("disburseLoanB : " + rs.toString());
                     return rs;
                 } else {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("Loand id null, Cannot Access This feature");
                     CreateLog.createJson(rs, "disburseLoanB");
-                    log.error("disburseLoanB : " + rs);
-                    log.error("disburseLoanB : " + rs);
+                    log.error("disburseLoanB : " + rs.toString());
+                    log.error("disburseLoanB : " + rs.toString());
                     return rs;
                 }
             }
@@ -671,7 +672,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
-                log.error("disbursementsFinance-loanA : " + rs);
+                log.error("disbursementsFinance-loanA : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -681,7 +682,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found,Can't acces this feature");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
-                log.error("disbursementsFinance-loanA : " + rs);
+                log.error("disbursementsFinance-loanA : " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -692,7 +693,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("YOur Role can't acces this feature : " + dataEMploye.getRoleName());
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
-                log.error("disbursementsFinance-loanA : " + rs);
+                log.error("disbursementsFinance-loanA : " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -791,7 +792,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanA");
-                log.error("disbursementsFinance-loanA : " + rs);
+                log.error("disbursementsFinance-loanA : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -820,7 +821,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
-                log.error("disbursementsFinance-loanB : " + rs);
+                log.error("disbursementsFinance-loanB : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -830,7 +831,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
-                log.error("disbursementsFinance-loanB : " + rs);
+                log.error("disbursementsFinance-loanB : " + rs.toString());
                 process = false;
 
             }
@@ -839,7 +840,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("YOur Role can't acces this feature : ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
-                log.error("disbursementsFinance-loanB : " + rs);
+                log.error("disbursementsFinance-loanB : " + rs.toString());
                 process = false;
 
             }
@@ -936,7 +937,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "disbursementsFinance-loanB");
-                log.error("disbursementsFinance-loanB : " + rs);
+                log.error("disbursementsFinance-loanB : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -966,7 +967,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
-                log.error("view-disbursements-by-loan : " + rs);
+                log.error("view-disbursements-by-loan : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -977,7 +978,7 @@ public class DisbursementController {
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
                 process = false;
-                log.error("view-disbursements-by-loan : " + rs);
+                log.error("view-disbursements-by-loan : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
 
@@ -1074,7 +1075,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Loan Data Null ");
                 CreateLog.createJson(rs, "view-disbursements-by-loan");
-                log.error("view-disbursements-by-loan" + rs);
+                log.error("view-disbursements-by-loan" + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Loan Data Null"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1089,11 +1090,773 @@ public class DisbursementController {
 
     }
 
-    @RequestMapping(value = "/disbursement/case-id", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/disbursement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> disbursementbyCaseId(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
+    public ResponseEntity<?> disburseMultiple(@PathVariable("engagement_id") Long engagement_id, @RequestBody DisburseDto object, Authentication authentication) {
         try {
-            log.info("disbursementbyCaseId jsonObiect" + object);
+            rs.setResponse_code("00");
+            rs.setInfo("disburseMultiple access By : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id.toString());
+            CreateLog.createJson(rs, "disburse");
+            log.info("disburseMultiple PathVariable engagement_id : " + engagement_id);
+            log.info("disburseMultiple jsonObject: " + object);
+            Date now = new Date();
+            Integer number = 0;
+            OutStandingLoanA outStandingLoanA = new OutStandingLoanA();
+
+            String name = authentication.getName();
+            String caseId = null;
+
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            log.info("engagement_id : " + engagement_id);
+
+            Boolean process = true;
+
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't disbursement :");
+                CreateLog.createJson(rs, "disburseMultiple");
+                log.error("disburseMultiple jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (!entityEmp.getRoleName().contentEquals("finance")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                CreateLog.createJson(rs, "disburseMultiple");
+                process = false;
+                log.error("disburseMultiple jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            String cutOffdate = dateFormat.format(object.getCut_off_date());
+            Date cutOffDate = dateFormat.parse(cutOffdate);
+            /*
+               find case data by cut off date
+                param cutOffDateformat ("yyyy-MM-dd")
+                return listCase
+             */
+            List<CaseDetails> listCase = caseDetailsService.findByDate(cutOffDate);
+
+            if (listCase == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("disburse data not Found");
+                CreateLog.createJson(rs, "disburseMultiple");
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+
+            }
+            for (int d = 0; d < listCase.size(); d++) {
+
+                log.info(" listCase.size() : " + listCase.size());
+
+                CaseDetails dataCaseDetails = listCase.get(d);
+                CaseDetails entityCase = caseDetailsService.findById(dataCaseDetails.getEngagementId());
+
+                if (entityCase == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("can't closing case engagement_id " + dataCaseDetails.getEngagementId() + "Not Found");
+                    CreateLog.createJson(rs, "disburse");
+                    process = false;
+                    log.error("disburseMultiple : " + rs.toString());
+                    return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                            HttpStatus.NOT_FOUND);
+                }
+                if (entityCase.getStatus().contentEquals("s")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("case Case Id : " + entityCase.getCaseID() + " Need Approve By  Admin");
+                    CreateLog.createJson(rs, "disburse");
+                    process = false;
+                    log.error("disburseMultiple : " + rs.toString());
+                    return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                            HttpStatus.NOT_FOUND);
+                }
+                if (entityCase.getStatus().contentEquals("r")) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("case Case Id : " + entityCase.getCaseID() + " Rejected By  Admin");
+                    CreateLog.createJson(rs, "disburse");
+                    process = false;
+                    log.error("disburseMultiple : " + rs.toString());
+                    return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                            HttpStatus.NOT_FOUND);
+                }
+                Disbursement disbursementFindbyCaseId = this.disbursementService.disbursementFindbyCaseId(entityCase.getCaseID());
+                if (disbursementFindbyCaseId != null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("Case Id : " + entityCase.getCaseID() + " Already Disburse");
+                    CreateLog.createJson(rs, "disburse");
+                    process = false;
+                    log.error("disburse : " + rs.toString());
+                    return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                            HttpStatus.NOT_FOUND);
+                }
+                if (process) {
+                    Disbursement disbursement = new Disbursement();
+                    disbursement.setEngagement(entityCase);
+                    List<Disbursement> disburseList = this.disbursementService.numOfDisbursement(sdfYear.format(now));
+                    if (disburseList == null || disburseList.isEmpty()) {
+                        number = 1;
+                    } else {
+                        number = disburseList.size() + 1;
+                    }
+                    String dt = dateFormat.format(new Date());
+                    Date disburse = dateFormat.parse(dt);
+                    String disburseM = sdfDisbursM.format(new Date());
+                    String disburseMy = sdfDisbursMY.format(new Date());
+                    System.out.println("isi disburseMultiple : " + disburseM);
+                    disbursement.setBulanInput(disburseM);
+
+                    String dsb_id = "DSB" + disburseMy;
+//                String cutOffdate = dateFormat.format(object.getCut_off_date());
+//                Date cutOffDate = dateFormat.parse(cutOffdate);
+
+                    disbursement.setDisbursementId(dsb_id);
+                    disbursement.setDisburse_date(disburse);
+
+                    if (number == 1) {
+
+                        disbursement.setOldCutOffDate(cutOffDate);
+                    }
+                    if (number == 2) {
+                        Disbursement endisbursement = disbursementService.disbursement(1, sdfYear.format(now));
+                        String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
+                        Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
+                        disbursement.setOldCutOffDate(oldCutOffDate);
+                    }
+                    if (number == 3) {
+                        Disbursement endisbursement = disbursementService.disbursement(2, sdfYear.format(now));
+                        String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
+                        Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
+                        disbursement.setOldCutOffDate(oldCutOffDate);
+                    }
+                    disbursement.setCutOffDate(cutOffDate);
+                    disbursement.setNumberOfDisbursement(number);
+                    disbursement.setBulanInput(sdfMonth.format(now));
+                    disbursement.setTahunInput(sdfYear.format(now));
+                    Disbursement endisbursement = this.disbursementService.create(disbursement);
+
+//                
+//                
+                    if (endisbursement != null) {
+                        log.error("endisbursement : " + endisbursement);
+                        List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(entityCase.getEngagementId());
+                        if (entityTeam == null) {
+                            disbursementService.remove(endisbursement);
+                            rs.setResponse_code("55");
+                            rs.setInfo("Failed");
+                            rs.setResponse("can't disburse engagement_id : " + engagement_id + " Not Found");
+                            CreateLog.createJson(rs, "disburseMultiple");
+                            log.error("disburseMultiple : " + rs.toString());
+                            return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                                    HttpStatus.NOT_FOUND);
+                        }
+                        Long id_team = 0l;
+
+                        Double total_income_fortax_purpose_dmp = 0d;
+                        Double total_income_fortax_purpose_team = 0d;
+
+                        Double outstanding_loan_a_dmp = 0d;
+                        Double outstanding_loan_a_team = 0d;
+                        String oldcutOffdate = null;
+                        Date oldCutOffDate = null;
+//                    
+                        Double taxable_income_dmp = 0d;
+                        Double taxable_income_team = 0d;
+                        Double dmpPortion = 0d;
+                        Double amount_portion_dmp = 0d;
+                        Double amount_portion_team = 0d;
+                        Integer anual_salary_team = (4000000 * 13);
+                        int a_jabatan = (60000000 * 5) / 100;
+                        int b_jabatan = ((anual_salary_team * 5) / 100) / 13;
+                        int masa_kerja = 0;
+                        String jabatan_per_bulan = String.format("%d", Math.min(a_jabatan, b_jabatan));
+                        Integer jabatan_per_tahun = (masa_kerja * Integer.parseInt(jabatan_per_bulan));
+
+                        for (int j = 0; j < entityTeam.size(); j++) {
+                            CaseDetails caseDetails = caseDetailsService.findById(dataCaseDetails.getEngagementId());
+                            if (caseDetails != null) {
+                                dmpPortion = caseDetails.getDmpPortion();
+                            } else {
+                                dmpPortion = 0d;
+                            }
+                            EntityPeriod entityPeriodDmp = new EntityPeriod();
+                            EntityPeriod entityPeriod = new EntityPeriod();
+                            TeamMember dataTeam = entityTeam.get(j);
+
+                            if (dataTeam.getTeamMemberId() != null) {
+                                id_team = dataTeam.getTeamMemberId();
+                            }
+
+                            Employee getDmp = employeeService.findById(dataTeam.getDmpId());
+                            String dmp_tax_status = getDmp.getTaxStatus();
+                            Double ptkp = 0d;
+                            log.info("dmp_tax_status : " + dmp_tax_status);
+//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                            EntityPTKP ptkpDmp = this.ptkpService.findPTKPByTaxStatus(dmp_tax_status);
+                            log.info("ptkpDmp : " + ptkpDmp);
+                            if (ptkpDmp != null) {
+                                ptkp = ptkpDmp.getPtkp();
+                            }
+
+                            taxable_income_dmp = (jabatan_per_tahun - ptkp);
+
+                            entityPeriodDmp.setTaxYear(sdfYear.format(now));
+                            entityPeriodDmp.setCaseId(entityCase.getCaseID());
+                            entityPeriodDmp.setDisburseId(dsb_id);
+                            entityPeriodDmp.setNumberDisbursement(number);
+                            entityPeriodDmp.setBulanDisburse(sdfMonth.format(now));
+                            entityPeriodDmp.setIdEmployee(getDmp.getIdEmployee());
+                            entityPeriodDmp.setEmployeeId(getDmp.getEmployeeId());
+                            log.info("dmpPortion_case_id" + String.format("%.0f", dmpPortion));
+                            amount_portion_dmp = (dmpPortion * dataTeam.getFeeShare()) / 100;
+                            log.info("amount_portion_dmp" + String.format("%.0f", amount_portion_dmp));
+                            entityPeriodDmp.setPrevDisbursement(amount_portion_dmp);
+                            entityPeriodDmp.setIncome_tax_paid_on_prior_period(taxable_income_dmp);
+
+                            List<Member> entityMember = memberService.findByIdTeam(id_team);
+                            if (entityMember == null) {
+                                disbursementService.remove(endisbursement);
+                                rs.setResponse_code("55");
+                                rs.setInfo("Failed");
+                                rs.setResponse("can't disburse engagement_id " + engagement_id + " Not Found");
+                                CreateLog.createJson(rs, "disburseMultiple");
+                                log.error("disburseMultiple : " + rs.toString());
+                                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                                        HttpStatus.NOT_FOUND);
+                            }
+                            if (number == 1) {
+                                Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                log.info("outstanding_loan_a_dmp 1 " + String.format("%.0f", outstanding_loan_a_dmp));
+                                outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+                            if (number == 2) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                log.info("outstanding_loan_a_dmp 2 " + String.format("%.0f", outstanding_loan_a_dmp));
+                                outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+                            if (number == 3) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                log.info("outstanding_loan_a_dmp 3 " + String.format("%.0f", outstanding_loan_a_dmp));
+                                outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+
+                            for (int k = 0; k < entityMember.size(); k++) {
+                                Member dataMember = entityMember.get(k);
+                                String team_tax_status = dataMember.getEmployee().getTaxStatus();
+                                Double ptkp_team = 0d;
+                                log.info("team_tax_status : " + team_tax_status);
+//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                                EntityPTKP ptkpTeam = this.ptkpService.findPTKPByTaxStatus(team_tax_status);
+                                log.info("ptkpTeam : " + ptkpTeam);
+                                if (ptkpDmp != null) {
+                                    ptkp_team = ptkpTeam.getPtkp();
+                                }
+                                taxable_income_team = (jabatan_per_tahun - ptkp_team);
+                                entityPeriod.setTaxYear(sdfYear.format(now));
+                                entityPeriod.setCaseId(entityCase.getCaseID());
+                                entityPeriod.setDisburseId(dsb_id);
+                                entityPeriod.setNumberDisbursement(number);
+                                entityPeriod.setBulanDisburse(sdfMonth.format(now));
+                                amount_portion_team = (dmpPortion * dataMember.getFeeShare()) / 100;
+                                log.info("amount_portion_team" + String.format("%.0f", amount_portion_team));
+                                entityPeriod.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                entityPeriod.setEmployeeId(dataMember.getEmployee().getEmployeeId());
+                                entityPeriod.setPrevDisbursement(amount_portion_team);
+                                entityPeriod.setIncome_tax_paid_on_prior_period(taxable_income_team);
+
+                                if (number == 1) {
+                                    Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    log.info("outstanding_loan_a_team 1 " + String.format("%.0f", outstanding_loan_a_team));
+                                    outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                    outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                    outStandingLoanA.setDisburseId(dsb_id);
+                                    outStandingLoanA.setCutOffDate(cutOffDate);
+                                    outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                    outStandingLoanA.setNumberDisbursement(number.longValue());
+                                    this.outStandingLoanAService.create(outStandingLoanA);
+                                }
+                                if (number == 2) {
+                                    oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                    oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    log.info("outstanding_loan_a_team 2 " + String.format("%.0f", outstanding_loan_a_team));
+                                    outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                    outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                    outStandingLoanA.setDisburseId(dsb_id);
+                                    outStandingLoanA.setCutOffDate(cutOffDate);
+                                    outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                    outStandingLoanA.setNumberDisbursement(number.longValue());
+                                    this.outStandingLoanAService.create(outStandingLoanA);
+                                }
+                                if (number == 3) {
+                                    oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                    oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    log.info("outstanding_loan_a_team 3 " + String.format("%.0f", outstanding_loan_a_team));
+                                    outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                    outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                    outStandingLoanA.setDisburseId(dsb_id);
+                                    outStandingLoanA.setCutOffDate(cutOffDate);
+                                    outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                    outStandingLoanA.setNumberDisbursement(number.longValue());
+                                    this.outStandingLoanAService.create(outStandingLoanA);
+                                }
+                                this.entityPeriodService.create(entityPeriod);
+                            }
+                            this.entityPeriodService.create(entityPeriodDmp);
+                            caseId = entityPeriodDmp.getCaseId();
+                            return this.disbursement(caseId, authentication);
+                        }
+//                    rs.setResponse_code("00");
+//                    rs.setInfo("Success");
+//                    rs.setResponse("disbursement  engagement_id : " + engagement_id + "by : " + entityEmp.getEmployeeId());
+//                    CreateLog.createJson(rs, "disbursement");
+//                    log.info("disbursement : " + rs.toString());
+//                    return rs;
+                    } else {
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("can't disburse engagement_id " + engagement_id + " Not Found");
+                        CreateLog.createJson(rs, "disburseMultiple");
+                        log.error("disburseMultiple : " + rs.toString());
+                        return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                                HttpStatus.NOT_FOUND);
+                    }
+                }
+            }
+//            CaseDetails entity = caseDetailsService.findById(engagement_id);
+
+        } catch (JSONException | ParseException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            log.error("disbursement : " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "disbursement");
+            return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                    HttpStatus.NOT_FOUND);
+        }
+        rs.setResponse_code("55");
+        rs.setInfo("Failed");
+        rs.setResponse("can't disbursement engagemet " + engagement_id + " Not Found");
+        CreateLog.createJson(rs, "disbursement");
+        log.error("disbursement : " + rs.toString());
+        return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                HttpStatus.NOT_FOUND);
+
+    }
+
+//    @RequestMapping(value = "/disbursement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> disburse(@PathVariable("engagement_id") Long engagement_id, @RequestBody DisburseDto object, Authentication authentication) {
+        try {
+            rs.setResponse_code("00");
+            rs.setInfo("disburse access By : " + authentication.getName());
+            rs.setResponse("engagement_id : " + engagement_id.toString());
+            CreateLog.createJson(rs, "disburse");
+            log.info("disburse PathVariable engagement_id : " + engagement_id);
+            log.info("disburse jsonObject: " + object);
+            Date now = new Date();
+            Integer number = 0;
+            OutStandingLoanA outStandingLoanA = new OutStandingLoanA();
+
+            String name = authentication.getName();
+            String caseId = null;
+
+            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entityEmp : " + entityEmp);
+            log.info("engagement_id : " + engagement_id);
+            Boolean process = true;
+
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't disbursement :");
+                CreateLog.createJson(rs, "disburse");
+                log.error("disburse jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (!entityEmp.getRoleName().contentEquals("finance")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
+                CreateLog.createJson(rs, "disburse");
+                process = false;
+                log.error("disbursement jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            String cutOffdate = dateFormat.format(object.getCut_off_date());
+            Date cutOffDate = dateFormat.parse(cutOffdate);
+
+            CaseDetails entity = caseDetailsService.findById(engagement_id);
+            if (entity == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
+                CreateLog.createJson(rs, "disburse");
+                process = false;
+                log.error("disbursement : " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (entity.getStatus().contentEquals("s")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + entity.getCaseID() + " Need Approve By  Admin");
+                CreateLog.createJson(rs, "disburse");
+                process = false;
+                log.error("disburse : " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (entity.getStatus().contentEquals("r")) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + entity.getCaseID() + " Rejected By  Admin");
+                CreateLog.createJson(rs, "disburse");
+                process = false;
+                log.error("disburse : " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            Disbursement disbursementFindbyCaseId = this.disbursementService.disbursementFindbyCaseId(entity.getCaseID());
+            if (disbursementFindbyCaseId != null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + entity.getCaseID() + " Already Disburse");
+                CreateLog.createJson(rs, "disburse");
+                process = false;
+                log.error("disburse : " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                        HttpStatus.NOT_FOUND);
+            }
+            if (process) {
+                Disbursement disbursement = new Disbursement();
+                disbursement.setEngagement(entity);
+                List<Disbursement> disburseList = this.disbursementService.numOfDisbursement(sdfYear.format(now));
+                if (disburseList == null || disburseList.isEmpty()) {
+                    number = 1;
+                } else {
+                    number = disburseList.size() + 1;
+                }
+                String dt = dateFormat.format(new Date());
+                Date disburse = dateFormat.parse(dt);
+                String disburseM = sdfDisbursM.format(new Date());
+                String disburseMy = sdfDisbursMY.format(new Date());
+                System.out.println("isi disburseM : " + disburseM);
+                disbursement.setBulanInput(disburseM);
+
+                String dsb_id = "DSB" + disburseMy;
+//                String cutOffdate = dateFormat.format(object.getCut_off_date());
+//                Date cutOffDate = dateFormat.parse(cutOffdate);
+
+                disbursement.setDisbursementId(dsb_id);
+                disbursement.setDisburse_date(disburse);
+
+                if (number == 1) {
+
+                    disbursement.setOldCutOffDate(cutOffDate);
+                }
+                if (number == 2) {
+                    Disbursement endisbursement = disbursementService.disbursement(1, sdfYear.format(now));
+                    String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
+                    Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
+                    disbursement.setOldCutOffDate(oldCutOffDate);
+                }
+                if (number == 3) {
+                    Disbursement endisbursement = disbursementService.disbursement(2, sdfYear.format(now));
+                    String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
+                    Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
+                    disbursement.setOldCutOffDate(oldCutOffDate);
+                }
+                disbursement.setCutOffDate(cutOffDate);
+                disbursement.setNumberOfDisbursement(number);
+                disbursement.setBulanInput(sdfMonth.format(now));
+                disbursement.setTahunInput(sdfYear.format(now));
+                Disbursement endisbursement = this.disbursementService.create(disbursement);
+
+//                
+//                
+                if (endisbursement != null) {
+
+                    List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(engagement_id);
+                    if (entityTeam == null) {
+                        disbursementService.remove(endisbursement);
+                        rs.setResponse_code("55");
+                        rs.setInfo("Failed");
+                        rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
+                        CreateLog.createJson(rs, "disburse");
+                        log.error("disburse : " + rs.toString());
+                        return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                                HttpStatus.NOT_FOUND);
+                    }
+                    Long id_team = 0l;
+
+                    Double total_income_fortax_purpose_dmp = 0d;
+                    Double total_income_fortax_purpose_team = 0d;
+
+                    Double outstanding_loan_a_dmp = 0d;
+                    Double outstanding_loan_a_team = 0d;
+                    String oldcutOffdate = null;
+                    Date oldCutOffDate = null;
+//                    
+                    Double taxable_income_dmp = 0d;
+                    Double taxable_income_team = 0d;
+                    Double dmpPortion = 0d;
+                    Double amount_portion_dmp = 0d;
+                    Double amount_portion_team = 0d;
+                    Integer anual_salary_team = (4000000 * 13);
+                    int a_jabatan = (60000000 * 5) / 100;
+                    int b_jabatan = ((anual_salary_team * 5) / 100) / 13;
+                    int masa_kerja = 0;
+                    String jabatan_per_bulan = String.format("%d", Math.min(a_jabatan, b_jabatan));
+                    Integer jabatan_per_tahun = (masa_kerja * Integer.parseInt(jabatan_per_bulan));
+
+                    for (int j = 0; j < entityTeam.size(); j++) {
+                        CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
+                        if (caseDetails != null) {
+                            dmpPortion = caseDetails.getDmpPortion();
+                        } else {
+                            dmpPortion = 0d;
+                        }
+                        EntityPeriod entityPeriodDmp = new EntityPeriod();
+                        EntityPeriod entityPeriod = new EntityPeriod();
+                        TeamMember dataTeam = entityTeam.get(j);
+
+                        if (dataTeam.getTeamMemberId() != null) {
+                            id_team = dataTeam.getTeamMemberId();
+                        }
+
+                        Employee getDmp = employeeService.findById(dataTeam.getDmpId());
+                        String dmp_tax_status = getDmp.getTaxStatus();
+                        Double ptkp = 0d;
+                        log.info("dmp_tax_status : " + dmp_tax_status);
+//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                        EntityPTKP ptkpDmp = this.ptkpService.findPTKPByTaxStatus(dmp_tax_status);
+                        log.info("ptkpDmp : " + ptkpDmp);
+                        if (ptkpDmp != null) {
+                            ptkp = ptkpDmp.getPtkp();
+                        }
+
+                        taxable_income_dmp = (jabatan_per_tahun - ptkp);
+
+                        entityPeriodDmp.setTaxYear(sdfYear.format(now));
+                        entityPeriodDmp.setCaseId(entity.getCaseID());
+                        entityPeriodDmp.setDisburseId(dsb_id);
+                        entityPeriodDmp.setNumberDisbursement(number);
+                        entityPeriodDmp.setBulanDisburse(sdfMonth.format(now));
+                        entityPeriodDmp.setIdEmployee(getDmp.getIdEmployee());
+                        entityPeriodDmp.setEmployeeId(getDmp.getEmployeeId());
+                        log.info("dmpPortion_case_id" + String.format("%.0f", dmpPortion));
+                        amount_portion_dmp = (dmpPortion * dataTeam.getFeeShare()) / 100;
+                        log.info("amount_portion_dmp" + String.format("%.0f", amount_portion_dmp));
+                        entityPeriodDmp.setPrevDisbursement(amount_portion_dmp);
+                        entityPeriodDmp.setIncome_tax_paid_on_prior_period(taxable_income_dmp);
+
+                        List<Member> entityMember = memberService.findByIdTeam(id_team);
+                        if (entityMember == null) {
+                            disbursementService.remove(endisbursement);
+                            rs.setResponse_code("55");
+                            rs.setInfo("Failed");
+                            rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
+                            CreateLog.createJson(rs, "disburse");
+                            log.error("disburse : " + rs.toString());
+                            return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                                    HttpStatus.NOT_FOUND);
+                        }
+                        if (number == 1) {
+                            Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 1 " + String.format("%.0f", outstanding_loan_a_dmp));
+                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                            outStandingLoanA.setTaxYear(sdfYear.format(now));
+                            outStandingLoanA.setDisburseId(dsb_id);
+                            outStandingLoanA.setCutOffDate(cutOffDate);
+                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                            outStandingLoanA.setNumberDisbursement(number.longValue());
+                            this.outStandingLoanAService.create(outStandingLoanA);
+                        }
+                        if (number == 2) {
+                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 2 " + String.format("%.0f", outstanding_loan_a_dmp));
+                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                            outStandingLoanA.setTaxYear(sdfYear.format(now));
+                            outStandingLoanA.setDisburseId(dsb_id);
+                            outStandingLoanA.setCutOffDate(cutOffDate);
+                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                            outStandingLoanA.setNumberDisbursement(number.longValue());
+                            this.outStandingLoanAService.create(outStandingLoanA);
+                        }
+                        if (number == 3) {
+                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            outstanding_loan_a_dmp = outStandingAteam;
+                            log.info("outstanding_loan_a_dmp 3 " + String.format("%.0f", outstanding_loan_a_dmp));
+                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
+                            outStandingLoanA.setTaxYear(sdfYear.format(now));
+                            outStandingLoanA.setDisburseId(dsb_id);
+                            outStandingLoanA.setCutOffDate(cutOffDate);
+                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
+                            outStandingLoanA.setNumberDisbursement(number.longValue());
+                            this.outStandingLoanAService.create(outStandingLoanA);
+                        }
+
+                        for (int k = 0; k < entityMember.size(); k++) {
+                            Member dataMember = entityMember.get(k);
+                            String team_tax_status = dataMember.getEmployee().getTaxStatus();
+                            Double ptkp_team = 0d;
+                            log.info("team_tax_status : " + team_tax_status);
+//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                            EntityPTKP ptkpTeam = this.ptkpService.findPTKPByTaxStatus(team_tax_status);
+                            log.info("ptkpTeam : " + ptkpTeam);
+                            if (ptkpDmp != null) {
+                                ptkp_team = ptkpTeam.getPtkp();
+                            }
+                            taxable_income_team = (jabatan_per_tahun - ptkp_team);
+                            entityPeriod.setTaxYear(sdfYear.format(now));
+                            entityPeriod.setCaseId(entity.getCaseID());
+                            entityPeriod.setDisburseId(dsb_id);
+                            entityPeriod.setNumberDisbursement(number);
+                            entityPeriod.setBulanDisburse(sdfMonth.format(now));
+                            amount_portion_team = (dmpPortion * dataMember.getFeeShare()) / 100;
+                            log.info("amount_portion_team" + String.format("%.0f", amount_portion_team));
+                            entityPeriod.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                            entityPeriod.setEmployeeId(dataMember.getEmployee().getEmployeeId());
+                            entityPeriod.setPrevDisbursement(amount_portion_team);
+                            entityPeriod.setIncome_tax_paid_on_prior_period(taxable_income_team);
+
+                            if (number == 1) {
+                                Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 1 " + String.format("%.0f", outstanding_loan_a_team));
+                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+                            if (number == 2) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 2 " + String.format("%.0f", outstanding_loan_a_team));
+                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+                            if (number == 3) {
+                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_team = outStandingAteam;
+                                log.info("outstanding_loan_a_team 3 " + String.format("%.0f", outstanding_loan_a_team));
+                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
+                                outStandingLoanA.setTaxYear(sdfYear.format(now));
+                                outStandingLoanA.setDisburseId(dsb_id);
+                                outStandingLoanA.setCutOffDate(cutOffDate);
+                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
+                                outStandingLoanA.setNumberDisbursement(number.longValue());
+                                this.outStandingLoanAService.create(outStandingLoanA);
+                            }
+                            this.entityPeriodService.create(entityPeriod);
+                        }
+                        this.entityPeriodService.create(entityPeriodDmp);
+                        caseId = entityPeriodDmp.getCaseId();
+                        return this.disbursement(caseId, authentication);
+                    }
+//                    rs.setResponse_code("00");
+//                    rs.setInfo("Success");
+//                    rs.setResponse("disbursement  engagement_id : " + engagement_id + "by : " + entityEmp.getEmployeeId());
+//                    CreateLog.createJson(rs, "disbursement");
+//                    log.info("disbursement : " + rs.toString());
+//                    return rs;
+                } else {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
+                    CreateLog.createJson(rs, "disburse");
+                    log.error("disburse : " + rs.toString());
+                    return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                            HttpStatus.NOT_FOUND);
+                }
+            }
+        } catch (JSONException | ParseException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            rs.setResponse_code("55");
+            rs.setInfo("Error");
+            rs.setResponse(ex.getMessage());
+            log.error("disbursement : " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "disbursement");
+            return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                    HttpStatus.NOT_FOUND);
+        }
+        rs.setResponse_code("55");
+        rs.setInfo("Failed");
+        rs.setResponse("can't disbursement engagemet " + engagement_id + "Not Found");
+        CreateLog.createJson(rs, "disbursement");
+        log.error("disbursement : " + rs.toString());
+        return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
+                HttpStatus.NOT_FOUND);
+
+    }
+
+    @XxsFilter
+    public ResponseEntity<?> disbursement(String caseId, Authentication authentication) {
+        try {
+            log.info("disbursement " + caseId);
             Date now = new Date();
             Date dateDisburs = new Date();
             Boolean process = true;
@@ -1106,7 +1869,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursementbyCaseId");
-                log.error("disbursementbyCaseId : " + rs);
+                log.error("disbursement : " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -1118,7 +1881,7 @@ public class DisbursementController {
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursementbyCaseId");
                 process = false;
-                log.error("disbursementbyCaseId : " + rs);
+                log.error("disbursement : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Id Not found"),
                         HttpStatus.NOT_FOUND);
 
@@ -1130,16 +1893,16 @@ public class DisbursementController {
                 Date oldCutOffDate = null;
                 String tax_year = null;
                 String param = null;
-                log.info("case_id : " + object.getCase_id());
+                log.info("case_id : " + caseId);
 //                List<Disbursement> disbursementlist = disbursementService.disbursementbyCaseId(object.getCase_id());
-                Disbursement dataDisbursement = disbursementService.disbursementFindbyCaseId(object.getCase_id());
+                Disbursement dataDisbursement = disbursementService.disbursementFindbyCaseId(caseId);
                 if (dataDisbursement == null) {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
-                    rs.setResponse("caseId : " + object.getCase_id() + " Not found");
-                    CreateLog.createJson(rs, "disbursementbyCaseId");
+                    rs.setResponse("caseId : " + caseId + " Not found");
+                    CreateLog.createJson(rs, "disbursement");
                     process = false;
-                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + object.getCase_id() + " Not found"),
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
                             HttpStatus.NOT_FOUND);
                 }
 //                JSONArray array = new JSONArray();s
@@ -1156,7 +1919,7 @@ public class DisbursementController {
                 Long id_team = 0l;
                 Double dmpPortion = 0d;
                 Double outStandingLoanB = 0d;
-                String caseId = null;
+//                String caseId = null;
                 Integer number_of_disbursement = 0;
                 String disbursement_id = null;
                 if (dataDisbursement.getDisbursementId() == null) {
@@ -1189,9 +1952,9 @@ public class DisbursementController {
                 if (dataDisbursement.getEngagement() == null) {
                     obj.put("case_id", "");
                 } else {
-                    obj.put("case_id", object.getCase_id());// disbursements.getLoan().getEngagement().getCaseID()
+                    obj.put("case_id", caseId);// disbursements.getLoan().getEngagement().getCaseID()
                     EngagementId = dataDisbursement.getEngagement().getEngagementId();
-                    caseId = object.getCase_id();
+//                    caseId = object.getCase_id();
                 }
                 CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
                 if (caseDetails != null) {
@@ -1210,8 +1973,8 @@ public class DisbursementController {
                     rs.setResponse_code("55");
                     rs.setInfo("Failed");
                     rs.setResponse("caseId : " + caseId + " Not found");
-                    log.error("disbursementbyCaseId : " + rs);
-                    CreateLog.createJson(rs, "disbursementbyCaseId");
+                    log.error("disbursement : " + rs.toString());
+                    CreateLog.createJson(rs, "disbursement");
                     process = false;
                     return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
                             HttpStatus.NOT_FOUND);
@@ -1314,6 +2077,7 @@ public class DisbursementController {
                             obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
                             income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
                             obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
+
                             if (number_of_disbursement == 1) {
 
                                 income_tax_paid_on_prior_period_dmp = 0d;
@@ -1327,6 +2091,503 @@ public class DisbursementController {
                             if (number_of_disbursement == 2) {
 
                                 EntityPeriod entityPeriod = entityPeriodService.findBy(getDmp.getIdEmployee(), caseId, tax_year);
+                                if (entityPeriod != null) {
+                                    Double income_tax = Util.hitungPajak(taxable_income_dmp);
+                                    entityPeriod.setIncome_tax_paid_on_prior_period(income_tax);
+                                    this.entityPeriodService.update(entityPeriod);
+                                }
+                                Double incomeTaxPaidOnPriorPeriodOld = entityPeriodService.incomeTaxPaidOnPriorPeriod(1, getDmp.getIdEmployee(), tax_year);
+                                if (incomeTaxPaidOnPriorPeriodOld != null) {
+                                    income_tax_paid_on_prior_period_dmp = incomeTaxPaidOnPriorPeriodOld;
+                                }
+                            }
+                            if (number_of_disbursement == 3) {
+
+                                Double incomeTaxPaidOnPriorPeriodOld = entityPeriodService.incomeTaxPaidOnPriorPeriod(3, getDmp.getIdEmployee(), tax_year);
+                                if (incomeTaxPaidOnPriorPeriodOld != null) {
+                                    income_tax_paid_on_prior_period_dmp = incomeTaxPaidOnPriorPeriodOld;
+                                }
+                            }
+                            obj.put("income_tax_paid_on_prior_period_dmp", String.format("%.0f", income_tax_paid_on_prior_period_dmp));
+                            net_income_tax_deducted_dmp = (income_tax_dmp - income_tax_paid_on_prior_period_dmp);
+                            obj.put("net_income_tax_deducted_dmp", String.format("%.0f", net_income_tax_deducted_dmp));
+                            net_income_dmp = (amount_portion_dmp - net_income_tax_deducted_dmp);
+                            obj.put("net_income_dmp", String.format("%.0f", net_income_dmp));
+                            outstanding_loan_b_dmp = (outStandingLoanB * dataTeam.getFeeShare()) / 100;;
+                            obj.put("outstanding_loan_b_dmp", String.format("%.0f", outstanding_loan_b_dmp));
+                            disbursable_amount_dmp = (net_income_dmp - outstanding_loan_b_dmp);
+                            obj.put("disbursable_amount_dmp", String.format("%.0f", Math.abs(disbursable_amount_dmp)));
+                            if (number_of_disbursement == 1) {
+                                Double outstanding_after_disbursement_amount = 0d;
+                                Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), tax_year, cutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                this.outStandingLoanAService.update(updateOutStandingLoanA);
+                            }
+                            if (number_of_disbursement == 2) {
+                                Double outstanding_after_disbursement_amount = 0d;
+                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                this.outStandingLoanAService.update(updateOutStandingLoanA);
+                            }
+                            if (number_of_disbursement == 3) {
+                                Double outstanding_after_disbursement_amount = 0d;
+                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                outstanding_loan_a_dmp = outStandingAteam;
+                                OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
+                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                this.outStandingLoanAService.update(updateOutStandingLoanA);
+                            }
+
+                            obj.put("outstanding_loan_a_dmp", String.format("%.0f", outstanding_loan_a_dmp));
+                            disbursed_amount_dmp = (disbursable_amount_dmp - outstanding_loan_a_dmp);
+                            obj.put("disbursed_amount_dmp", String.format("%.0f", Math.max(disbursed_amount_dmp, 0)));
+
+                        }
+                    }
+                    if (id_team != null) {
+                        List<Member> entityMember = memberService.findByIdTeam(id_team);
+                        log.info("entityMember size : " + entityMember.size());
+                        for (int k = 0; k < entityMember.size(); k++) {
+                            JSONObject objMember = new JSONObject();
+                            Member dataMember = entityMember.get(k);
+                            if (dataMember == null) {
+                                objMember.put("employee_id_team", "");
+                                objMember.put("fee_share_team", "");//"fee_share_team
+                                objMember.put("amount_portion_team", "");
+                                objMember.put("previous_disbursement_team", "");
+                                objMember.put("anual_salary_team", "");
+                                objMember.put("total_income_fortax_purpose_team", "");
+                                objMember.put("masa_kerja_team", "");
+                                objMember.put("jabatan_per_bulan_team", "");
+                                objMember.put("jabatan_per_tahun_team", "");
+                                objMember.put("tax_status_team", "");
+                                objMember.put("ptkp_team", "");
+                                objMember.put("taxable_income_team", "");
+                                objMember.put("income_tax_team", "");
+                                objMember.put("income_tax_paid_on_prior_period_team", "");
+                                objMember.put("net_income_tax_deducted_team", "");
+                                objMember.put("net_income_team", "");
+                                objMember.put("outstanding_loan_b_team", "");
+                                objMember.put("disbursable_amount_team", "");
+                                objMember.put("outstanding_loan_a_team", "");
+                                objMember.put("disbursed_amount_team", "");
+
+                            } else {
+                                Integer anual_salary_team = (4000000 * 13);
+                                int a_jabatan_team = (60000000 * 5) / 100;
+                                int b_jabatan_team = ((anual_salary_team * 5) / 100) / 13;
+                                int masa_kerja_team = 0;
+                                Double amount_portion_team = 0d;
+                                Double previous_disbursement_team = 0d;
+
+                                Double total_income_fortax_purpose_team = 0d;
+                                String team_tax_status = dataMember.getEmployee().getTaxStatus();
+                                Double taxable_income_team = 0d;
+                                Double income_tax_team = 0d;
+                                Double income_tax_paid_on_prior_period_team = 0d;
+                                Double net_income_tax_deducted_team = 0d;
+                                Double net_income_team = 0d;
+                                Double outstanding_loan_b_team = 0d;
+                                Double disbursable_amount_team = 0d;
+                                Double outstanding_loan_a_team = 0d;
+                                Double disbursed_amount_team = 0d;
+                                Double ptkp = 0d;
+//                                        log.info("team_tax_status : " + team_tax_status);
+//                                      String jabatan_perbulan_team = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                                EntityPTKP ptkpTeam = this.ptkpService.findPTKPByTaxStatus(team_tax_status);
+                                log.info("ptkpTeam : " + ptkpTeam);
+                                if (ptkpTeam != null) {
+                                    ptkp = ptkpTeam.getPtkp();
+                                }
+                                objMember.put("employee_id_team", dataMember.getEmployee().getEmployeeId());
+                                objMember.put("fee_share_team", dataMember.getFeeShare());//"fee_share_team
+                                amount_portion_team = ((dmpPortion * dataMember.getFeeShare()) / 100);
+                                objMember.put("amount_portion_team", String.format("%.0f", (amount_portion_team)));
+//                                
+                                if (number_of_disbursement == 1) {
+                                    previous_disbursement_team = 0d;
+                                    income_tax_paid_on_prior_period_team = 0d;
+                                }
+                                if (number_of_disbursement == 2) {
+                                    previous_disbursement_team = entityPeriodService.previousDisbursement(dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team + 0d;
+                                }
+                                if (number_of_disbursement == 3) {
+                                    previous_disbursement_team = entityPeriodService.previousDisbursement(dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team++;
+                                }
+//                                
+                                objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
+
+                                objMember.put("anual_salary_team", String.format("%d", anual_salary_team));
+                                total_income_fortax_purpose_team = amount_portion_team + previous_disbursement_team + anual_salary_team;
+                                objMember.put("total_income_fortax_purpose_team", String.format("%.0f", (total_income_fortax_purpose_team)));
+                                masa_kerja_team = Util.hitungMasakerja(dataMember.getEmployee().getDateRegister());
+                                objMember.put("masa_kerja_team", masa_kerja_team);
+                                String jabatan_per_bulan_team = String.format("%d", Math.min(a_jabatan_team, b_jabatan_team));
+                                Integer jabatan_per_tahun_team = (masa_kerja_team * Integer.parseInt(jabatan_per_bulan_team));
+                                objMember.put("jabatan_per_bulan_team", jabatan_per_bulan_team);
+                                objMember.put("jabatan_per_tahun_team", String.format("%d", jabatan_per_tahun_team));
+                                objMember.put("tax_status_team", team_tax_status);
+                                objMember.put("ptkp_team", String.format("%.0f", ptkp));
+                                if (total_income_fortax_purpose_team == 0) {
+                                    taxable_income_team = (jabatan_per_tahun_team - ptkp);
+                                } else {
+                                    taxable_income_team = (total_income_fortax_purpose_team - jabatan_per_tahun_team - ptkp);
+                                }
+
+                                objMember.put("taxable_income_team", String.format("%.0f", Math.max(taxable_income_team, 0)));
+                                income_tax_team = Util.hitungPajak(taxable_income_team);
+                                objMember.put("income_tax_team", String.format("%.0f", income_tax_team));
+                                if (number_of_disbursement == 1) {
+
+                                    income_tax_paid_on_prior_period_team = 0d;
+                                    EntityPeriod entityPeriod = entityPeriodService.findBy(dataMember.getEmployee().getIdEmployee(), caseId, tax_year);
+                                    if (entityPeriod != null) {
+                                        Double income_tax = Util.hitungPajak(income_tax_team);
+                                        entityPeriod.setIncome_tax_paid_on_prior_period(income_tax);
+                                        this.entityPeriodService.update(entityPeriod);
+                                    }
+                                }
+                                if (number_of_disbursement == 2) {
+
+                                    EntityPeriod entityPeriod = entityPeriodService.findBy(dataMember.getEmployee().getIdEmployee(), caseId, tax_year);
+                                    if (entityPeriod != null) {
+                                        Double income_tax = Util.hitungPajak(income_tax_team);
+                                        entityPeriod.setIncome_tax_paid_on_prior_period(income_tax);
+                                        this.entityPeriodService.update(entityPeriod);
+                                    }
+                                    Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(1, dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    if (incomeTaxPaidOnPriorPeriod != null) {
+                                        income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                    }
+
+                                }
+                                if (number_of_disbursement == 3) {
+
+                                    Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(3, dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    if (incomeTaxPaidOnPriorPeriod != null) {
+                                        income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                    }
+                                }
+                                objMember.put("income_tax_paid_on_prior_period_team", String.format("%.0f", income_tax_paid_on_prior_period_team));
+                                net_income_tax_deducted_team = (income_tax_team - income_tax_paid_on_prior_period_team);
+                                objMember.put("net_income_tax_deducted_team", String.format("%.0f", net_income_tax_deducted_team));
+                                net_income_team = (amount_portion_team - net_income_tax_deducted_team);
+                                objMember.put("net_income_team", String.format("%.0f", net_income_team));
+                                outstanding_loan_b_team = (outStandingLoanB * dataMember.getFeeShare()) / 100;;
+                                objMember.put("outstanding_loan_b_team", String.format("%.0f", outstanding_loan_b_team));
+                                disbursable_amount_team = (net_income_team - outstanding_loan_b_team);
+                                objMember.put("disbursable_amount_team", String.format("%.0f", Math.abs(disbursable_amount_team)));
+                                if (number_of_disbursement == 1) {
+                                    Double outstanding_after_disbursement_amount = 0d;
+                                    Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                }
+                                if (number_of_disbursement == 2) {
+                                    Double outstanding_after_disbursement_amount = 0d;
+                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                }
+                                if (number_of_disbursement == 3) {
+                                    Double outstanding_after_disbursement_amount = 0d;
+                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                    outstanding_loan_a_team = outStandingAteam;
+                                    OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
+                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                }
+
+                                objMember.put("outstanding_loan_a_team", String.format("%.0f", outstanding_loan_a_team));
+                                disbursed_amount_team = (disbursable_amount_team - outstanding_loan_a_team);
+                                objMember.put("disbursed_amount_team", String.format("%.0f", Math.max(disbursed_amount_team, 0)));
+
+                            }
+                            arrayM.put(objMember);
+
+                        }
+                    } else {
+//                                objMember.put("member_name", "");
+//                                objMember.put("employee_id", "");
+//                                objMember.put("fee_share", "");
+//                                arrayM.put(objMember);
+                    }
+                    obj.put("members", arrayM);
+//                    array.put(obj);
+                    log.info("disbursement : " + obj.toString());
+                    return ResponseEntity.ok(obj.toString());
+                }
+            }
+        } catch (JSONException ex) {
+            // TODO Auto-generated catch block
+//            e.printStackTrace();
+            CreateLog.createJson(ex.getMessage(), "disbursementbyCaseId");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        } catch (ParseException ex) {
+            log.error("disbursement : " + ex.getMessage());
+            Logger.getLogger(DisbursementController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//
+        return null;
+    }
+
+    @RequestMapping(value = "/disbursement/case-id", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public ResponseEntity<?> disbursementbyCaseId(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
+        try {
+            log.info("object " + object);
+            Date now = new Date();
+            Date dateDisburs = new Date();
+            Boolean process = true;
+            String name = authentication.getName();
+//            log.info("name : " + name);
+            Employee entityEmp = employeeService.findByEmployee(name);
+            log.info("entity : " + entityEmp);
+            if (entityEmp == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature :");
+                CreateLog.createJson(rs, "disbursementbyCaseId");
+                log.error("disbursementbyCaseId : " + rs.toString());
+                process = false;
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            Employee dataEMploye = employeeService.findById(entityEmp.getIdEmployee());
+            if (dataEMploye == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("Employee Id Not found");
+                CreateLog.createJson(rs, "disbursementbyCaseId");
+                process = false;
+                log.error("disbursementbyCaseId : " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Id Not found"),
+                        HttpStatus.NOT_FOUND);
+
+            }
+            if (process) {
+                String cutOffdate = null;
+                Date cutOffDate = null;
+                String oldcutOffdate = null;
+                Date oldCutOffDate = null;
+                String tax_year = null;
+                String param = null;
+                log.info("case_id : " + object.getCase_id());
+//                List<Disbursement> disbursementlist = disbursementService.disbursementbyCaseId(object.getCase_id());
+                Disbursement dataDisbursement = disbursementService.disbursementFindbyCaseId(object.getCase_id());
+                if (dataDisbursement == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("caseId : " + object.getCase_id() + " Not found");
+                    CreateLog.createJson(rs, "disbursementbyCaseId");
+                    process = false;
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + object.getCase_id() + " Not found"),
+                            HttpStatus.NOT_FOUND);
+                }
+
+                JSONObject obj = new JSONObject();
+//                        JSONObject objMember = new JSONObject();
+                JSONArray arrayM = new JSONArray();
+                Long EngagementId = 0l;
+                Long idLoanB = 0l;
+                Long id_team = 0l;
+                Double dmpPortion = 0d;
+                Double outStandingLoanB = 0d;
+                String caseId = null;
+                Integer number_of_disbursement = 0;
+                String disbursement_id = null;
+                if (dataDisbursement.getDisbursementId() == null) {
+                    obj.put("disbursement_id", "");
+                } else {
+                    obj.put("disbursement_id", dataDisbursement.getDisbursementId());
+                    cutOffdate = dateFormat.format(dataDisbursement.getCutOffDate());
+                    cutOffDate = dateFormat.parse(cutOffdate);
+                    oldcutOffdate = dateFormat.format(dataDisbursement.getOldCutOffDate());
+                    oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                    disbursement_id = dataDisbursement.getDisbursementId();
+                }
+                if (dataDisbursement.getNumberOfDisbursement() == null) {
+                    obj.put("number_of_disbursement", "");
+                } else {
+                    obj.put("number_of_disbursement", dataDisbursement.getNumberOfDisbursement());
+                    number_of_disbursement = dataDisbursement.getNumberOfDisbursement();
+                }
+                if (dataDisbursement.getTahunInput() == null) {
+                    obj.put("tax_year", "");
+                } else {
+                    obj.put("tax_year", dataDisbursement.getTahunInput());
+                    tax_year = dataDisbursement.getTahunInput();
+                }
+                if (dataDisbursement.getDisburse_date() == null) {
+                    obj.put("disbursement_date", "");
+                } else {
+                    obj.put("disbursement_date", sdfDisburse.format(dataDisbursement.getDisburse_date()));
+                }
+                if (dataDisbursement.getEngagement() == null) {
+                    obj.put("case_id", "");
+                } else {
+                    obj.put("case_id", object.getCase_id());// disbursements.getLoan().getEngagement().getCaseID()
+                    EngagementId = dataDisbursement.getEngagement().getEngagementId();
+                    caseId = object.getCase_id();
+                }
+                CaseDetails caseDetails = caseDetailsService.findById(EngagementId);
+                if (caseDetails != null) {
+//                        obj.put("professionalFee", caseDetails.getProfesionalFee());
+                    obj.put("dmp_portion_case_id", String.format("%.0f", (caseDetails.getDmpPortion())));
+                    dmpPortion = caseDetails.getDmpPortion();
+                } else {
+//                        obj.put("professionalFee", "");
+                    obj.put("dmp_portion_case_id", "");
+                    dmpPortion = 0d;
+                }
+
+                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(object.getCase_id());
+
+                if (outStandingB == null) {
+                    rs.setResponse_code("55");
+                    rs.setInfo("Failed");
+                    rs.setResponse("caseId : " + object.getCase_id() + " Not found");
+                    log.error("disbursementbyCaseId : " + rs.toString());
+                    CreateLog.createJson(rs, "disbursementbyCaseId");
+                    process = false;
+                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + object.getCase_id() + " Not found"),
+                            HttpStatus.NOT_FOUND);
+                }
+
+                outStandingLoanB = outStandingB.getOutStanding();
+                obj.put("out_standing_loan_b", String.format("%.0f", outStandingLoanB));
+
+                List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);
+                if (entityTeam != null) {
+                    for (int j = 0; j < entityTeam.size(); j++) {
+//                                JSONObject objTeam = new JSONObject();
+                        TeamMember dataTeam = entityTeam.get(j);
+                        Employee getDmp = employeeService.findById(dataTeam.getDmpId());
+                        if (getDmp == null) {
+                            obj.put("employee_id_dmp", "");
+                            obj.put("fee_share_dmp", "");
+
+                            obj.put("amount_portion_dmp", "");
+                            obj.put("previous_disbursement_dmp", "");
+
+                            obj.put("anual_salary_dmp", "");
+                            obj.put("total_income_fortax_purpose_dmp", "");
+                            obj.put("masa_kerja_dmp", "");
+                            obj.put("jabatan_per_bulan_dmp", "");
+                            obj.put("jabatan_per_tahun_dmp", "");
+                            obj.put("tax_status_dmp", "");
+                            obj.put("ptkp_dmp", "");
+                            obj.put("taxable_income_dmp", "");
+                            obj.put("income_tax_dmp", "");
+                            obj.put("income_tax_paid_on_prior_period_dmp", "");
+                            obj.put("net_income_tax_deducted_dmp", "");
+                            obj.put("net_income_dmp", "");
+                            obj.put("outstanding_loan_b_dmp", "");
+                            obj.put("disbursable_amount_dmp", "");
+                            obj.put("outstanding_loan_a_dmp", "");
+                            obj.put("disbursed_amount_dmp", "");
+                        } else {
+                            if (dataTeam.getTeamMemberId() != null) {
+                                id_team = dataTeam.getTeamMemberId();
+                            }
+                            Integer anual_salary_dmp = (4000000 * 13);
+                            int a_jabatan_dmp = (60000000 * 5) / 100;
+                            int b_jabatan_dmp = ((anual_salary_dmp * 5) / 100) / 13;
+                            int masa_kerja_dmp = 0;
+                            Double amount_portion_dmp = 0d;
+
+                            Double previous_disbursement_dmp = 0d;
+                            Double total_income_fortax_purpose_dmp = 0d;
+                            String dmp_tax_status = getDmp.getTaxStatus();
+                            Double income_tax_dmp = 0d;
+                            Double taxable_income_dmp = 0d;
+                            Double income_tax_paid_on_prior_period_dmp = 0d;
+                            Double net_income_tax_deducted_dmp = 0d;
+                            Double net_income_dmp = 0d;
+                            Double outstanding_loan_b_dmp = 0d;
+                            Double disbursable_amount_dmp = 0d;
+                            Double outstanding_loan_a_dmp = 0d;
+                            Double disbursed_amount_dmp = 0d;
+                            Double ptkp = 0d;
+                            log.info("dmp_tax_status : " + dmp_tax_status);
+//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
+                            EntityPTKP ptkpDmp = this.ptkpService.findPTKPByTaxStatus(dmp_tax_status);
+                            log.info("ptkpDmp : " + ptkpDmp);
+                            if (ptkpDmp != null) {
+                                ptkp = ptkpDmp.getPtkp();
+                            }
+                            obj.put("employee_id_dmp", getDmp.getEmployeeId());
+                            obj.put("fee_share_dmp", dataTeam.getFeeShare());
+                            amount_portion_dmp = (dmpPortion * dataTeam.getFeeShare()) / 100;
+                            obj.put("amount_portion_dmp", String.format("%.0f", amount_portion_dmp));
+                            if (number_of_disbursement == 1) {
+                                previous_disbursement_dmp = 0d;
+                            }
+                            if (number_of_disbursement == 2) {
+                                previous_disbursement_dmp = entityPeriodService.previousDisbursement(getDmp.getIdEmployee(), tax_year);
+                            }
+                            if (number_of_disbursement == 3) {
+                                previous_disbursement_dmp = entityPeriodService.previousDisbursement(getDmp.getIdEmployee(), tax_year);
+                            }
+                            obj.put("previous_disbursement_dmp", previous_disbursement_dmp);
+
+                            obj.put("anual_salary_dmp", String.format("%d", anual_salary_dmp));
+                            total_income_fortax_purpose_dmp = amount_portion_dmp + previous_disbursement_dmp + anual_salary_dmp;
+                            obj.put("total_income_fortax_purpose_dmp", String.format("%.0f", total_income_fortax_purpose_dmp));
+                            masa_kerja_dmp = Util.hitungMasakerja(getDmp.getDateRegister());
+                            obj.put("masa_kerja_dmp", masa_kerja_dmp);
+                            String jabatan_per_bulan_dmp = String.format("%d", Math.min(a_jabatan_dmp, b_jabatan_dmp));
+                            obj.put("jabatan_per_bulan_dmp", jabatan_per_bulan_dmp);
+                            Integer jabatan_per_tahun_dmp = (masa_kerja_dmp * Integer.parseInt(jabatan_per_bulan_dmp));
+                            obj.put("jabatan_per_tahun_dmp", String.format("%d", jabatan_per_tahun_dmp));
+                            obj.put("tax_status_dmp", dmp_tax_status);
+                            obj.put("ptkp_dmp", String.format("%.0f", ptkp));
+                            if (total_income_fortax_purpose_dmp == 0) {
+                                taxable_income_dmp = (jabatan_per_tahun_dmp - ptkp);
+                            } else {
+                                taxable_income_dmp = (total_income_fortax_purpose_dmp - jabatan_per_tahun_dmp - ptkp);
+                            }
+
+                            obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
+                            income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
+                            obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
+
+                            if (number_of_disbursement == 1) {
+
+                                income_tax_paid_on_prior_period_dmp = 0d;
+                                EntityPeriod entityPeriod = entityPeriodService.findBy(getDmp.getIdEmployee(), object.getCase_id(), tax_year);
+                                if (entityPeriod != null) {
+                                    Double income_tax = Util.hitungPajak(taxable_income_dmp);
+                                    entityPeriod.setIncome_tax_paid_on_prior_period(income_tax);
+                                    this.entityPeriodService.update(entityPeriod);
+                                }
+                            }
+                            if (number_of_disbursement == 2) {
+
+                                EntityPeriod entityPeriod = entityPeriodService.findBy(getDmp.getIdEmployee(), object.getCase_id(), tax_year);
                                 if (entityPeriod != null) {
                                     Double income_tax = Util.hitungPajak(taxable_income_dmp);
                                     entityPeriod.setIncome_tax_paid_on_prior_period(income_tax);
@@ -1607,7 +2868,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "disbursements");
-                log.error("disbursements : " + rs);
+                log.error("disbursements : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1617,7 +2878,7 @@ public class DisbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Employee Id Not found");
                 CreateLog.createJson(rs, "disbursements");
-                log.error("disbursements : " + rs);
+                log.error("disbursements : " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
@@ -1700,7 +2961,7 @@ public class DisbursementController {
                             rs.setResponse("caseId : " + caseId + " Not found");
                             CreateLog.createJson(rs, "disbursements");
                             process = false;
-                            log.error("disbursements : " + rs);
+                            log.error("disbursements : " + rs.toString());
                             return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
                                     HttpStatus.NOT_FOUND);
                         }
@@ -1802,6 +3063,7 @@ public class DisbursementController {
                                     obj.put("taxable_income_dmp", String.format("%.0f", Math.max(taxable_income_dmp, 0)));
                                     income_tax_dmp = Util.hitungPajak(taxable_income_dmp);
                                     obj.put("income_tax_dmp", String.format("%.0f", income_tax_dmp));
+
                                     if (number_of_disbursement == 1) {
 
                                         income_tax_paid_on_prior_period_dmp = 0d;
@@ -2077,37 +3339,34 @@ public class DisbursementController {
         return null;
     }
 
-    @RequestMapping(value = "/disbursement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})//produces = {"application/json"}
+    @RequestMapping(value = "/disbursement/by-employee", method = RequestMethod.POST, produces = {"application/json"})//produces = {"application/json"}
     @XxsFilter
-    public Response disbursement(@PathVariable("engagement_id") Long engagement_id, @RequestBody DisburseDto object, Authentication authentication) {
+    public ResponseEntity<?> disbursementByEmployee(@RequestBody DisburseEmpDto object, Authentication authentication) {//@PathVariable("employee_id") String employee_id,
         try {
+            log.info("disbursementByEmployee JSON" + object);
             rs.setResponse_code("00");
-            rs.setInfo("disbursement access By : " + authentication.getName());
-            rs.setResponse("engagement_id : " + engagement_id.toString());
+            rs.setInfo("disbursementByEmployee access By : " + authentication.getName());
+            rs.setResponse("employee_id : " + object.getEmployee_id());
             CreateLog.createJson(rs, "disbursement");
-            log.info("disbursement PathVariable engagement_id : " + engagement_id);
-            log.info("disbursement jsonObject: " + object);
+            log.info("disbursementByEmployee PathVariable id_employee : " + object.getEmployee_id());
+            log.info("disbursementByEmployee jsonObject: " + object.getEmployee_id());
             Date now = new Date();
-//          Integer number = null;
             Integer number = 0;
 
-//            EntityPeriod entityPeriod = new EntityPeriod();
-//            EntityPeriod entityPeriod = null;
-            OutStandingLoanA outStandingLoanA = new OutStandingLoanA();
-
+//            OutStandingLoanA outStandingLoanA = new OutStandingLoanA();
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
             Boolean process = true;
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("can't disbursement :");
+                rs.setResponse("can't disbursement : permission deny");
                 CreateLog.createJson(rs, "disbursement");
-                log.error("disbursement jsonObject: " + rs);
-                return rs;
+                log.error("disbursementByEmployee jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", "permission deny"),
+                        HttpStatus.NOT_FOUND);
             }
             if (!entityEmp.getRoleName().contentEquals("finance")) {
                 rs.setResponse_code("55");
@@ -2115,320 +3374,52 @@ public class DisbursementController {
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "disbursement");
                 process = false;
-                log.error("disbursement jsonObject: " + rs);
-                return rs;
+                log.error("disbursementByEmployee jsonObject: " + rs.toString());
+                return new ResponseEntity(new CustomErrorType("55", "Error", "permission deny"),
+                        HttpStatus.NOT_FOUND);
             }
-            CaseDetails entity = caseDetailsService.findById(engagement_id);
-            if (entity == null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("can't closing case engagement_id " + engagement_id + "Not Found");
-                CreateLog.createJson(rs, "disbursement");
-                process = false;
-                log.error("disbursement : " + rs);
-                return rs;
+            Employee dataEmployee = this.employeeService.findByEmployeeId(object.getEmployee_id());
+            SimpleDateFormat tglFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String cutOff = tglFormat.format(object.getCut_off_date());
+            Date cutOffDate = tglFormat.parse(cutOff);
+//          log.info("cutOffDate : " + cutOffDate);
+            log.info("dataEmployee.getIdEmployee() : " + dataEmployee.getIdEmployee());
+            Double totalDisburseableAmount = this.outStandingLoanAService.findByEmployee(dataEmployee.getIdEmployee(), cutOffDate);//cutOffDate
+
+            JSONObject obj = new JSONObject();
+            if (totalDisburseableAmount == null) {
+                obj.put("id_employee", dataEmployee.getIdEmployee());
+                obj.put("employee_id", dataEmployee.getEmployeeId());
+                obj.put("cut_of_date", tglFormat.format(object.getCut_off_date()));
+                obj.put("total_disburseable_amount", "0");
+                return ResponseEntity.ok(obj.toString());
+            } else {
+                obj.put("id_employee", dataEmployee.getIdEmployee());
+                obj.put("employee_id", dataEmployee.getEmployeeId());
+                obj.put("cut_of_date", tglFormat.format(object.getCut_off_date()));
+                obj.put("total_disburseable_amount", String.format("%.0f", totalDisburseableAmount));
+                return ResponseEntity.ok(obj.toString());
             }
-            if (entity.getStatus().contentEquals("s")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("case Case Id : " + entity.getCaseID() + " Need Approve By  Admin");
-                CreateLog.createJson(rs, "disbursement");
-                process = false;
-                log.error("disbursement : " + rs);
-                return rs;
-            }
-            if (entity.getStatus().contentEquals("r")) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("case Case Id : " + entity.getCaseID() + " Rejected By  Admin");
-                CreateLog.createJson(rs, "disbursement");
-                process = false;
-                log.error("disbursement : " + rs);
-                return rs;
-            }
-            Disbursement disbursementFindbyCaseId = this.disbursementService.disbursementFindbyCaseId(entity.getCaseID());
-            if (disbursementFindbyCaseId != null) {
-                rs.setResponse_code("55");
-                rs.setInfo("Failed");
-                rs.setResponse("case Case Id : " + entity.getCaseID() + " Already Disburse");
-                CreateLog.createJson(rs, "disbursement");
-                process = false;
-                log.error("disbursement : " + rs);
-                return rs;
-            }
-            if (process) {
-                Disbursement disbursement = new Disbursement();
-                disbursement.setEngagement(entity);
-                List<Disbursement> disburseList = this.disbursementService.numOfDisbursement(sdfYear.format(now));
-                if (disburseList == null || disburseList.isEmpty()) {
-                    number = 1;
-                } else {
-                    number = disburseList.size() + 1;
-                }
-                String dt = dateFormat.format(new Date());
-                Date disburse = dateFormat.parse(dt);
-                String disburseM = sdfDisbursM.format(new Date());
-                String disburseMy = sdfDisbursMY.format(new Date());
-                System.out.println("isi disburseM : " + disburseM);
-                disbursement.setBulanInput(disburseM);
-
-                String dsb_id = "DSB" + disburseMy;
-                String cutOffdate = dateFormat.format(object.getCut_off_date());
-                Date cutOffDate = dateFormat.parse(cutOffdate);
-
-                disbursement.setDisbursementId(dsb_id);
-
-                disbursement.setDisburse_date(disburse);
-                if (number == 1) {
-
-                    disbursement.setOldCutOffDate(cutOffDate);
-                }
-                if (number == 2) {
-                    Disbursement endisbursement = disbursementService.disbursement(1, sdfYear.format(now));
-                    String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
-                    Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
-                    disbursement.setOldCutOffDate(oldCutOffDate);
-                }
-                if (number == 3) {
-                    Disbursement endisbursement = disbursementService.disbursement(2, sdfYear.format(now));
-                    String oldCutOffdate = dateFormat.format(endisbursement.getCutOffDate());
-                    Date oldCutOffDate = dateFormat.parse(oldCutOffdate);
-                    disbursement.setOldCutOffDate(oldCutOffDate);
-                }
-                disbursement.setCutOffDate(cutOffDate);
-                disbursement.setNumberOfDisbursement(number);
-                disbursement.setBulanInput(sdfMonth.format(now));
-                disbursement.setTahunInput(sdfYear.format(now));
-                Disbursement endisbursement = this.disbursementService.create(disbursement);
-
-//                
-//                
-                if (endisbursement != null) {
-
-                    List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(engagement_id);
-                    if (entityTeam == null) {
-                        disbursementService.remove(endisbursement);
-                        rs.setResponse_code("55");
-                        rs.setInfo("Failed");
-                        rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
-                        CreateLog.createJson(rs, "disbursement");
-                        log.error("disbursement : " + rs);
-                        return rs;
-                    }
-                    Long id_team = 0l;
-
-                    Double total_income_fortax_purpose_dmp = 0d;
-                    Double total_income_fortax_purpose_team = 0d;
-                    Double outstanding_loan_a_dmp = 0d;
-                    Double outstanding_loan_a_team = 0d;
-                    String oldcutOffdate = null;
-                    Date oldCutOffDate = null;
-//                    
-                    Double taxable_income_dmp = 0d;
-                    Double taxable_income_team = 0d;
-                    Double dmpPortion = 0d;
-                    Double amount_portion_dmp = 0d;
-                    Double amount_portion_team = 0d;
-                    Integer anual_salary_team = (4000000 * 13);
-                    int a_jabatan = (60000000 * 5) / 100;
-                    int b_jabatan = ((anual_salary_team * 5) / 100) / 13;
-                    int masa_kerja = 0;
-                    String jabatan_per_bulan = String.format("%d", Math.min(a_jabatan, b_jabatan));
-                    Integer jabatan_per_tahun = (masa_kerja * Integer.parseInt(jabatan_per_bulan));
-
-                    for (int j = 0; j < entityTeam.size(); j++) {
-                        CaseDetails caseDetails = caseDetailsService.findById(engagement_id);
-                        if (caseDetails != null) {
-                            dmpPortion = caseDetails.getDmpPortion();
-                        } else {
-                            dmpPortion = 0d;
-                        }
-                        EntityPeriod entityPeriodDmp = new EntityPeriod();
-                        EntityPeriod entityPeriod = new EntityPeriod();
-                        TeamMember dataTeam = entityTeam.get(j);
-
-                        if (dataTeam.getTeamMemberId() != null) {
-                            id_team = dataTeam.getTeamMemberId();
-                        }
-
-                        Employee getDmp = employeeService.findById(dataTeam.getDmpId());
-                        String dmp_tax_status = getDmp.getTaxStatus();
-                        Double ptkp = 0d;
-                        log.info("dmp_tax_status : " + dmp_tax_status);
-//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
-                        EntityPTKP ptkpDmp = this.ptkpService.findPTKPByTaxStatus(dmp_tax_status);
-                        log.info("ptkpDmp : " + ptkpDmp);
-                        if (ptkpDmp != null) {
-                            ptkp = ptkpDmp.getPtkp();
-                        }
-
-                        taxable_income_dmp = (jabatan_per_tahun - ptkp);
-
-                        entityPeriodDmp.setTaxYear(sdfYear.format(now));
-                        entityPeriodDmp.setCaseId(entity.getCaseID());
-                        entityPeriodDmp.setDisburseId(dsb_id);
-                        entityPeriodDmp.setNumberDisbursement(number);
-                        entityPeriodDmp.setBulanDisburse(sdfMonth.format(now));
-                        entityPeriodDmp.setIdEmployee(getDmp.getIdEmployee());
-                        entityPeriodDmp.setEmployeeId(getDmp.getEmployeeId());
-                        log.info("dmpPortion_case_id" + String.format("%.0f", dmpPortion));
-                        amount_portion_dmp = (dmpPortion * dataTeam.getFeeShare()) / 100;
-                        log.info("amount_portion_dmp" + String.format("%.0f", amount_portion_dmp));
-                        entityPeriodDmp.setPrevDisbursement(amount_portion_dmp);
-                        entityPeriodDmp.setIncome_tax_paid_on_prior_period(taxable_income_dmp);
-
-                        List<Member> entityMember = memberService.findByIdTeam(id_team);
-                        if (entityMember == null) {
-                            disbursementService.remove(endisbursement);
-                            rs.setResponse_code("55");
-                            rs.setInfo("Failed");
-                            rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
-                            CreateLog.createJson(rs, "disbursement");
-                            log.error("disbursement : " + rs);
-                            return rs;
-                        }
-                        if (number == 1) {
-                            Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate);
-                            outstanding_loan_a_dmp = outStandingAteam;
-                            log.info("outstanding_loan_a_dmp 1 " + String.format("%.0f", outstanding_loan_a_dmp));
-                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
-                            outStandingLoanA.setTaxYear(sdfYear.format(now));
-                            outStandingLoanA.setDisburseId(dsb_id);
-                            outStandingLoanA.setCutOffDate(cutOffDate);
-                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
-                            outStandingLoanA.setNumberDisbursement(number.longValue());
-                            this.outStandingLoanAService.create(outStandingLoanA);
-                        }
-                        if (number == 2) {
-                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
-                            outstanding_loan_a_dmp = outStandingAteam;
-                            log.info("outstanding_loan_a_dmp 2 " + String.format("%.0f", outstanding_loan_a_dmp));
-                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
-                            outStandingLoanA.setTaxYear(sdfYear.format(now));
-                            outStandingLoanA.setDisburseId(dsb_id);
-                            outStandingLoanA.setCutOffDate(cutOffDate);
-                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
-                            outStandingLoanA.setNumberDisbursement(number.longValue());
-                            this.outStandingLoanAService.create(outStandingLoanA);
-                        }
-                        if (number == 3) {
-                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
-                            outstanding_loan_a_dmp = outStandingAteam;
-                            log.info("outstanding_loan_a_dmp 3 " + String.format("%.0f", outstanding_loan_a_dmp));
-                            outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
-                            outStandingLoanA.setTaxYear(sdfYear.format(now));
-                            outStandingLoanA.setDisburseId(dsb_id);
-                            outStandingLoanA.setCutOffDate(cutOffDate);
-                            outStandingLoanA.setLoanAmount(outstanding_loan_a_dmp);
-                            outStandingLoanA.setNumberDisbursement(number.longValue());
-                            this.outStandingLoanAService.create(outStandingLoanA);
-                        }
-
-                        for (int k = 0; k < entityMember.size(); k++) {
-                            Member dataMember = entityMember.get(k);
-                            String team_tax_status = dataMember.getEmployee().getTaxStatus();
-                            Double ptkp_team = 0d;
-                            log.info("team_tax_status : " + team_tax_status);
-//                                    String jabatan_perbulan_dmp = String.format("%d", (((4000000 * 13) * 5) / 100) / 13);
-                            EntityPTKP ptkpTeam = this.ptkpService.findPTKPByTaxStatus(team_tax_status);
-                            log.info("ptkpTeam : " + ptkpTeam);
-                            if (ptkpDmp != null) {
-                                ptkp_team = ptkpTeam.getPtkp();
-                            }
-                            taxable_income_team = (jabatan_per_tahun - ptkp_team);
-                            entityPeriod.setTaxYear(sdfYear.format(now));
-                            entityPeriod.setCaseId(entity.getCaseID());
-                            entityPeriod.setDisburseId(dsb_id);
-                            entityPeriod.setNumberDisbursement(number);
-                            entityPeriod.setBulanDisburse(sdfMonth.format(now));
-                            amount_portion_team = (dmpPortion * dataMember.getFeeShare()) / 100;
-                            log.info("amount_portion_team" + String.format("%.0f", amount_portion_team));
-                            entityPeriod.setIdEmployee(dataMember.getEmployee().getIdEmployee());
-                            entityPeriod.setEmployeeId(dataMember.getEmployee().getEmployeeId());
-                            entityPeriod.setPrevDisbursement(amount_portion_team);
-                            entityPeriod.setIncome_tax_paid_on_prior_period(taxable_income_team);
-
-                            if (number == 1) {
-                                Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate);
-                                outstanding_loan_a_team = outStandingAteam;
-                                log.info("outstanding_loan_a_team 1 " + String.format("%.0f", outstanding_loan_a_team));
-                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
-                                outStandingLoanA.setTaxYear(sdfYear.format(now));
-                                outStandingLoanA.setDisburseId(dsb_id);
-                                outStandingLoanA.setCutOffDate(cutOffDate);
-                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
-                                outStandingLoanA.setNumberDisbursement(number.longValue());
-                                this.outStandingLoanAService.create(outStandingLoanA);
-                            }
-                            if (number == 2) {
-                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
-                                outstanding_loan_a_team = outStandingAteam;
-                                log.info("outstanding_loan_a_team 2 " + String.format("%.0f", outstanding_loan_a_team));
-                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
-                                outStandingLoanA.setTaxYear(sdfYear.format(now));
-                                outStandingLoanA.setDisburseId(dsb_id);
-                                outStandingLoanA.setCutOffDate(cutOffDate);
-                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
-                                outStandingLoanA.setNumberDisbursement(number.longValue());
-                                this.outStandingLoanAService.create(outStandingLoanA);
-                            }
-                            if (number == 3) {
-                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
-                                outstanding_loan_a_team = outStandingAteam;
-                                log.info("outstanding_loan_a_team 3 " + String.format("%.0f", outstanding_loan_a_team));
-                                outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
-                                outStandingLoanA.setTaxYear(sdfYear.format(now));
-                                outStandingLoanA.setDisburseId(dsb_id);
-                                outStandingLoanA.setCutOffDate(cutOffDate);
-                                outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
-                                outStandingLoanA.setNumberDisbursement(number.longValue());
-                                this.outStandingLoanAService.create(outStandingLoanA);
-                            }
-                            this.entityPeriodService.create(entityPeriod);
-                        }
-                        this.entityPeriodService.create(entityPeriodDmp);
-                    }
-
-                    rs.setResponse_code("00");
-                    rs.setInfo("Success");
-                    rs.setResponse("disbursement  engagement_id : " + engagement_id + "by : " + entityEmp.getEmployeeId());
-                    CreateLog.createJson(rs, "disbursement");
-                    log.info("disbursement : " + rs);
-                    return rs;
-                } else {
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("can't disburse engagement_id " + engagement_id + "Not Found");
-                    CreateLog.createJson(rs, "disbursement");
-                    log.error("disbursement : " + rs);
-                    return rs;
-                }
-            }
-        } catch (JSONException | ParseException ex) {
+        } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             rs.setResponse_code("55");
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
-            log.error("disbursement : " + ex.getMessage());
-            CreateLog.createJson(ex.getMessage(), "disbursement");
-            return rs;
-
+            log.error("disbursementByEmployee : " + ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "disbursementByEmployee");
+            return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
+                    HttpStatus.NOT_FOUND);
+        } catch (ParseException ex) {
+            Logger.getLogger(DisbursementController.class.getName()).log(Level.SEVERE, null, ex);
         }
         rs.setResponse_code("55");
         rs.setInfo("Failed");
-        rs.setResponse("can't disbursement engagemet " + engagement_id + "Not Found");
-        CreateLog.createJson(rs, "disbursement");
-        log.error("disbursement : " + rs);
-        return rs;
+        rs.setResponse("can't disbursement employee_id :  " + object.getEmployee_id() + "Not Found");
+        CreateLog.createJson(rs, "disbursementByEmployee");
+        log.error("disbursementByEmployee : " + rs.toString());
+        return new ResponseEntity(new CustomErrorType("55", "Error", "can't disbursement employee_id : " + object.getEmployee_id() + " Not found"),
+                HttpStatus.NOT_FOUND);
 
     }
 }

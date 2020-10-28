@@ -162,6 +162,30 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     }
 
     @Override
+    public List<CaseDetails> findByDate(Date cutoff) {
+        try {
+//            return (CaseDetails) entityManager.find(CaseDetails.class, paramLong);
+            List<CaseDetails> acquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                    + " JOIN FETCH c.employee AS e "
+                    + " LEFT JOIN FETCH c.client AS t "
+                    + " WHERE "
+                    + " c.closed_date = :closed_date ")
+                    .setParameter("closed_date", cutoff)
+                    .getResultList();
+            return acquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public List<CaseDetails> findByEngagementId(Long paramLong) {
         try {
 //            return (CaseDetails) entityManager.find(CaseDetails.class, paramLong);
@@ -284,6 +308,57 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                         + " JOIN FETCH c.employee  e"
                         + " JOIN FETCH c.client t "
                         + " ORDER BY c.engagementId DESC").getResultList();
+            }
+
+//            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "
+//                    + " JOIN FETCH c.employee AS e").getResultList();
+            return (List<CaseDetails>) listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_caseDetailsRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<CaseDetails> listCaseDetailsPaging(String role, Long idEmployee, int max, int start) {
+        try {
+            List<CaseDetails> listAcquire = null;
+            if (role.contentEquals("dmp")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee e"
+                        + " JOIN FETCH c.client t "
+                        + " WHERE "
+                        + " e.idEmployee = :idEmployee"
+                        + " ORDER BY c.engagementId DESC")
+                        .setParameter("idEmployee", idEmployee)
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+            if (role.contentEquals("admin")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t "
+                        + " ORDER BY c.engagementId DESC")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+            if (role.contentEquals("lawyer")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t "
+                        + " ORDER BY c.engagementId DESC")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
             }
 
 //            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "

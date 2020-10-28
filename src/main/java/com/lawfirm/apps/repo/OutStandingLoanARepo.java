@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.OutStandingLoanA;
 import com.lawfirm.apps.repo.interfaces.OutStandingLoanARepoIface;
 import com.lawfirm.apps.utils.CreateLog;
+import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -27,7 +28,7 @@ public class OutStandingLoanARepo implements OutStandingLoanARepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public OutStandingLoanA create(OutStandingLoanA entity) {
@@ -191,6 +192,36 @@ public class OutStandingLoanARepo implements OutStandingLoanARepoIface {
             //                        .setParameter("status", "d")
 
             return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double findByEmployee(Long idEmployee, Date cutOffDate) {
+        try {
+            String sql = "SELECT COALESCE(SUM(o.disburseableAmount),0) FROM OutStandingLoanA o "
+                    + " WHERE "
+                    + " o.idEmployee = :idEmployee AND "
+                    + " o.cutOffDate = :cutOffDate";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("idEmployee", idEmployee)
+                    .setParameter("cutOffDate", cutOffDate);
+            if (query != null) {
+                log.info("isi" + query.getSingleResult().toString());
+                return Double.parseDouble(query.getSingleResult().toString());
+            } else {
+                log.info("isi" + query.getSingleResult().toString());
+                return 0d;
+            }
+
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");

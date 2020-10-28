@@ -40,6 +40,7 @@ public class EmployeeApi {
     protected String linkCv;
     protected String cell_phone;
     protected String user_name;
+    protected Long id_employee;
 //    protected String employee_id;
 //    private MultipartFile doc_cv;
 

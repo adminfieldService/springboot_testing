@@ -28,7 +28,6 @@ import com.lawfirm.apps.utils.CustomErrorType;
 import com.xss.filter.annotation.XxsFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,8 @@ import org.springframework.web.bind.annotation.RestController;
 //@CrossOrigin(origins = "*", maxAge = 3600)
 //@Slf4j
 public class EngagementHistoryController {
- private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
+
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
@@ -118,6 +118,7 @@ public class EngagementHistoryController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "engagement-history-view-by-admin");
+                log.error("engagement-history-view-by-admin : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -126,6 +127,7 @@ public class EngagementHistoryController {
                 rs.setInfo("Failed");
                 rs.setResponse("role : " + entity.getRoleName() + " permission deny ");
                 CreateLog.createJson(rs, "engagement-history-view-by-admin");
+                log.error("engagement-history-view-by-admin : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "role : " + entity.getRoleName() + " permission deny "),
                         HttpStatus.NOT_FOUND);
             }
@@ -133,10 +135,12 @@ public class EngagementHistoryController {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
             CreateLog.createJson(ex.getMessage(), "engagement-history-view-by-admin");
+            log.error("engagement-history-view-by-admin : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
         CreateLog.createJson(HttpStatus.NOT_FOUND, "engagement-history-view-by-admin");
+        log.error("engagement-history-view-by-admin : " + HttpStatus.NOT_FOUND);
         return new ResponseEntity(new CustomErrorType("55", "Error", "NOT FOUND"),
                 HttpStatus.NOT_FOUND);
     }
@@ -154,12 +158,14 @@ public class EngagementHistoryController {
                 rs.setInfo("Failed");
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "engagement-history-findByEngagementId");
+                log.error("engagement-history-findByEngagementId : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
+            log.error("engagement-history-findByEngagementId : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "engagement-history-findByEngagementId");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);

@@ -196,6 +196,67 @@ public class DisbursementRepo implements DisbursementRepoIface {
     }
 
     @Override
+    public List<Loan> listDisburseByloanPaging(String type, int max, int start) {
+        try {
+            List<Loan> listAcquire = null;
+            if (type.contentEquals("0")) {
+
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " l.status = :status "
+                        + " ORDER BY l.date_created Desc ")
+                        .setParameter("status", "d")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+            if (type.contentEquals("a")) {
+
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " t.typeLoan = :typeLoan AND "
+                        + " l.status = :status "
+                        + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "a")
+                        .setParameter("status", "d")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+            if (type.contentEquals("b")) {
+                listAcquire = entityManager.createQuery("SELECT DISTINCT  l FROM Loan l"
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " t.typeLoan = :typeLoan AND "
+                        + " l.status = :status "
+                        + " ORDER BY l.date_created Desc ")
+                        .setParameter("typeLoan", "b")
+                        .setParameter("status", "d")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+
+            return listAcquire;
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public List<Loan> viewDisburseByFinance(String empId, String type) {
         try {
             List<Loan> listAcquire = null;

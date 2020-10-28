@@ -6,6 +6,7 @@
 package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.OutStandingLoanA;
+import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -36,4 +37,6 @@ public interface OutStandingLoanARepoIface {
     OutStandingLoanA findByCaseId(String param);
 
     OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId);
+
+    Double findByEmployee(Long idEmployee, Date cutOffDate);
 }

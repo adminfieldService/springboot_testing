@@ -6,6 +6,7 @@
 package com.lawfirm.apps.service.interfaces;
 
 import com.lawfirm.apps.model.CaseDetails;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -40,7 +41,9 @@ public interface CaseDetailsServiceIface {
 
     List<CaseDetails> getCaseId();
 
-    List<CaseDetails>listCaseDetails(String role, Long idEmployee);
+    List<CaseDetails> listCaseDetails(String role, Long idEmployee);
+
+    List<CaseDetails> listCaseDetailsPaging(String role, Long idEmployee, int max, int start);
 
     List<CaseDetails> listActive(Boolean isActive);
 
@@ -56,4 +59,6 @@ public interface CaseDetailsServiceIface {
     List<CaseDetails> findByEngagementId(Long paramLong);
 
     List<CaseDetails> findByAdmin(Long paramLong);
+
+    List<CaseDetails> findByDate(Date cutoff);
 }

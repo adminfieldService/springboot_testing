@@ -98,8 +98,15 @@ public class DisbursementService implements DisbursementServiceIface {
     }
 
     @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Disbursement disbursement(Integer number, String taxyear) {
-          return this.disbursementRepo.disbursement(number, taxyear);
+        return this.disbursementRepo.disbursement(number, taxyear);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> listDisburseByloanPaging(String type, int max, int start) {
+        return this.disbursementRepo.listDisburseByloanPaging(type, max, start);
     }
 
 }

@@ -187,6 +187,54 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
+    public Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan) {
+        try {
+            Loan entity = null;
+            if (typeLoan.contains("a")) {
+                entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l "
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " e.idEmployee = :idEmployee AND "
+                        + " l.date_created = :date_created AND "
+                        + " t.typeLoan = :typeLoan AND"
+                        + " l.status <> :status ")
+                        .setParameter("idEmployee", idEmployee)
+                        .setParameter("date_created", tanggalPengajuan)
+                        .setParameter("typeLoan", "a")
+                        .setParameter("status", "r")
+                        .getSingleResult();
+            }
+            if (typeLoan.contains("b")) {
+                entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l "
+                        + " JOIN FETCH l.employee AS e "
+                        + " LEFT JOIN FETCH l.loantype AS t "
+                        + " WHERE "
+                        + " e.idEmployee = :idEmployee AND "
+                        + " l.date_created = :date_created AND "
+                        + " t.typeLoan = :typeLoan AND"
+                        + " l.status <> :status ")
+                        .setParameter("idEmployee", idEmployee)
+                        .setParameter("date_created", tanggalPengajuan)
+                        .setParameter("typeLoan", "b")
+                        .setParameter("status", "r")
+                        .getSingleResult();
+            }
+
+            return entity;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public Loan findByLoanIdB(String param) {
         try {
             Loan entity = (Loan) entityManager.createQuery("SELECT l FROM Loan l WHERE "
@@ -474,8 +522,8 @@ public class LoanRepo implements LoanRepoIface {
                     + " AND l.status <> :status "
                     + " AND l.tgl_input = :tgl_input")
                     .setParameter("typeLoan", "a")
-                    .setParameter("status", "r")
                     .setParameter("employeeId", param2)
+                    .setParameter("status", "r")
                     .setParameter("tgl_input", param3)
                     .getResultList();
             return listAcquire;

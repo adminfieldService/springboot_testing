@@ -189,4 +189,10 @@ public class LoanService implements LoanServiceIface {
         return loanRepo.sumLoanA2(userId, taxtYear, tgl_cut_off, old_tgl_cut_off);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan) {
+        return loanRepo.chekLoan(typeLoan, idEmployee, tanggalPengajuan);
+    }
+
 }

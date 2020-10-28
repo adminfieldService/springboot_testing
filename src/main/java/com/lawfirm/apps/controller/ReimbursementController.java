@@ -49,7 +49,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONException;
@@ -68,6 +67,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
+import java.text.ParseException;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -76,10 +77,11 @@ import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 //@RequestMapping({"/reimbursement"})//pengembalian
 public class ReimbursementController {
 
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
@@ -148,19 +150,27 @@ public class ReimbursementController {
             @RequestPart("attach") MultipartFile file, Authentication authentication) throws IOException {
 
         try {
+
             Date now = new Date();
             String nama = authentication.getName();
             Boolean process = true;
+            Boolean attached = null;
             Date expense_date_value = null;
-            log.info("object value : " + case_id + ": " + expense_date + ": " + amount + ": " + note);
+            if (!file.isEmpty()) {
+                attached = true;
+            } else {
+                attached = false;
+            }
+            log.info("createReimburse object value case_id :" + case_id + " expense_date : " + expense_date + " amount : " + amount + " note : " + note + " isattached: " + attached);
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
-            log.info("entityEmp : " + entityEmp);
+            log.info("createReimburse : " + entityEmp);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-reimburse");
+                log.error("createReimburse : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -174,6 +184,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("dmp")) {
@@ -182,6 +193,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
 //            CaseDetails entity = caseDetailsService.findCaseId(case_id);
@@ -200,6 +212,7 @@ public class ReimbursementController {
                 rs.setResponse("Case Id : " + case_id + " not Found");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (findByCaseID.getStatus().contentEquals("r")) {
@@ -208,6 +221,7 @@ public class ReimbursementController {
                 rs.setResponse("Case Id : " + case_id + " Rejected ");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (findByCaseID.getStatus().contentEquals("s")) {
@@ -216,6 +230,7 @@ public class ReimbursementController {
                 rs.setResponse("Case Id : " + case_id + " Need Admin Approval");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (findByCaseID.getStatus().contentEquals("closed")) {
@@ -224,6 +239,7 @@ public class ReimbursementController {
                 rs.setResponse("Case Id : " + case_id + " Status Close");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
 
@@ -234,6 +250,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature, Loan type : " + entityLoan.getLoantype().getTypeLoan());
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (entityLoan.getStatus().contentEquals("r")) {
@@ -242,6 +259,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature,  Loan status : " + "Rejected");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (entityLoan.getStatus().contentEquals("s")) {
@@ -250,6 +268,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature,  Loan Must : " + "Approved");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             if (entityLoan.getLoantype().getTypeLoan().contains("a")) {
@@ -258,6 +277,7 @@ public class ReimbursementController {
                 rs.setResponse("id Loan : " + id_loan + " not Found");
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
 //            Double loanB = entityLoan.getLoanAmount();
@@ -270,6 +290,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse Amount : " + String.format("%.0f", amount) + " Greater than loanB " + String.format("%.0f", loanB));
                 CreateLog.createJson(rs, "create-reimburse");
                 process = false;
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
             String pathDoc = basepathUpload + "reimbursement" + "/" + entityLoan.getLoanId() + "/";
@@ -324,7 +345,7 @@ public class ReimbursementController {
                     rs.setInfo("Success");
                     rs.setResponse("Create Reimburse Success");
                     CreateLog.createJson(rs, "create-reimburse");
-
+                    log.info("createReimburse success: " + rs.toString());
                     return rs;
                 }
 
@@ -333,13 +354,15 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("id Loan : " + id_loan + " not Found");
                 CreateLog.createJson(rs, "create-reimburse");
+                log.error("createReimburse : " + rs.toString());
                 return rs;
             }
 
-        } catch (Exception ex) {
+        } catch (IOException | ParseException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "create-reimburse");
+            log.error("createReimburse : " + ex.getMessage());
         }
 //        rs.setResponse_code("55");
 //        rs.setInfo("Data null");
@@ -361,6 +384,7 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursement");
+                log.error("listReimbursement : " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
@@ -374,6 +398,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursement");
                 process = false;
+                log.error("listReimbursement : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -472,6 +497,7 @@ public class ReimbursementController {
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
+            log.error("listReimbursement : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursement");
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
@@ -488,12 +514,14 @@ public class ReimbursementController {
             String nama = authentication.getName();
             Boolean process = true;
             log.info("nama : " + nama);
+            log.info("reimbursementFindById json : " + object);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
+                log.error("reimbursementFindById : " + rs.toString());
                 CreateLog.createJson(rs, "reimbursementFindById");
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
@@ -507,6 +535,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reimbursementFindById");
                 process = false;
+                log.error("reimbursementFindById : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -596,6 +625,7 @@ public class ReimbursementController {
                         obj.put("link_document", reimbursement.getLinkDocument());
                     }
                 }
+                log.info("reimbursementFindById : " + obj.toString());
                 return ResponseEntity.ok(obj.toString());
             }
 
@@ -603,6 +633,7 @@ public class ReimbursementController {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "reimbursementFindById");
+            log.error("error : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -618,7 +649,7 @@ public class ReimbursementController {
             String nama = authentication.getName();
             Boolean process = true;
             Date expense_date_value = null;
-            log.info("object value : " + object.toString());
+            log.info("approvalReimbursement json  : " + object.toString());
 
             log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
@@ -629,6 +660,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "approve-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
 //            Employee dataEmp = employeeService.findById(id_employee_admin); 
@@ -640,6 +672,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
@@ -648,6 +681,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             Reimbursement dataReimbursement = reimbursementService.findById(reimburse_id);
@@ -657,6 +691,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + reimburse_id + " not Found");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("r")) {
@@ -665,6 +700,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " Rejected by admin");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("reimburse")) {
@@ -673,6 +709,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " already reimburse");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("a")) {
@@ -681,6 +718,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " already Approve ");
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
             if (object.getApproved_amount() > dataReimbursement.getReimburseAmount()) {
@@ -689,6 +727,7 @@ public class ReimbursementController {
                 rs.setResponse(" Approved Amount : " + String.format("%.0f", object.getApproved_amount()) + " Greater than Reimburse Amount : " + String.format("%.0f", dataReimbursement.getReimburseAmount()));
                 CreateLog.createJson(rs, "approval-reimbursement");
                 process = false;
+                log.error("approval-reimbursement : " + rs.toString());
                 return rs;
             }
 
@@ -715,6 +754,7 @@ public class ReimbursementController {
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("data reimbursement : " + dataReimbursement.getReimbursementId() + " approved by admin " + entityEmp.getEmployeeId());
+                    log.error("approval-reimbursement : " + rs.toString());
                     return rs;
                 }
 
@@ -723,12 +763,14 @@ public class ReimbursementController {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("data reimbursement not Found");
+                log.error("approval-reimbursement : " + rs.toString());
                 CreateLog.createJson(rs, "approval-reimbursement");
                 return rs;
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse("data id : " + reimburse_id + " not Found");
+            log.error("approval-reimbursement : " + rs.toString());
             CreateLog.createJson(rs, "reimbursement");
             return rs;
         } catch (Exception ex) {
@@ -738,6 +780,7 @@ public class ReimbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "reimbursement");
             System.out.println("ERROR: " + ex.getMessage());
+            log.error("approval-reimbursement : " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "approval-reimbursement");
             return rs;
         }
@@ -755,9 +798,9 @@ public class ReimbursementController {
             String nama = authentication.getName();
             Boolean process = true;
             Date expense_date_value = null;
-            log.info("object value : " + object.toString());
+            log.info("reject-reimbursement json  : " + object.toString());
 
-            log.info("nama : " + nama);
+//            log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
             if (entityEmp == null) {
@@ -765,6 +808,7 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reject-reimbursement");
+                log.error("reject-reimbursement : " + rs.toString());
                 process = false;
                 return rs;
             }
@@ -777,6 +821,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reject-reimbursement");
                 process = false;
+                log.error("reject-reimbursement : " + rs.toString());
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("admin")) {
@@ -785,6 +830,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reject-reimbursement");
                 process = false;
+                log.error("reject-reimbursement : " + rs.toString());
                 return rs;
             }
             Reimbursement dataReimbursement = reimbursementService.findById(reimburse_id);
@@ -844,6 +890,7 @@ public class ReimbursementController {
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("data reimbursement : " + dataReimbursement.getReimbursementId() + " rejected by admin " + entityEmp.getEmployeeId());
+                    log.info("reject-reimbursement  : " + rs.toString());
                     return rs;
                 }
 
@@ -853,12 +900,14 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("data reimbursement not Found");
                 CreateLog.createJson(rs, "approval-reimbursement");
+                log.error("reject-reimbursement  : " + rs.toString());
                 return rs;
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse("data id : " + reimburse_id + " not Found");
             CreateLog.createJson(rs, "reimbursement");
+            log.error("reject-reimbursement  : " + rs.toString());
             return rs;
         } catch (Exception ex) {
             // TODO Auto-generated catch block
@@ -868,6 +917,7 @@ public class ReimbursementController {
             CreateLog.createJson(rs, "reimbursement");
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "approval-reimbursement");
+            log.error("reject-reimbursement  : " + ex.getMessage());
             return rs;
         }
 //        rs.setResponse_code("55");
@@ -882,14 +932,15 @@ public class ReimbursementController {
         try {
             Date now = new Date();
             String nama = authentication.getName();
+            log.info("nama : " + nama);
             Boolean process = true;
             Date expense_date_value = null;
             String caseId = null;
             Double totalLoanB = 0d;
             Double totalOutStanding = 0d;
 //            log.info("object value : " + object.toString());
+            log.info("reimburse_id : " + reimburse_id);
 
-            log.info("nama : " + nama);
             Employee entityEmp = employeeService.findByEmployee(nama);
             log.info("entityEmp : " + entityEmp);
             if (entityEmp == null) {
@@ -898,6 +949,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
 //            Employee dataEmp = employeeService.findById(id_employee_admin); 
@@ -909,6 +961,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
             if (!dataEmp.getRoleName().matches("finance")) {
@@ -926,6 +979,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + reimburse_id + " not Found");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("reimburse")) {
@@ -934,6 +988,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " already Reimburse ");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("s")) {
@@ -942,6 +997,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " must approve by admin");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
             if (dataReimbursement.getStatus().contentEquals("r")) {
@@ -950,6 +1006,7 @@ public class ReimbursementController {
                 rs.setResponse("reimburse id : " + dataReimbursement.getReimbursementId() + " Rejected by admin");
                 CreateLog.createJson(rs, "reimbursement");
                 process = false;
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
 
@@ -963,6 +1020,7 @@ public class ReimbursementController {
                     rs.setResponse(" Approved Amount : " + String.format("%.0f", dataReimbursement.getApprovedAmount()) + " Greater than Reimburse Amount : " + String.format("%.0f", dataReimbursement.getReimburseAmount()));
                     CreateLog.createJson(rs, "reimbursement");
                     process = false;
+                    log.error("reimburse_id : " + rs.toString());
                     return rs;
                 }
                 dataReimbursement.setReimbursedBy(dataEmp.getIdEmployee());
@@ -981,6 +1039,7 @@ public class ReimbursementController {
                     rs.setResponse("CASE ID Not Found");
                     CreateLog.createJson(rs, "reimbursement");
                     process = false;
+                    log.error("reimburse_id : " + rs.toString());
                     return rs;
                 }
 
@@ -990,6 +1049,7 @@ public class ReimbursementController {
                     rs.setResponse("CASE ID : " + engagement.getCaseID() + " Need admin approval");
                     CreateLog.createJson(rs, "reimbursement");
                     process = false;
+                    log.error("reimburse_id : " + rs.toString());
                     return rs;
                 }
                 if (engagement.getStatus().contentEquals("r")) {
@@ -998,6 +1058,7 @@ public class ReimbursementController {
                     rs.setResponse("CASE ID : " + engagement.getCaseID() + " Rejected by admin");
                     CreateLog.createJson(rs, "reimbursement");
                     process = false;
+                    log.error("reimburse_id : " + rs.toString());
                     return rs;
                 }
                 if (engagement.getStatus().contentEquals("closed")) {
@@ -1006,6 +1067,7 @@ public class ReimbursementController {
                     rs.setResponse("CASE ID : " + engagement.getCaseID() + " Status CLOSE");
                     CreateLog.createJson(rs, "reimbursement");
                     process = false;
+                    log.error("reimburse_id : " + rs.toString());
                     return rs;
                 }
 
@@ -1029,6 +1091,7 @@ public class ReimbursementController {
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("data reimbursement reimburse by : " + entityEmp.getEmployeeId());
+                    log.info("Success reimbursement : " + rs.toString());
                     return rs;
                 }
 //                }
@@ -1037,12 +1100,14 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("reimburse id : " + reimburse_id + " not Found");
                 CreateLog.createJson(rs, "reimbursement");
+                log.error("reimburse_id : " + rs.toString());
                 return rs;
             }
             rs.setResponse_code("55");
             rs.setInfo("Failed");
             rs.setResponse("Cannot Access This feature");
             CreateLog.createJson(rs, "reimbursement");
+            log.error("reimburse_id : " + rs.toString());
             return rs;
         } catch (Exception ex) {
             // TODO Auto-generated catch block
@@ -1052,6 +1117,7 @@ public class ReimbursementController {
             CreateLog.createJson(rs, "reimbursement");
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "reimbursement");
+            log.error("reimburse_id : " + ex.getMessage());
             return rs;
         }
 
@@ -1074,6 +1140,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementFinace");
                 process = false;
+                log.error("listReimbursementFinace : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1086,6 +1153,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementFinace");
                 process = false;
+                log.error("listReimbursementFinace : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1095,6 +1163,7 @@ public class ReimbursementController {
                 rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementFinace");
                 process = false;
+                log.error("listReimbursementFinace : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1187,11 +1256,13 @@ public class ReimbursementController {
                 }
                 array.put(obj);
             }
+            log.info("listReimbursementFinace : " + array.toString());
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursementFinace");
+            log.error("listReimbursementFinace Error : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1213,6 +1284,7 @@ public class ReimbursementController {
                 rs.setInfo("Failed");
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementAdmin");
+                log.error("listReimbursementAdmin " + rs.toString());
                 process = false;
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
@@ -1226,6 +1298,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementAdmin");
                 process = false;
+                log.error("listReimbursementAdmin " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1235,6 +1308,7 @@ public class ReimbursementController {
                 rs.setResponse("your Role : " + dataEmp.getRoleName() + " Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementAdmin");
                 process = false;
+                log.error("listReimbursementAdmin " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1326,12 +1400,14 @@ public class ReimbursementController {
                 }
                 array.put(obj);
             }
+            log.info("listReimbursementAdmin : " + array.toString());
             return ResponseEntity.ok(array.toString());
 
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursementAdmin");
+            log.error("listReimbursementAdmin : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1353,6 +1429,7 @@ public class ReimbursementController {
                 rs.setResponse("can't acces this feature :");
                 CreateLog.createJson(rs, "viewDocument-reimbursement");
                 process = false;
+                log.error("viewDocument-reimbursement : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1373,6 +1450,7 @@ public class ReimbursementController {
                 rs.setResponse("role : " + entityEmp.getRoleName() + " permission deny ");
                 process = false;
                 CreateLog.createJson(rs, "viewDocument-reimbursement");
+                log.error("viewDocument-reimbursement : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1388,6 +1466,7 @@ public class ReimbursementController {
                     jsonobj.put("response", "success");
                     jsonobj.put("info", linkDoc);
                 } catch (JSONException ex) {
+                    log.error("viewDocument-reimbursement : " + ex.getMessage());
                     Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
                     return new ResponseEntity(new CustomErrorType("55", "Error", "Employee Null"),
                             HttpStatus.NOT_FOUND);
@@ -1409,6 +1488,7 @@ public class ReimbursementController {
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(rs, "viewDocument-reimbursement");
 //            return null;
+            log.error("viewDocument-reimbursement : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }
@@ -1431,6 +1511,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementDMP");
                 process = false;
+                log.error("listReimbursementDMP : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1443,6 +1524,7 @@ public class ReimbursementController {
                 rs.setResponse("Cannot Access This feature");
                 CreateLog.createJson(rs, "listReimbursementDMP");
                 process = false;
+                log.error("listReimbursementDMP : " + rs.toString());
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
@@ -1561,12 +1643,14 @@ public class ReimbursementController {
                 }
                 array.put(obj);
             }
+            log.info("listReimbursementDMP : " + array.toString());
             return ResponseEntity.ok(array.toString());
 
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "listReimbursementDMP");
+            log.error("listReimbursementDMP : " + ex.getMessage());
             return new ResponseEntity(new CustomErrorType("55", "Error", ex.getMessage()),
                     HttpStatus.NOT_FOUND);
         }

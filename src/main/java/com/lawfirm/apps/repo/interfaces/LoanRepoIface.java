@@ -70,5 +70,7 @@ public interface LoanRepoIface {
 
     List<Loan> generateLoanIdB(String param1, String param2, String param3);
 
+    Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan);
+
     EntityManager getEntityManager();
 }

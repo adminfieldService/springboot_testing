@@ -29,6 +29,7 @@ public class EngagementApi {
     protected Double profesional_fee;
     protected Double profesional_fee_net;
     protected Double dmp_portion;
+    protected Double dmp_percent;
     protected String case_over_view;
     protected String notes;
     protected String decision;

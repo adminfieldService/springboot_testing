@@ -11,6 +11,7 @@ import com.lawfirm.apps.service.UserServiceImpl;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -28,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -79,6 +81,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/opt/UploadFile/**");
     }
 
+    @Bean
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 //  .exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()).and() 
@@ -92,7 +99,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/update-profile/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()       
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/account/").hasAnyRole("lawyer", "admin", "dmp", "support")//.permitAll()       
                 .antMatchers(HttpMethod.POST, "/employee/approval/account/").hasRole("admin")//.permitAll()       
-                .antMatchers(HttpMethod.DELETE,"/employee/managed-employee/{id_employee}/").hasAnyRole("admin", "sysadmin")//.permitAll()        
+                .antMatchers(HttpMethod.DELETE, "/employee/managed-employee/{id_employee}/").hasAnyRole("admin", "sysadmin")//.permitAll()        
                 .antMatchers(HttpMethod.POST, "/employee/managed-employee/{id_employee}/set-password/").hasAnyRole("lawyer", "admin", "finance", "dmp", "support")//.permitAll()       
                 .antMatchers(HttpMethod.PUT, "/employee/managed-employee/password/").hasAnyRole("lawyer", "admin", "finance", "dmp", "support", "sysadmin")//.permitAll()       
                 .antMatchers(HttpMethod.POST, "/employee/find-by-id/").hasAnyRole("admin", "sysadmin")//.permitAll()
@@ -149,6 +156,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/disbursements/loan-b/").hasRole("finance")
                 .antMatchers(HttpMethod.GET, "/disbursement/{id_loan}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/disbursement/case-id/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.POST, "/disbursement/{engagement_id}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
+                .antMatchers(HttpMethod.POST, "/disbursement/by-employee/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/reimbursement/{id_loan}/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.GET, "/reimbursements/").hasAnyRole("admin", "dmp", "lawyer", "finance")
                 .antMatchers(HttpMethod.POST, "/reimbursement/find-by-id/").hasAnyRole("admin", "dmp", "lawyer", "finance")
@@ -166,7 +175,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/403")
                 .and()
                 .sessionManagement()
-                .maximumSessions(1);
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true);
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 //    @Override

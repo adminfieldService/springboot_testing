@@ -21,7 +21,7 @@ and open the template in the editor.
             <file>lawfirm.log</file>
 
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>lawfirm.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <fileNamePattern>lawfirm_test.%d{yyyy-MM-dd}.log</fileNamePattern>
                 <!-- each archived file, size max 10MB -->
                 <maxFileSize>10MB</maxFileSize>
                 <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->

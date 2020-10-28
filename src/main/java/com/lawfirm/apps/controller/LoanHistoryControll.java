@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +47,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", maxAge = 3600)
-@Slf4j
+//@Slf4j
 public class LoanHistoryControll {
 
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     static String basepathUpload = "/opt/lawfirm/UploadFile/";
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;

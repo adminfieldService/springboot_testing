@@ -68,6 +68,8 @@ public interface LoanServiceIface {
     List<Loan> generateLoanId(String param1, String param2, String param3);
 
     List<Loan> generateLoanIdB(String param1, String param2, String param3);
+    
+    Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan);
 
     EntityManager getEntityManager();
 }

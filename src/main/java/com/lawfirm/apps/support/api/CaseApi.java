@@ -15,5 +15,6 @@ import lombok.ToString;
 @Data
 @ToString
 public class CaseApi {
-   protected Long engagement_id;
+
+    protected Long engagement_id = null;
 }

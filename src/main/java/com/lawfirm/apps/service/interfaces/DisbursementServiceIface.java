@@ -31,6 +31,8 @@ public interface DisbursementServiceIface {
 
     List<Loan> listDisburseByloan(String type);
 
+    List<Loan> listDisburseByloanPaging(String type, int max, int start);
+
     List<Loan> viewDisburseByFinance(String empId, String type);
 
     Loan findLoanAById(Long param);
@@ -41,6 +43,6 @@ public interface DisbursementServiceIface {
     List<Disbursement> disbursementbyCaseId(String param);
 
     Disbursement disbursementFindbyCaseId(String param);
-    
+
     Disbursement disbursement(Integer number, String param);
 }

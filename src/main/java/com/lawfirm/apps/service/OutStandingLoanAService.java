@@ -9,6 +9,7 @@ import com.lawfirm.apps.config.Constants;
 import com.lawfirm.apps.model.OutStandingLoanA;
 import com.lawfirm.apps.repo.interfaces.OutStandingLoanARepoIface;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanAServiceIface;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,5 +82,11 @@ public class OutStandingLoanAService implements OutStandingLoanAServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId) {
         return outStandingLoanARepo.findBy(idEmployee, taxyear, disburseId);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double findByEmployee(Long idEmployee, Date cutOffDate) {
+        return outStandingLoanARepo.findByEmployee(idEmployee, cutOffDate);
     }
 }

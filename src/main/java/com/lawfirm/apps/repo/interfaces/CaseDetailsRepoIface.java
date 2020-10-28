@@ -6,6 +6,7 @@
 package com.lawfirm.apps.repo.interfaces;
 
 import com.lawfirm.apps.model.CaseDetails;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -47,6 +48,8 @@ public interface CaseDetailsRepoIface {
 
     List<CaseDetails> listCaseDetails(String role, Long idEmployee);
 
+    List<CaseDetails> listCaseDetailsPaging(String role, Long idEmployee, int max, int start);
+
     List<CaseDetails> listActive(Boolean isActive);
 
     List<CaseDetails> byName(Boolean isActive);
@@ -56,4 +59,6 @@ public interface CaseDetailsRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
+
+    List<CaseDetails> findByDate(Date cutoff);
 }

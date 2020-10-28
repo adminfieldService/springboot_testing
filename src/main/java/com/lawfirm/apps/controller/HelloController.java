@@ -6,6 +6,7 @@
 package com.lawfirm.apps.controller;
 
 import java.security.Principal;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,14 +18,14 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @RestController
 public class HelloController {
-
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
     @RequestMapping(method = RequestMethod.GET, value = "/api/lawfirm")
     public String sayHello() {
         return "Swagger Hello World";
     }
 
     // for 403 access denied page
-    @RequestMapping(value = "403", method = RequestMethod.GET)
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
     public ModelAndView accesssDenied(Principal user) {
 
         ModelAndView model = new ModelAndView();

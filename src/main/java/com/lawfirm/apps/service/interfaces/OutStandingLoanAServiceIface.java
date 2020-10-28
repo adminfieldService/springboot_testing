@@ -6,6 +6,7 @@
 package com.lawfirm.apps.service.interfaces;
 
 import com.lawfirm.apps.model.OutStandingLoanA;
+import java.util.Date;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,4 +36,6 @@ public interface OutStandingLoanAServiceIface {
     OutStandingLoanA findByCaseId(String param);
 
     OutStandingLoanA findBy(Long idEmployee, String taxyear, Long disburseId);
+
+    Double findByEmployee(Long idEmployee, Date cutOffDate);
 }
