@@ -84,4 +84,16 @@ public class OutStandingLoaBService implements OutStandingLoanBServiceIface {
         return outStandingLoanBRepo.checkReimburse(param, userId);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<OutStandingLoanB> lsitByCaseId(String param) {
+        return outStandingLoanBRepo.lsitByCaseId(param);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Double sumLoanByCaseId(String param) {
+        return outStandingLoanBRepo.sumLoanByCaseId(param);
+    }
+
 }

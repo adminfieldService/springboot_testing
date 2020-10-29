@@ -24,6 +24,8 @@ public interface DisbursementServiceIface {
     Disbursement delete(Disbursement entity);
 
     List<Disbursement> numOfDisbursement(String param);
+    
+     Disbursement setnumOfDisbursement(String param, String bulan);
 
     void remove(Disbursement entity);
 

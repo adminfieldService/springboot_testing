@@ -181,18 +181,18 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
                 query = entityManager.createQuery(sql);
                 query.setParameter("numberDisbursement", numberDisbursement);
                 query.setParameter("idEmployee", userId);
-                query.setParameter("taxtYear", taxYear);
+                query.setParameter("taxYear", taxYear);
                 query.setParameter("status", "1");
             }
             if (numberDisbursement == 3) {
                 String sql = "SELECT COALESCE(SUM(p.income_tax_paid_on_prior_period),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                         + " WHERE "
                         + " p.idEmployee = :idEmployee AND "
-                        + " p.taxYear = :taxYear AND"
+                        + " p.taxYear = :taxYear AND "
                         + " p.status = :status ";
                 query = entityManager.createQuery(sql);
                 query.setParameter("idEmployee", userId);
-                query.setParameter("taxtYear", taxYear);
+                query.setParameter("taxYear", taxYear);
                 query.setParameter("status", "1");
             }
 

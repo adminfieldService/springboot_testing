@@ -51,6 +51,12 @@ public class DisbursementService implements DisbursementServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Disbursement setnumOfDisbursement(String param, String bulan) {
+        return disbursementRepo.setnumOfDisbursement(param,bulan);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public void remove(Disbursement entity) {
         disbursementRepo.remove(entity);
     }

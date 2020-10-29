@@ -25,6 +25,8 @@ public interface DisbursementRepoIface {
 
     List<Disbursement> numOfDisbursement(String param);
 
+    Disbursement setnumOfDisbursement(String param, String bulan);
+
     void remove(Disbursement entity);
 
     List<Disbursement> listDisburse();

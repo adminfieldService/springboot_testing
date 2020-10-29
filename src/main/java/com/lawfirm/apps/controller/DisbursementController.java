@@ -307,7 +307,7 @@ public class DisbursementController {
             LoanType typeLoan = new LoanType();
             LoanHistory entityHistory = new LoanHistory();
             Disbursement entityDisbursement = new Disbursement();
-            OutStandingLoanB outStanding = new OutStandingLoanB();
+//            OutStandingLoanB outStanding = new OutStandingLoanB();
 //        if (dataFinance == null) {
 //            rs.setResponse_code("55");
 //            rs.setInfo("Failed");
@@ -1615,8 +1615,6 @@ public class DisbursementController {
                 disbursement.setBulanInput(sdfMonth.format(now));
                 disbursement.setTahunInput(sdfYear.format(now));
                 Disbursement endisbursement = this.disbursementService.create(disbursement);
-
-//                
 //                
                 if (endisbursement != null) {
 
@@ -1887,6 +1885,7 @@ public class DisbursementController {
 
             }
             if (process) {
+
                 String cutOffdate = null;
                 Date cutOffDate = null;
                 String oldcutOffdate = null;
@@ -1905,14 +1904,8 @@ public class DisbursementController {
                     return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + caseId + " Not found"),
                             HttpStatus.NOT_FOUND);
                 }
-//                JSONArray array = new JSONArray();s
-//                log.info("loanlist : " + disbursementlist.size());
-//                if (disbursementlist.size() > 0) {
-//                    for (int d = 0; d < disbursementlist.size(); d++) {
-//                        Disbursement dataDisbursement = disbursementlist.get(d);
 
                 JSONObject obj = new JSONObject();
-//                        JSONObject objMember = new JSONObject();
                 JSONArray arrayM = new JSONArray();
                 Long EngagementId = 0l;
                 Long idLoanB = 0l;
@@ -2463,21 +2456,22 @@ public class DisbursementController {
                     obj.put("dmp_portion_case_id", "");
                     dmpPortion = 0d;
                 }
+                Double outStandingB = 0.0;
+                outStandingB = this.outStandingLoanBService.sumLoanByCaseId(object.getCase_id());
+//                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(object.getCase_id());
 
-                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(object.getCase_id());
-
-                if (outStandingB == null) {
-                    rs.setResponse_code("55");
-                    rs.setInfo("Failed");
-                    rs.setResponse("caseId : " + object.getCase_id() + " Not found");
-                    log.error("disbursementbyCaseId : " + rs.toString());
-                    CreateLog.createJson(rs, "disbursementbyCaseId");
-                    process = false;
-                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + object.getCase_id() + " Not found"),
-                            HttpStatus.NOT_FOUND);
-                }
-
-                outStandingLoanB = outStandingB.getOutStanding();
+//                if (outStandingB == null) {
+//                    rs.setResponse_code("55");
+//                    rs.setInfo("Failed");
+//                    rs.setResponse("caseId : " + object.getCase_id() + " Not found");
+//                    log.error("disbursementbyCaseId : " + rs.toString());
+//                    CreateLog.createJson(rs, "disbursementbyCaseId");
+//                    process = false;
+//                    return new ResponseEntity(new CustomErrorType("55", "Error", "caseId : " + object.getCase_id() + " Not found"),
+//                            HttpStatus.NOT_FOUND);
+//                }
+//                outStandingLoanB = outStandingB.getOutStanding();
+                outStandingLoanB = outStandingB;
                 obj.put("out_standing_loan_b", String.format("%.0f", outStandingLoanB));
 
                 List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);

@@ -408,7 +408,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+//    @Override
     public List<Disbursement> numOfDisbursement(String param) {
         try {
             List<Disbursement> listAcquire = entityManager.createQuery("SELECT d FROM Disbursement d "
@@ -418,6 +418,41 @@ public class DisbursementRepo implements DisbursementRepoIface {
                     .setParameter("tahunInput", param)
                     .setParameter("isActive", "1")
                     .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Disbursement setnumOfDisbursement(String param, String bulan) {
+        try {
+            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d.bulanInput, "
+                    + "CASE "
+                    + "WHEN 'FUNCTION(\"date_format\",current_date,%m) <= :bulanInput1' THEN  '1' "
+                    + "WHEN 'FUNCTION(\"date_format\",current_date,%m) > :bulanInput1  AND  FUNCTION(\"date_format\",current_date,%m) <= :bulanInput2' THEN  '2' "
+                    + "WHEN 'FUNCTION(\"date_format\",current_date,%m) > :bulanInput2  AND  FUNCTION(\"date_format\",current_date,%m) < :bulanInput3' THEN  '3' "
+                    + "ELSE d.bulanInput "
+                    + "END "
+                    + "FROM Disbursement d "
+                    + "WHERE"
+                    + "d.tahunInput = :tahunInput AND "
+                    + "d.isActive = :isActive")
+                    .setParameter("bulanInput1", "03")
+                    .setParameter("bulanInput2", "07")
+                    .setParameter("bulanInput3", "11")
+                    .setParameter("tahunInput", param)
+                    .setParameter("isActive", "1")
+                    .getSingleResult();
+
+            System.out.println("isi -> listAcquire: " + listAcquire);
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());

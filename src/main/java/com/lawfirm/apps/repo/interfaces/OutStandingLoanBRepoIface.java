@@ -36,4 +36,8 @@ public interface OutStandingLoanBRepoIface {
 
 //    List<OutStandingLoanB> findByCaseId(Long paramLong);
     OutStandingLoanB findByCaseId(String param);
+
+    List<OutStandingLoanB> lsitByCaseId(String param);
+
+    Double sumLoanByCaseId(String param);
 }

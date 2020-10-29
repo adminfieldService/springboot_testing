@@ -212,7 +212,15 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
     @Override
     public CaseDetails findByCaseId(String caseID, String paramY) {
         try {
-            CaseDetails acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+            CaseDetails acquire = null;
+            if (paramY.equals("0")) {
+                acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
+                        + " c.caseID = :caseID ")
+                        .setParameter("caseID", caseID)
+                        .getSingleResult();
+                return acquire;
+            }
+            acquire = (CaseDetails) entityManager.createQuery("SELECT c FROM CaseDetails c WHERE "
                     + " c.caseID = :caseID AND "
                     + " c.tahun_input = :tahun_input AND "
                     + " c.status = :status ")
@@ -309,6 +317,15 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                         + " JOIN FETCH c.client t "
                         + " ORDER BY c.engagementId DESC").getResultList();
             }
+            if (role.contentEquals("finance")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t WHERE "
+                        + " c.status = :status "
+                        + " ORDER BY c.engagementId DESC")
+                        .setParameter("status", "closed")
+                        .getResultList();
+            }
 
 //            List<CaseDetails> listAcquire = entityManager.createQuery("SELECT distinct c FROM CaseDetails c "
 //                    + " JOIN FETCH c.employee AS e").getResultList();
@@ -356,6 +373,17 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                         + " JOIN FETCH c.employee  e"
                         + " JOIN FETCH c.client t "
                         + " ORDER BY c.engagementId DESC")
+                        .setMaxResults(max)
+                        .setFirstResult(start)
+                        .getResultList();
+            }
+            if (role.contentEquals("finance")) {
+                listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
+                        + " JOIN FETCH c.employee  e"
+                        + " JOIN FETCH c.client t WHERE "
+                        + " c.status = :status "
+                        + " ORDER BY c.engagementId DESC")
+                        .setParameter("status", "closed")
                         .setMaxResults(max)
                         .setFirstResult(start)
                         .getResultList();
@@ -435,8 +463,10 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
         try {
             List<CaseDetails> listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
                     + " WHERE "
-                    + " c.status = :status ")
+                    + " c.status = :status AND "
+                    + " c.isActive = :isActive ")
                     .setParameter("status", "a")
+                    .setParameter("isActive", "1")
                     .getResultList();
             return (List<CaseDetails>) listAcquire;
         } catch (Exception ex) {

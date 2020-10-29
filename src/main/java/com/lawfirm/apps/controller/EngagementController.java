@@ -290,7 +290,7 @@ public class EngagementController {
             }
             Double dmpPercent = 0.0;
             if (process) {
-                if (object.getDmp_percent()!= null) {
+                if (object.getDmp_percent() != null) {
                     dmpPercent = object.getDmp_percent();
                 }
                 log.info("process");
@@ -333,7 +333,7 @@ public class EngagementController {
                     dataCaseDetails.setStatus("s");
                     dataCaseDetails = this.caseDetailsService.create(dataCaseDetails);
                     if (dataCaseDetails != null) {
-                        
+
                         EngagementApi ObjectEngagement = new EngagementApi();
                         ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
                         ObjectEngagement.setDescription(object.getDescription());
@@ -1129,11 +1129,8 @@ public class EngagementController {
                 number = 1;
                 check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             } else {
-//                number = number;
                 check_caseId = "CASE" + entity.getTahun_input() + Util.setNumbering(number.toString());
             }
-//            String caseId = null;
-
             Log.info("check_caseId : " + check_caseId);
             CaseDetails checkCaseId = caseDetailsService.findByCaseId(check_caseId, entity.getTahun_input());
 
@@ -1147,10 +1144,6 @@ public class EngagementController {
 
                 Integer numberTeam = 0;
                 String team_Id = null;
-//                List<TeamMember> generateTeamCaseId = teamMemberService.generateTeamCaseId(entity.getTahun_input());
-//                if (generateTeamCaseId != null || !generateTeamCaseId.isEmpty()) {
-//                    numberTeam = generateTeamCaseId.size();
-//                }
                 TeamMember dataTeamMember = teamMemberService.findByEngId(entity.getEngagementId());
 //                Log.info("checkTeamMember.isPresent() : " + checkTeamMember.isPresent());
                 if (dataTeamMember == null) {

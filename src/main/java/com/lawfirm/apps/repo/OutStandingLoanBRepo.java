@@ -166,14 +166,62 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             }
         }
     }
+    
+     @Override
+    public List<OutStandingLoanB> lsitByCaseId(String param) {
+        try {
+            String sql = "SELECT o FROM OutStandingLoanB o "
+                    + " WHERE "
+                    + "o.caseId = :caseId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("caseId", param);
+            return query.getResultList();
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 
+    @Override
+    public Double sumLoanByCaseId(String param) {
+        try {
+            String sql = "SELECT COALESCE(SUM(o.reimburseAmount),0) FROM OutStandingLoanB o "
+                    + " JOIN o.loan AS l "
+                    + " WHERE "
+                    + " o.caseId = :caseId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("caseId", param);
+            if (query != null) {
+                log.info("isi" + query.getSingleResult().toString());
+                return Double.parseDouble(query.getSingleResult().toString());
+            } else {
+                log.info("isi" + query.getSingleResult().toString());
+                return 0d;
+            }
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_outStandingLoanBRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
     @Override
     public Double sumLoan(Long paramLong) {
         try {
             String sql = "SELECT COALESCE(SUM(o.reimburseAmount),0) FROM OutStandingLoanB o "
                     + " JOIN o.loan AS l "
                     + " WHERE "
-                    + " l.Id = Id";
+                    + " l.Id = :Id";
             Query query = entityManager.createQuery(sql);
             query.setParameter("Id", paramLong);
             if (query != null) {
