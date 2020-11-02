@@ -303,6 +303,28 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
             }
         }
     }
+    
+    @Override
+    public TeamMember teamMemberByEngagement(Long param) {
+        try {
+            TeamMember listAcquire = (TeamMember) entityManager.createQuery("SELECT t FROM TeamMember t "
+                    + " JOIN FETCH t.engagement AS e "
+                    + " WHERE "
+                    + " e.engagementId  = :engagementId")
+                    .setParameter("engagementId", param)
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_teamMemberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 
     @Override
     public TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare) {

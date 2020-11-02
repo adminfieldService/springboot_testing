@@ -13,14 +13,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -53,6 +50,8 @@ public class Member implements Serializable {
     @Column(name = "tgl_input", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date tgInput;
+    @Column(name = "status", length = 5)
+    private String status;
 
     @PrePersist
     public void onCreate() {
@@ -62,6 +61,16 @@ public class Member implements Serializable {
 
     public Member() {
     }
+
+    public Member(String memberId, Double feeShare, TeamMember teamMember, Employee employee, Date tgInput, String status) {
+        this.memberId = memberId;
+        this.feeShare = feeShare;
+        this.teamMember = teamMember;
+        this.employee = employee;
+        this.tgInput = tgInput;
+        this.status = status;
+    }
+    
 
     public String getMemberId() {
         return memberId;
@@ -101,6 +110,28 @@ public class Member implements Serializable {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
 }

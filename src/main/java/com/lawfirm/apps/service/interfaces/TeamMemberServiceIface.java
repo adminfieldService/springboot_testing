@@ -54,4 +54,6 @@ public interface TeamMemberServiceIface {
 
     List<TeamMember> listTeamMemberDisburse(Object parameter);
 
+    TeamMember teamMemberByEngagement(Long param);
+
 }

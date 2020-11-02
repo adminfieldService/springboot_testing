@@ -8,6 +8,7 @@ package com.lawfirm.apps.controller;
 import com.lawfirm.apps.model.CaseDetails;
 import com.lawfirm.apps.model.Employee;
 import com.lawfirm.apps.model.Member;
+import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.CaseDocumentService;
 import com.lawfirm.apps.service.interfaces.AccountServiceIface;
@@ -169,39 +170,55 @@ public class DisbursementDtoController {
                 rs.setResponse("can't acces this feature case Id : " + object.getCase_id() + " Not Found");
                 log.error("listDisbursement" + rs.toString());
                 CreateLog.createJson(rs, "listDisbursement");
-                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature case Id : " + object.getCase_id() + " Not Found"),
-                        HttpStatus.NOT_FOUND
-                );
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
             }
 
             Long engId = dataCase.getEngagementId();
             List<Member> memberList = memberService.listMemberDisburse(engId);
             JSONArray array = new JSONArray();
+            JSONObject objDmp = new JSONObject();
+            TeamMember entityTeam = teamMemberService.teamMemberByEngagement(engId);
+            if (entityTeam == null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("can't acces this feature case Id : " + object.getCase_id() + " Not Found");
+                log.error("listDisbursement" + rs.toString());
+                CreateLog.createJson(rs, "listDisbursement");
+                return new ResponseEntity(new CustomErrorType("55", "Error", "can't acces this feature"),
+                        HttpStatus.NOT_FOUND);
+            }
+            Long dmpId = 0l;
+            dmpId = entityTeam.getDmpId();
+            Employee getDmp = employeeService.findById(dmpId);
+            objDmp.put("employee_id_dmp", getDmp.getIdEmployee());
+            objDmp.put("dmp_name", getDmp.getName());
+            objDmp.put("fee_share_dmp", entityTeam.getFeeShare());
+            objDmp.put("is_disburse_dmp", entityTeam.getStatus());
+            JSONObject obj = null;
             for (int m = 0; m < memberList.size(); m++) {
-                JSONObject obj = new JSONObject();
+                obj = new JSONObject();
                 Member dataMember = memberList.get(m);
-                Long dmpId = 0l;
+
                 if (dataMember.getTeamMember() == null) {
 
                 } else {
-                    dmpId = dataMember.getTeamMember().getDmpId();
-                    Employee getDmp = employeeService.findById(dataMember.getTeamMember().getDmpId());
+
                     if (dataMember.getTeamMember().getEngagement() == null) {
 
                     } else {
                         obj.put("case_id", dataMember.getTeamMember().getEngagement().getCaseID());
                         obj.put("engagement_id", dataMember.getTeamMember().getEngagement().getEngagementId());
-//                        obj.put("employee_id_dmp", dmpId);
-//                        obj.put("dmp_name", getDmp.getName());
-//                        obj.put("fee_share_dmp", dataMember.getTeamMember().getFeeShare());
                         obj.put("employee_id_team", dataMember.getEmployee().getIdEmployee());
                         obj.put("member_name", dataMember.getEmployee().getName());
                         obj.put("fee_share_team", dataMember.getFeeShare());
+                        obj.put("is_disburse_team", dataMember.getStatus());
                     }
                 }
                 array.put(obj);
             }
-            return ResponseEntity.ok(array.toString());
+            objDmp.put("members", array);
+            return ResponseEntity.ok(objDmp.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();
@@ -212,10 +229,21 @@ public class DisbursementDtoController {
         }
     }
 
-//    @RequestMapping(value = "/disbursement-dto/employee", method = RequestMethod.POST, produces = {"application/json"})
-//    @XxsFilter
-//    public Response viewByEmployee(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
-//        log.info("jsonObjcet viewByEmployee : " + object);
-//        return null;
-//    }
+    @RequestMapping(value = "/disbursement-dto/employee", method = RequestMethod.POST, produces = {"application/json"})
+    @XxsFilter
+    public Response DisburseByEmployee(@RequestBody final DisbursementCaseIdDto object, Authentication authentication) {
+        String name = authentication.getName();
+        log.info("DisburseByEmployee json : " + object);
+        Employee entityEmp = employeeService.findByEmployee(name);
+        log.info("entity : " + entityEmp);
+        if (entityEmp == null) {
+            rs.setResponse_code("55");
+            rs.setInfo("Failed");
+            rs.setResponse("can't acces this feature :");
+            log.error("listDisbursement" + rs.toString());
+            CreateLog.createJson(rs, "DisburseByEmployee");
+            return rs;
+        }
+        return rs;
+    }
 }

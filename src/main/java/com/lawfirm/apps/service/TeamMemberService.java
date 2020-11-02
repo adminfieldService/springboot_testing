@@ -133,4 +133,10 @@ public class TeamMemberService implements TeamMemberServiceIface {
         return teamMemberRepo.listTeamMemberDisburse(parameter);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public TeamMember teamMemberByEngagement(Long param) {
+        return teamMemberRepo.teamMemberByEngagement(param);
+    }
+
 }

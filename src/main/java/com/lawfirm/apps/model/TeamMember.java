@@ -68,11 +68,13 @@ public class TeamMember implements Serializable {
 //    private Collection<Financial> financialCollection;
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMember")
 //    private Collection<Disbursement> disbursementCollection;
+    @Column(name = "status", length = 5)
+    private String status;
 
     public TeamMember() {
     }
 
-    public TeamMember(Long teamMemberId, Boolean isActive, String description, Long dmpId, Double feeShare, String tahun_input, Engagement engagement) {
+    public TeamMember(Long teamMemberId, Boolean isActive, String description, Long dmpId, Double feeShare, String tahun_input, Engagement engagement, String status) {
         this.teamMemberId = teamMemberId;
         this.isActive = isActive;
         this.description = description;
@@ -80,6 +82,7 @@ public class TeamMember implements Serializable {
         this.feeShare = feeShare;
         this.tahun_input = tahun_input;
         this.engagement = engagement;
+        this.status = status;
     }
 
     public void addMember(Member member) {
@@ -180,6 +183,28 @@ public class TeamMember implements Serializable {
 
     public void setTahun_input(String tahun_input) {
         this.tahun_input = tahun_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
                 .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
                 .replaceAll("(?i)<.*?\\s+on.*?/>", "")
