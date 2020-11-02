@@ -52,4 +52,6 @@ public interface TeamMemberServiceIface {
 
     TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare);
 
+    List<TeamMember> listTeamMemberDisburse(Object parameter);
+
 }

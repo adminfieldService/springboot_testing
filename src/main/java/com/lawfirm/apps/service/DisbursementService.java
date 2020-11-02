@@ -52,7 +52,7 @@ public class DisbursementService implements DisbursementServiceIface {
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public Disbursement setnumOfDisbursement(String param, String bulan) {
-        return disbursementRepo.setnumOfDisbursement(param,bulan);
+        return disbursementRepo.setnumOfDisbursement(param, bulan);
     }
 
     @Override
@@ -113,6 +113,12 @@ public class DisbursementService implements DisbursementServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Loan> listDisburseByloanPaging(String type, int max, int start) {
         return this.disbursementRepo.listDisburseByloanPaging(type, max, start);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Disbursement disbursementFindbyEngegmentId(Long engagementId) {
+        return this.disbursementRepo.disbursementFindbyEngegmentId(engagementId);
     }
 
 }

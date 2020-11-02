@@ -45,6 +45,8 @@ public interface DisbursementServiceIface {
     List<Disbursement> disbursementbyCaseId(String param);
 
     Disbursement disbursementFindbyCaseId(String param);
+    
+    Disbursement disbursementFindbyEngegmentId(Long engagementId);
 
     Disbursement disbursement(Integer number, String param);
 }

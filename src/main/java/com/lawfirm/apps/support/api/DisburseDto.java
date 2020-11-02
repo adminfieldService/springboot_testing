@@ -20,4 +20,5 @@ public class DisburseDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     private Date cut_off_date;
+    
 }

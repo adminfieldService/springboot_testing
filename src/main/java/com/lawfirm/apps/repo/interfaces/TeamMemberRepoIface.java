@@ -51,4 +51,7 @@ public interface TeamMemberRepoIface {
     List<TeamMember> listTeamMemberByEngagement(Long param);
 
     TeamMember updateFeeDmp(Long engagementId, Long dmpId, Double feeShare);
+
+    List<TeamMember> listTeamMemberDisburse(Object parameter);
+
 }

@@ -36,10 +36,10 @@ public class CustomErrorType {
         return info;
     }
 
-    public CustomErrorType(String response_code, String response, String info) {
+    public CustomErrorType(String response_code, String info, String response) {
         this.response_code = response_code;
-        this.response = response;
         this.info = info;
+        this.response = response;
     }
 
 //    public CustomErrorType(String response) {

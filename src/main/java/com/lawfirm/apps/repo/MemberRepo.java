@@ -256,4 +256,47 @@ public class MemberRepo implements MemberRepoIface {
 //        }
         return null;
     }
+
+//    @Override
+//    public List<Member> listMemberDisburse() {
+//        try {
+//            String sql = "SELECT DISTINCT m FROM Member m "
+//                    + " JOIN FETCH m.teamMember t "
+//                    + " LEFT JOIN FETCH m.employee e "
+//                    + " RIGHT JOIN FETCH t.engagement n ";
+//            Query query = entityManager.createQuery(sql);
+//            return query.getResultList();
+//        } catch (Exception ex) {
+//            logger.error(ex.getMessage());
+//            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+//            System.out.println("ERROR: " + ex.getMessage());
+//            return null;
+//        } finally {
+//            if ((entityManager != null) && (entityManager.isOpen())) {
+//                entityManager.close();
+//            }
+//        }
+//    }
+    @Override
+    public List<Member> listMemberDisburse(Object parameter) {
+        try {
+            String sql = "SELECT DISTINCT m FROM Member m "
+                    + " JOIN FETCH m.teamMember t "
+                    + " LEFT JOIN FETCH m.employee e "
+                    + " RIGHT JOIN FETCH t.engagement n "
+                    + "WHERE n.engagementId = :engagementId";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("engagementId", parameter);
+            return query.getResultList();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 }

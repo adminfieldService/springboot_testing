@@ -38,4 +38,6 @@ public interface MemberRepoIface {
     Member findBy(Long idTeamMember, String employeeId);
 
     Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
+
+    List<Member> listMemberDisburse(Object parameter);
 }

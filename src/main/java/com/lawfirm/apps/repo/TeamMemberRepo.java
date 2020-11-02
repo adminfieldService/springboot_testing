@@ -26,7 +26,7 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public TeamMember create(TeamMember entity) {
@@ -309,4 +309,24 @@ public class TeamMemberRepo implements TeamMemberRepoIface {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public List<TeamMember> listTeamMemberDisburse(Object parameter) {//n.engagementId = :engagementId
+        try {
+            String sql = "SELECT t FROM TeamMember t "
+                    + " JOIN FETCH t.engagement n "
+                    + " WHERE n.engagementId = :engagementId ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("engagementId", parameter);
+            return query.getResultList();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
 }

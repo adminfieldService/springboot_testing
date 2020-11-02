@@ -14,5 +14,7 @@ import lombok.*;
 @Data
 @ToString
 public class DisbursementCaseIdDto {
+
     private String case_id;
+//    private long employee_id;
 }

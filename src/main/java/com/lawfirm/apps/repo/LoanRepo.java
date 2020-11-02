@@ -830,7 +830,7 @@ public class LoanRepo implements LoanRepoIface {
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan AND "
                     + " l.engagement.engagementId = :engagementId AND "
-                    + " (l.status <> :status OR "
+                    + " (l.status <> :status AND "
                     + " l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "b");
@@ -859,19 +859,20 @@ public class LoanRepo implements LoanRepoIface {
     @Override
     public Double sumLoanByCaseId(String param) {
         try {
-            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l "
+                    + " JOIN FETCH l.engagement AS e "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan AND "
-                    + " l.engagement.caseID = :caseID AND "
-                    + " (l.status <> :status OR "
-                    + " l.status <> :status2 ) ";
+                    + " e.caseID = :caseID AND "
+                    + " (l.status <> :status AND "
+                    + "  l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "b");
             query.setParameter("caseID", param);
             query.setParameter("status", "s");
             query.setParameter("status2", "r");
 //            if (query != null) {
-            log.info("isi" + String.format("%.0f", query.getSingleResult()));
+            log.info("isi sumLoanByCaseId : " + String.format("%.0f", query.getSingleResult()));
             return Double.parseDouble(query.getSingleResult().toString());
 //            } else {
 //                log.info("isi" + query.getSingleResult().toString());
@@ -899,7 +900,7 @@ public class LoanRepo implements LoanRepoIface {
                     + " l.employee.idEmployee = :idEmployee AND "
                     + " l.tgl_input = :taxtYear AND "
                     + " l.isDelete = :isDelete AND "
-                    + " (l.status <> :status OR "
+                    + " (l.status <> :status AND "
                     + " l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "a");
@@ -939,7 +940,7 @@ public class LoanRepo implements LoanRepoIface {
                     + " l.employee.idEmployee = :idEmployee AND "
                     + " l.tgl_input = :taxtYear AND "
                     + " l.isDelete = :isDelete AND "
-                    + " (l.status <> :status OR "
+                    + " (l.status <> :status AND "
                     + " l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "a");

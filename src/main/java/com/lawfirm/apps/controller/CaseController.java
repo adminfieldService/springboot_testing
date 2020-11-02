@@ -877,7 +877,8 @@ public class CaseController {
                 System.out.println("isi disburseM : " + disburseM);
                 disbursement.setBulanInput(disburseM);
 
-                String dsb_id = "DSB" + disburseMy;
+//                String dsb_id = "DSB" + disburseMy;
+                String dsb_id = number.toString();
 //                String cutOffdate = dateFormat.format(object.getCut_off_date());
 //                Date cutOffDate = dateFormat.parse(cutOffdate);
 
@@ -938,8 +939,8 @@ public class CaseController {
 
                     Double outstanding_loan_a_dmp = 0d;
                     Double outstanding_loan_a_team = 0d;
-                    String oldcutOffdate = null;
-                    Date oldCutOffDate = null;
+                    String oldclosedate = null;
+                    Date oldCloseDate = null;
 //                    
                     Double taxable_income_dmp = 0d;
                     Double taxable_income_team = 0d;
@@ -1021,9 +1022,9 @@ public class CaseController {
                             this.outStandingLoanAService.create(outStandingLoanA);
                         }
                         if (number == 2) {
-                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            oldclosedate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCloseDate = dateFormat.parse(oldclosedate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCloseDate);
                             outstanding_loan_a_dmp = outStandingAteam;
                             log.info("outstanding_loan_a_dmp 2 " + String.format("%.0f", outstanding_loan_a_dmp));
                             outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
@@ -1035,9 +1036,9 @@ public class CaseController {
                             this.outStandingLoanAService.create(outStandingLoanA);
                         }
                         if (number == 3) {
-                            oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                            oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                            oldclosedate = dateFormat.format(endisbursement.getOldCutOffDate());
+                            oldCloseDate = dateFormat.parse(oldclosedate);
+                            Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), sdfYear.format(now), cutOffDate, oldCloseDate);
                             outstanding_loan_a_dmp = outStandingAteam;
                             log.info("outstanding_loan_a_dmp 3 " + String.format("%.0f", outstanding_loan_a_dmp));
                             outStandingLoanA.setIdEmployee(getDmp.getIdEmployee());
@@ -1086,9 +1087,9 @@ public class CaseController {
                                 this.outStandingLoanAService.create(outStandingLoanA);
                             }
                             if (number == 2) {
-                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                oldclosedate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCloseDate = dateFormat.parse(oldclosedate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCloseDate);
                                 outstanding_loan_a_team = outStandingAteam;
                                 log.info("outstanding_loan_a_team 2 " + String.format("%.0f", outstanding_loan_a_team));
                                 outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
@@ -1100,9 +1101,9 @@ public class CaseController {
                                 this.outStandingLoanAService.create(outStandingLoanA);
                             }
                             if (number == 3) {
-                                oldcutOffdate = dateFormat.format(endisbursement.getOldCutOffDate());
-                                oldCutOffDate = dateFormat.parse(oldcutOffdate);
-                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCutOffDate);
+                                oldclosedate = dateFormat.format(endisbursement.getOldCutOffDate());
+                                oldCloseDate = dateFormat.parse(oldclosedate);
+                                Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), sdfYear.format(now), cutOffDate, oldCloseDate);
                                 outstanding_loan_a_team = outStandingAteam;
                                 log.info("outstanding_loan_a_team 3 " + String.format("%.0f", outstanding_loan_a_team));
                                 outStandingLoanA.setIdEmployee(dataMember.getEmployee().getIdEmployee());
@@ -1202,10 +1203,10 @@ public class CaseController {
             }
             if (process) {
 
-                String cutOffdate = null;
-                Date cutOffDate = null;
-                String oldcutOffdate = null;
-                Date oldCutOffDate = null;
+                String closedate = null;
+                Date closeDate = null;
+                String oldclosedate = null;
+                Date oldCloseDate = null;
                 String tax_year = null;
                 String param = null;
                 log.info("case_id : " + caseId);
@@ -1243,10 +1244,10 @@ public class CaseController {
                     obj.put("disbursement_id", "");
                 } else {
                     obj.put("disbursement_id", dataDisbursement.getDisbursementId());
-                    cutOffdate = dateFormat.format(dataDisbursement.getCutOffDate());
-                    cutOffDate = dateFormat.parse(cutOffdate);
-                    oldcutOffdate = dateFormat.format(dataDisbursement.getOldCutOffDate());
-                    oldCutOffDate = dateFormat.parse(oldcutOffdate);
+                    closedate = dateFormat.format(dataDisbursement.getCutOffDate());
+                    closeDate = dateFormat.parse(closedate);
+                    oldclosedate = dateFormat.format(dataDisbursement.getOldCutOffDate());
+                    oldCloseDate = dateFormat.parse(oldclosedate);
                     disbursement_id = dataDisbursement.getDisbursementId();
                 }
                 if (dataDisbursement.getNumberOfDisbursement() == null) {
@@ -1372,9 +1373,17 @@ public class CaseController {
                             }
                             if (number_of_disbursement == 2) {
                                 previous_disbursement_dmp = entityPeriodService.previousDisbursement(getDmp.getIdEmployee(), tax_year);
+                                if (previous_disbursement_dmp == null || previous_disbursement_dmp == 0d) {
+                                    previous_disbursement_dmp = 0d;
+                                }
                             }
                             if (number_of_disbursement == 3) {
                                 previous_disbursement_dmp = entityPeriodService.previousDisbursement(getDmp.getIdEmployee(), tax_year);
+                                if (previous_disbursement_dmp == null || previous_disbursement_dmp == 0d) {
+                                    previous_disbursement_dmp = 0d;
+                                } else if (previous_disbursement_dmp.equals(amount_portion_dmp)) {
+                                    previous_disbursement_dmp = 0d;
+                                }
                             }
                             obj.put("previous_disbursement_dmp", previous_disbursement_dmp);
 
@@ -1420,6 +1429,8 @@ public class CaseController {
                                 Double incomeTaxPaidOnPriorPeriodOld = entityPeriodService.incomeTaxPaidOnPriorPeriod(1, getDmp.getIdEmployee(), tax_year);
                                 if (incomeTaxPaidOnPriorPeriodOld != null) {
                                     income_tax_paid_on_prior_period_dmp = incomeTaxPaidOnPriorPeriodOld;
+                                } else {
+                                    income_tax_paid_on_prior_period_dmp = 0d;
                                 }
                             }
                             if (number_of_disbursement == 3) {
@@ -1432,12 +1443,14 @@ public class CaseController {
                                 Double incomeTaxPaidOnPriorPeriodOld = entityPeriodService.incomeTaxPaidOnPriorPeriod(3, getDmp.getIdEmployee(), tax_year);
                                 if (incomeTaxPaidOnPriorPeriodOld != null) {
                                     income_tax_paid_on_prior_period_dmp = incomeTaxPaidOnPriorPeriodOld;
+                                } else {
+                                    income_tax_paid_on_prior_period_dmp = 0d;
                                 }
                             }
-                            obj.put("income_tax_paid_on_prior_period_dmp", String.format("%.0f", income_tax_paid_on_prior_period_dmp));
+                            obj.put("income_tax_paid_on_prior_period_dmp", String.format("%.0f", Math.max(income_tax_paid_on_prior_period_dmp, 0)));
                             net_income_tax_deducted_dmp = (income_tax_dmp - income_tax_paid_on_prior_period_dmp);
                             obj.put("net_income_tax_deducted_dmp", String.format("%.0f", net_income_tax_deducted_dmp));
-                            net_income_dmp = (amount_portion_dmp - net_income_tax_deducted_dmp);
+                            net_income_dmp = Math.max((amount_portion_dmp - net_income_tax_deducted_dmp), 0);
                             obj.put("net_income_dmp", String.format("%.0f", net_income_dmp));
                             outstanding_loan_b_dmp = (outStandingLoanB * dataTeam.getFeeShare()) / 100;;
                             obj.put("outstanding_loan_b_dmp", String.format("%.0f", outstanding_loan_b_dmp));
@@ -1445,7 +1458,7 @@ public class CaseController {
                             obj.put("disbursable_amount_dmp", String.format("%.0f", Math.abs(disbursable_amount_dmp)));
                             if (number_of_disbursement == 1) {
                                 Double outstanding_after_disbursement_amount = 0d;
-                                Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), tax_year, cutOffDate);
+                                Double outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), tax_year, closeDate);
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
@@ -1455,7 +1468,13 @@ public class CaseController {
                             }
                             if (number_of_disbursement == 2) {
                                 Double outstanding_after_disbursement_amount = 0d;
-                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                Double outStandingAteam = null;
+                                 if (oldCloseDate.compareTo(closeDate) == 0) {
+                                    outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), tax_year, closeDate);
+                                } else {
+                                    outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, closeDate, oldCloseDate);
+                                }
+
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
@@ -1465,7 +1484,12 @@ public class CaseController {
                             }
                             if (number_of_disbursement == 3) {
                                 Double outstanding_after_disbursement_amount = 0d;
-                                Double outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                Double outStandingAteam = null;
+                                if (oldCloseDate.compareTo(closeDate) == 0) {
+                                    outStandingAteam = this.loanService.sumLoanA(getDmp.getIdEmployee(), tax_year, closeDate);
+                                } else {
+                                    outStandingAteam = this.loanService.sumLoanA2(getDmp.getIdEmployee(), tax_year, closeDate, oldCloseDate);
+                                }
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                 updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
@@ -1546,11 +1570,21 @@ public class CaseController {
                                 }
                                 if (number_of_disbursement == 2) {
                                     previous_disbursement_team = entityPeriodService.previousDisbursement(dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    if (previous_disbursement_team == null || previous_disbursement_team == 0d) {
+                                        previous_disbursement_team = 0d;
+                                    }
                                     income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team + 0d;
+
                                 }
                                 if (number_of_disbursement == 3) {
                                     previous_disbursement_team = entityPeriodService.previousDisbursement(dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    if (previous_disbursement_team == null || previous_disbursement_team == 0d) {
+                                        previous_disbursement_team = 0d;
+                                    } else if (previous_disbursement_team.equals(amount_portion_team)) {
+                                        previous_disbursement_team = 0d;
+                                    }
                                     income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team++;
+
                                 }
 //                                
                                 objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
@@ -1594,22 +1628,26 @@ public class CaseController {
                                         this.entityPeriodService.update(entityPeriod);
                                     }
                                     Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(1, dataMember.getEmployee().getIdEmployee(), tax_year);
-                                    if (incomeTaxPaidOnPriorPeriod != null) {
+                                    if (incomeTaxPaidOnPriorPeriod != null || incomeTaxPaidOnPriorPeriod == 0d) {
                                         income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                    } else {
+                                        income_tax_paid_on_prior_period_team = 0d;
                                     }
 
                                 }
                                 if (number_of_disbursement == 3) {
 
                                     Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(3, dataMember.getEmployee().getIdEmployee(), tax_year);
-                                    if (incomeTaxPaidOnPriorPeriod != null) {
+                                    if (incomeTaxPaidOnPriorPeriod != null || incomeTaxPaidOnPriorPeriod == 0d) {
                                         income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                    } else {
+                                        income_tax_paid_on_prior_period_team = 0d;
                                     }
                                 }
-                                objMember.put("income_tax_paid_on_prior_period_team", String.format("%.0f", income_tax_paid_on_prior_period_team));
+                                objMember.put("income_tax_paid_on_prior_period_team", String.format("%.0f", Math.max(income_tax_paid_on_prior_period_team, 0)));
                                 net_income_tax_deducted_team = (income_tax_team - income_tax_paid_on_prior_period_team);
                                 objMember.put("net_income_tax_deducted_team", String.format("%.0f", net_income_tax_deducted_team));
-                                net_income_team = (amount_portion_team - net_income_tax_deducted_team);
+                                net_income_team = Math.abs((amount_portion_team - net_income_tax_deducted_team));
                                 objMember.put("net_income_team", String.format("%.0f", net_income_team));
                                 outstanding_loan_b_team = (outStandingLoanB * dataMember.getFeeShare()) / 100;;
                                 objMember.put("outstanding_loan_b_team", String.format("%.0f", outstanding_loan_b_team));
@@ -1617,7 +1655,7 @@ public class CaseController {
                                 objMember.put("disbursable_amount_team", String.format("%.0f", Math.abs(disbursable_amount_team)));
                                 if (number_of_disbursement == 1) {
                                     Double outstanding_after_disbursement_amount = 0d;
-                                    Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate);
+                                    Double outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), tax_year, closeDate);
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
@@ -1627,7 +1665,13 @@ public class CaseController {
                                 }
                                 if (number_of_disbursement == 2) {
                                     Double outstanding_after_disbursement_amount = 0d;
-                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                    Double outStandingAteam = null;
+                                    if (oldCloseDate.compareTo(closeDate) == 0) {
+                                        outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), tax_year, closeDate);
+                                    } else {
+                                        outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, closeDate, oldCloseDate);
+                                    }
+
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
@@ -1637,7 +1681,12 @@ public class CaseController {
                                 }
                                 if (number_of_disbursement == 3) {
                                     Double outstanding_after_disbursement_amount = 0d;
-                                    Double outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, cutOffDate, oldCutOffDate);
+                                    Double outStandingAteam = null;
+                                    if (oldCloseDate.compareTo(closeDate) == 0) {
+                                        outStandingAteam = this.loanService.sumLoanA(dataMember.getEmployee().getIdEmployee(), tax_year, closeDate);
+                                    } else {
+                                        outStandingAteam = this.loanService.sumLoanA2(dataMember.getEmployee().getIdEmployee(), tax_year, closeDate, oldCloseDate);
+                                    }
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
                                     updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
@@ -1669,7 +1718,7 @@ public class CaseController {
                     CreateLog.createJson(rs, "closing-Case");
                     log.info("closing-Case : " + rs.toString());
                     return new ResponseEntity(new CustomErrorType("00", "Success", "closing case id " + caseDetails.getCaseID() + "by : " + entityEmp.getEmployeeId()),
-                            HttpStatus.NOT_FOUND);
+                            HttpStatus.ACCEPTED);
                 }
             }
         } catch (JSONException ex) {

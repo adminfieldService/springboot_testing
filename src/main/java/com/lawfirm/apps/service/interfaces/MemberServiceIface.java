@@ -37,5 +37,7 @@ public interface MemberServiceIface {
     Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
 
     Member findBy(Long idTeamMember, String employeeId);
+    
+     List<Member> listMemberDisburse(Object parameter);
 
 }

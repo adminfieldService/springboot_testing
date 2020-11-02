@@ -90,4 +90,10 @@ public class MemberService implements MemberServiceIface {
         return memberRepo.findBy(idTeamMember, employeeId);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Member> listMemberDisburse(Object parameter) {
+        return memberRepo.listMemberDisburse(parameter);
+    }
+
 }

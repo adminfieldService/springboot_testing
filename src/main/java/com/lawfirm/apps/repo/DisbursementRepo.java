@@ -14,8 +14,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -383,6 +381,41 @@ public class DisbursementRepo implements DisbursementRepoIface {
                     + " e.caseID = :caseID AND "
                     + " e.status = :status")
                     .setParameter("caseID", param)
+                    .setParameter("status", "closed")
+                    .getSingleResult();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_disbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Disbursement disbursementFindbyEngegmentId(Long engagementId) {
+        try {
+//            List<Loan> listAcquire = entityManager.createQuery("SELECT l FROM Loan l "
+//                    + " LEFT JOIN FETCH l.loantype AS t "
+//                    + " JOIN FETCH l.engagement AS e "
+//                    + " WHERE "
+//                    + " e.caseID = :caseID AND "
+//                    + " e.status = :status")
+//                    .setParameter("caseID", param)
+//                    .setParameter("status", "closed")
+//                    .getResultList();
+            //                        .setParameter("status", "d")
+
+            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d FROM Disbursement d "
+                    + " LEFT JOIN FETCH d.engagement AS e "
+                    + " WHERE "
+                    + " e.engagementId = :engagementId AND "
+                    + " e.status = :status")
+                    .setParameter("engagementId", engagementId)
                     .setParameter("status", "closed")
                     .getSingleResult();
             return listAcquire;

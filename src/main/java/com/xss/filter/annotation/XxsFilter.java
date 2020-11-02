@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  *
  * @author newbiecihuy
  */
-@Documented
+    @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface XxsFilter {
