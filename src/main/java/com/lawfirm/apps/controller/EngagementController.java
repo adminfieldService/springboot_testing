@@ -538,12 +538,20 @@ public class EngagementController {
                 dataTeam.setIsActive(Boolean.TRUE);
                 TeamMember team = this.teamMemberService.create(dataTeam);
                 if (team == null) {
+
                     rs.setResponse_code("55");
                     rs.setInfo("failed");
                     rs.setResponse("team null");
                     CreateLog.createJson(rs, "add-team-member");
                     log.error("add-team-member : " + rs.toString());
                     return rs;
+                } else {
+                    Member dataMemberDmp = new Member();
+                    dataMemberDmp.setTeamMember(team);
+                    dataMemberDmp.setFeeShare(object.getDmp_fee());
+                    Employee dataEmployeeDmp = employeeService.findById(object.getId_employee());
+                    dataMemberDmp.setEmployee(dataEmployeeDmp);
+                    this.memberService.create(dataMemberDmp);
                 }
                 employeeId = emp_id.toString().split(",");
                 for (int l = 0; l < employeeId.length; l++) {
@@ -584,6 +592,7 @@ public class EngagementController {
                 }
 
                 if (member != null) {
+
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
                     rs.setResponse("Success Create Engagment :");
@@ -963,7 +972,7 @@ public class EngagementController {
                 return rs;
             }
             if (process) {
-                Member member = null;
+                Member member = new Member();
 //              dataTeam.setEngagement(dataEngagement);
                 dataTeamMember.setFeeShare(object.getDmp_fee());
                 dataTeamMember.setIsActive(Boolean.TRUE);
@@ -978,6 +987,14 @@ public class EngagementController {
                 }
 
                 int deleteMember = this.memberService.deleteBy(team.getTeamMemberId());
+                if (deleteMember > 0) {
+                    Member setMemberDmp = new Member();
+                    setMemberDmp.setTeamMember(team);
+                    setMemberDmp.setFeeShare(object.getDmp_fee());
+                    Employee dataEmployeeDmp = employeeService.findById(team.getDmpId());
+                    setMemberDmp.setEmployee(dataEmployeeDmp);
+                    this.memberService.create(setMemberDmp);
+                }
 
                 employeeId = emp_id.toString().split(",");
                 for (int l = 0; l < employeeId.length; l++) {
@@ -1015,6 +1032,7 @@ public class EngagementController {
                 }
 
                 if (member != null) {
+
                     rs.setResponse_code("00");
                     rs.setInfo("Sucess");
                     rs.setResponse("Success Update  Engagement :");
