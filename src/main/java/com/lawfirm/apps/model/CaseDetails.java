@@ -86,8 +86,8 @@ public class CaseDetails extends Engagement implements Serializable {
     public CaseDetails() {
     }
 
-    public CaseDetails(String caseID, Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input) {
-        super(engagementId, isActive, approvedBy, closedBy, created_date, approved_date, closed_date, signature, invoiceNumber, status, dmpPortion, dmPercent, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, disbursementCollection, tahun_input);
+    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
+        super(engagementId, isActive, approvedBy, closedBy, created_date, approved_date, closed_date, disburseDate, disburseBy, signature, invoiceNumber, status, dmpPortion, dmPercent, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, disbursementCollection, tahun_input, caseID);
         this.caseID = caseID;
         this.profesionalFee = profesionalFee;
         this.profesionalFeeNet = profesionalFeeNet;
@@ -104,8 +104,6 @@ public class CaseDetails extends Engagement implements Serializable {
     }
 
     
-
-
     public Double getProfesionalFee() {
         return profesionalFee;
     }
@@ -537,8 +535,22 @@ public class CaseDetails extends Engagement implements Serializable {
         this.closed_date = closed_date;
     }
 
-    
-    
+    public Date getDisburseDate() {
+        return disburseDate;
+    }
+
+    public void setDisburseDate(Date disburseDate) {
+        this.disburseDate = disburseDate;
+    }
+
+    public String getDisburseBy() {
+        return disburseBy;
+    }
+
+    public void setDisburseBy(String disburseBy) {
+        this.disburseBy = disburseBy;
+    }
+
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.CaseDetails[engagementId=" + this.engagementId + " ]";

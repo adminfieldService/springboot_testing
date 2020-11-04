@@ -166,8 +166,8 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             }
         }
     }
-    
-     @Override
+
+    @Override
     public List<OutStandingLoanB> lsitByCaseId(String param) {
         try {
             String sql = "SELECT o FROM OutStandingLoanB o "
@@ -191,8 +191,11 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
     @Override
     public Double sumLoanByCaseId(String param) {
         try {
+//            String sql = "SELECT COALESCE(SUM(o.reimburseAmount),0) FROM OutStandingLoanB o "
+//                    + " JOIN o.loan AS l "
+//                    + " WHERE "
+//                    + " o.caseId = :caseId";
             String sql = "SELECT COALESCE(SUM(o.reimburseAmount),0) FROM OutStandingLoanB o "
-                    + " JOIN o.loan AS l "
                     + " WHERE "
                     + " o.caseId = :caseId";
             Query query = entityManager.createQuery(sql);
@@ -215,6 +218,7 @@ public class OutStandingLoanBRepo implements OutStandingLoanBRepoIface {
             }
         }
     }
+
     @Override
     public Double sumLoan(Long paramLong) {
         try {

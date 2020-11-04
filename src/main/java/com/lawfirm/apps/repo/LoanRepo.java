@@ -859,11 +859,17 @@ public class LoanRepo implements LoanRepoIface {
     @Override
     public Double sumLoanByCaseId(String param) {
         try {
+//            String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l "
+//                    + " JOIN FETCH l.engagement AS e "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                    + " WHERE "
+//                    + " l.loantype.typeLoan = :typeLoan AND "
+//                    + " e.caseID = :caseID AND "
+//                    + " (l.status <> :status AND "
+//                    + "  l.status <> :status2 ) ";
             String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l "
-                    + " JOIN FETCH l.engagement AS e "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan AND "
-                    + " e.caseID = :caseID AND "
+                    + " l.engagement.caseID = :caseID AND"
                     + " (l.status <> :status AND "
                     + "  l.status <> :status2 ) ";
             Query query = entityManager.createQuery(sql);

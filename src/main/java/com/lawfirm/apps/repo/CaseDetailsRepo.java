@@ -321,9 +321,11 @@ public class CaseDetailsRepo implements CaseDetailsRepoIface {
                 listAcquire = entityManager.createQuery("SELECT c FROM CaseDetails c "
                         + " JOIN FETCH c.employee  e"
                         + " JOIN FETCH c.client t WHERE "
-                        + " c.status = :status "
+                        + " c.status = :status OR "
+                        + " c.status = :status2 "
                         + " ORDER BY c.engagementId DESC")
                         .setParameter("status", "closed")
+                        .setParameter("status2", "d")
                         .getResultList();
             }
 

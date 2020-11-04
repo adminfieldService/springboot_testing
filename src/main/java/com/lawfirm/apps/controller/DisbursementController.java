@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 import com.lawfirm.apps.support.api.DisburseDto;
 import com.lawfirm.apps.support.api.DisburseEmpDto;
+import com.lawfirm.apps.support.api.EngagementDto;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -1483,15 +1484,15 @@ public class DisbursementController {
 //                HttpStatus.NOT_FOUND);
 //
 //    }
-    @RequestMapping(value = "/disbursement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
+    @RequestMapping(value = "/disbursement", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> disburseMultiple(@PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+    public Response disburseMultiple(@RequestBody final EngagementDto object, Authentication authentication) {//@RequestBody final EngagementDto object
         try {
             rs.setResponse_code("00");
             rs.setInfo("disburseMultiple access By : " + authentication.getName());
-            rs.setResponse("engagement_id : " + engagement_id.toString());
+            rs.setResponse("engagement_id : " + object);
             CreateLog.createJson(rs, "disburse");
-            log.info("disburseMultiple PathVariable engagement_id : " + engagement_id);
+            log.info("disburseMultiple PathVariable engagement_id : " + object.getEngagement_id());
             Date now = new Date();
             Integer number = 0;
 
@@ -1501,7 +1502,7 @@ public class DisbursementController {
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
             log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
+            log.info("engagement_id : " + object.getEngagement_id());
 
             Boolean process = true;
 
@@ -1512,8 +1513,7 @@ public class DisbursementController {
                 CreateLog.createJson(rs, "disburseMultiple");
                 log.error("disburseMultiple jsonObject: " + rs.toString());
                 process = false;
-                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
-                        HttpStatus.NOT_FOUND);
+                return rs;
             }
             if (!entityEmp.getRoleName().contentEquals("finance")) {
                 rs.setResponse_code("55");
@@ -1522,10 +1522,9 @@ public class DisbursementController {
                 CreateLog.createJson(rs, "disburseMultiple");
                 process = false;
                 log.error("disburseMultiple jsonObject: " + rs.toString());
-                return new ResponseEntity(new CustomErrorType("55", "Error", rs.toString()),
-                        HttpStatus.NOT_FOUND);
+                return rs;
             }
-            CaseDetails dataCaseDetails = this.caseDetailsService.findById(engagement_id);
+            CaseDetails dataCaseDetails = this.caseDetailsService.findById(object.getEngagement_id());
             if (dataCaseDetails == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -1533,10 +1532,17 @@ public class DisbursementController {
                 CreateLog.createJson(rs, "disburseMultiple");
                 log.error("disburseMultiple jsonObject: can't disbursement");
                 process = false;
-                return new ResponseEntity(new CustomErrorType("55", "Error", "CASE ID NOT FOund"),
-                        HttpStatus.NOT_FOUND);
+                return rs;
             }
-            Disbursement dataDisbursement = this.disbursementService.disbursementFindbyEngegmentId(dataCaseDetails.getEngagementId());
+            if (dataCaseDetails.getDisburseBy() != null) {
+                rs.setResponse_code("55");
+                rs.setInfo("Failed");
+                rs.setResponse("case Case Id : " + dataCaseDetails.getCaseID() + " Already Disburse by : " + dataCaseDetails.getDisburseBy());
+                CreateLog.createJson(rs, "closing-Case");
+                log.error("closing-Case : " + rs.toString());
+                return rs;
+            }
+            Disbursement dataDisbursement = this.disbursementService.disbursementFindbyEngegmentId(object.getEngagement_id());
             if (dataDisbursement == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -1544,8 +1550,7 @@ public class DisbursementController {
                 CreateLog.createJson(rs, "disburseMultiple");
                 log.error("can't disburse CASEID :" + dataCaseDetails.getCaseID());
                 process = false;
-                return new ResponseEntity(new CustomErrorType("55", "Error", "can't disburse CASEID" + dataCaseDetails.getCaseID()),
-                        HttpStatus.NOT_FOUND);
+                return rs;
             }
             if (process) {
                 if (dataDisbursement.getNumberOfDisbursement().equals(1)) {
@@ -1557,21 +1562,23 @@ public class DisbursementController {
                 if (dataDisbursement.getNumberOfDisbursement().equals(3)) {
                     dataDisbursement.setDisbursementId("DSBNOV" + sdfYear.format(now));
                 }
-//                dataCaseDetails.setStatus(name);
-//                dataCaseDetails.setTanggalDisburse(name);
-//                dataCaseDetails.setDisburseBy(name);
+
+                String disbursedate = dateFormat.format(now);
+                Date disburseDate = dateFormat.parse(disbursedate);
+
+//                dataCaseDetails.setStatus("d");
+                dataCaseDetails.setDisburseDate(disburseDate);
+                dataCaseDetails.setDisburseBy(name);
                 Disbursement updateDisbursement = this.disbursementService.update(dataDisbursement);
 
                 if (updateDisbursement != null) {
-//                    this.caseDetailsService.update(dataCaseDetails);
+                    this.caseDetailsService.update(dataCaseDetails);
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
                     rs.setResponse("Diburse Case Id " + dataCaseDetails.getCaseID() + "by : " + entityEmp.getEmployeeId() + " Success");
                     CreateLog.createJson(rs, "disburseMultiple");
-                    log.error("disburseMultiple jsonObject: " + rs.toString());
-                    process = false;
-                    return new ResponseEntity(new CustomErrorType("00", "Diburse Case Id " + dataCaseDetails.getCaseID() + "by : " + entityEmp.getEmployeeId() + " Success", " Success"),
-                            HttpStatus.ACCEPTED);
+//                    log.info("disburseMultiple jsonObject: " + rs.toString());
+                    return rs;
                 }
             }
         } catch (JSONException ex) {
@@ -1580,22 +1587,22 @@ public class DisbursementController {
             rs.setResponse("can't disbursement :" + ex.getMessage());
             CreateLog.createJson(rs, "disburseMultiple");
             log.error("disburseMultiple jsonObject: " + ex.getMessage());
-            return new ResponseEntity(new CustomErrorType("55", "Error", "can't disbursement :" + ex.getMessage()),
-                    HttpStatus.NOT_FOUND);
+            return rs;
+        } catch (ParseException ex) {
+            Logger.getLogger(DisbursementController.class.getName()).log(Level.SEVERE, null, ex);
         }
         rs.setResponse_code("55");
         rs.setInfo("Failed");
         rs.setResponse("CASE ID NOT Found ");
         CreateLog.createJson(rs, "disburseMultiple");
         log.error("disburseMultiple jsonObject: can't disbursement");
-        return new ResponseEntity(new CustomErrorType("55", "Error", "CASE ID NOT FOund"),
-                HttpStatus.NOT_FOUND);
+        return rs;
 
     }
 
 //    @RequestMapping(value = "/disbursement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<?> disburse(@PathVariable("engagement_id") Long engagement_id, @RequestBody DisburseDto object, Authentication authentication) {
+    public ResponseEntity<?> disburse(Long engagement_id, @RequestBody DisburseDto object, Authentication authentication) {//@PathVariable("engagement_id") 
         try {
             rs.setResponse_code("00");
             rs.setInfo("disburse access By : " + authentication.getName());
@@ -2086,7 +2093,8 @@ public class DisbursementController {
                     dmpPortion = 0d;
                 }
 
-                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(caseId);
+//                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(caseId);
+                Double outStandingB = this.outStandingLoanBService.sumLoanByCaseId(caseId);
 
                 if (outStandingB == null) {
                     rs.setResponse_code("55");
@@ -2099,7 +2107,7 @@ public class DisbursementController {
                             HttpStatus.NOT_FOUND);
                 }
 
-                outStandingLoanB = outStandingB.getOutStanding();
+                outStandingLoanB = outStandingB;//outStandingB.getOutStanding();
                 obj.put("out_standing_loan_b", String.format("%.0f", outStandingLoanB));
 
                 List<TeamMember> entityTeam = teamMemberService.listTeamMemberByEngagement(EngagementId);
@@ -2631,7 +2639,9 @@ public class DisbursementController {
                     dmpPortion = 0d;
                 }
                 Double outStandingB = 0.0;
+                log.info("caseId" + caseId);
                 outStandingB = this.outStandingLoanBService.sumLoanByCaseId(caseId);
+                log.info("outStandingB" + outStandingB);
 //                OutStandingLoanB outStandingB = this.outStandingLoanBService.findByCaseId(object.getCase_id());
 
 //                if (outStandingB == null) {
@@ -2722,6 +2732,7 @@ public class DisbursementController {
                             }
                             if (number_of_disbursement == 3) {
                                 previous_disbursement_dmp = entityPeriodService.previousDisbursement(getDmp.getIdEmployee(), tax_year);
+//                                previous_disbursement_dmp = 0d;
                                 if (previous_disbursement_dmp == null || previous_disbursement_dmp == 0d) {
                                     previous_disbursement_dmp = 0d;
                                 } else if (previous_disbursement_dmp.equals(amount_portion_dmp)) {
@@ -2814,10 +2825,12 @@ public class DisbursementController {
                                 }
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
-                                updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
-                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
-                                this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                if (updateOutStandingLoanA != null) {
+                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                }
                             }
                             if (number_of_disbursement == 3) {
                                 Double outstanding_after_disbursement_amount = 0d;
@@ -2830,10 +2843,12 @@ public class DisbursementController {
 
                                 outstanding_loan_a_dmp = outStandingAteam;
                                 OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(getDmp.getIdEmployee(), tax_year, number_of_disbursement.longValue());
-                                updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
-                                outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
-                                updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
-                                this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                if (updateOutStandingLoanA != null) {
+                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_dmp);
+                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_dmp), 0);
+                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                }
                             }
 
                             obj.put("outstanding_loan_a_dmp", String.format("%.0f", outstanding_loan_a_dmp));
@@ -3010,10 +3025,12 @@ public class DisbursementController {
 
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
-                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
-                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
-                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                    if (updateOutStandingLoanA != null) {
+                                        updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
+                                        outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                        updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                        this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                    }
                                 }
                                 if (number_of_disbursement == 3) {
                                     Double outstanding_after_disbursement_amount = 0d;
@@ -3026,10 +3043,12 @@ public class DisbursementController {
 
                                     outstanding_loan_a_team = outStandingAteam;
                                     OutStandingLoanA updateOutStandingLoanA = this.outStandingLoanAService.findBy(dataMember.getEmployee().getIdEmployee(), tax_year, number_of_disbursement.longValue());
-                                    updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
-                                    outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
-                                    updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
-                                    this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                    if (updateOutStandingLoanA != null) {
+                                        updateOutStandingLoanA.setDisburseableAmount(disbursable_amount_team);
+                                        outstanding_after_disbursement_amount = Math.max((updateOutStandingLoanA.getLoanAmount() - disbursable_amount_team), 0);
+                                        updateOutStandingLoanA.setOutstandingADisbursement(outstanding_after_disbursement_amount);
+                                        this.outStandingLoanAService.update(updateOutStandingLoanA);
+                                    }
                                 }
 
                                 objMember.put("outstanding_loan_a_team", String.format("%.0f", outstanding_loan_a_team));

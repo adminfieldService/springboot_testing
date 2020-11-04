@@ -77,7 +77,16 @@ public class Engagement implements Serializable {
     @Column(name = "closed_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date closed_date;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "disburse_date", nullable = true)
+    @Temporal(TemporalType.DATE)
+    protected Date disburseDate;
+
+    @Column(name = "disburse_by", length = 40)
+    protected String disburseBy;
 //   
+
     @Column(name = "signature")
     protected String signature;
 //    
@@ -138,7 +147,7 @@ public class Engagement implements Serializable {
     public Engagement() {
     }
 
-    public Engagement(Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input) {
+    public Engagement(Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
         this.engagementId = engagementId;
         this.isActive = isActive;
         this.approvedBy = approvedBy;
@@ -146,6 +155,8 @@ public class Engagement implements Serializable {
         this.created_date = created_date;
         this.approved_date = approved_date;
         this.closed_date = closed_date;
+        this.disburseDate = disburseDate;
+        this.disburseBy = disburseBy;
         this.signature = signature;
         this.invoiceNumber = invoiceNumber;
         this.status = status;
@@ -159,9 +170,8 @@ public class Engagement implements Serializable {
         this.loanCollection = loanCollection;
         this.disbursementCollection = disbursementCollection;
         this.tahun_input = tahun_input;
+        this.caseID = caseID;
     }
-
-   
 
     public String getApprovedBy() {
         return approvedBy;
@@ -471,7 +481,35 @@ public class Engagement implements Serializable {
     public void setClosed_date(Date closed_date) {
         this.closed_date = closed_date;
     }
-    
+
+    public Date getDisburseDate() {
+        return disburseDate;
+    }
+
+    public void setDisburseDate(Date disburseDate) {
+        this.disburseDate = disburseDate;
+    }
+
+    public String getDisburseBy() {
+        return disburseBy;
+    }
+
+    public void setDisburseBy(String disburseBy) {
+        this.disburseBy = disburseBy.replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
 
     @Override
     public String toString() {

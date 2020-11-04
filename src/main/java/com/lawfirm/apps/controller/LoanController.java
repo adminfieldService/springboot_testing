@@ -518,16 +518,16 @@ public class LoanController {
                         isi_tgl_pengajuan = dateFormat.format(object.getCreated_date());
                         tgl_pengajuan = dateFormat.parse(isi_tgl_pengajuan);
                     }
-                    Loan cekLoan = this.loanService.chekLoan("a", entityEmp.getIdEmployee(), tgl_pengajuan);
-                    if (cekLoan != null) {
-                        rs.setResponse_code("55");
-                        rs.setInfo("Failed");
-                        rs.setResponse(entityEmp.getEmployeeId() + ": " + " Already submitted a loan : " + tgl_pengajuan);
-                        process = false;
-                        CreateLog.createJson(rs, "createLoanb");
-                        log.error("createLoana : " + rs.toString());
-                        return rs;
-                    }
+//                    Loan cekLoan = this.loanService.chekLoan("b", entityEmp.getIdEmployee(), tgl_pengajuan);
+//                    if (cekLoan != null) {
+//                        rs.setResponse_code("55");
+//                        rs.setInfo("Failed");
+//                        rs.setResponse(entityEmp.getEmployeeId() + ": " + " Already submitted b loan : " + tgl_pengajuan);
+//                        process = false;
+//                        CreateLog.createJson(rs, "createLoanb");
+//                        log.error("createLoana : " + rs.toString());
+//                        return rs;
+//                    }
                     if (tgl_repayment.compareTo(tgl_pengajuan) < 0) {
                         rs.setResponse_code("55");
                         rs.setInfo("Failed");

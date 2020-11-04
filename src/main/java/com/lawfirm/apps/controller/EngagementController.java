@@ -31,6 +31,7 @@ import com.lawfirm.apps.response.Response;
 import com.lawfirm.apps.service.interfaces.EngagementHistoryServiceIface;
 import com.lawfirm.apps.service.interfaces.EventServiceIface;
 import com.lawfirm.apps.service.interfaces.MemberServiceIface;
+import com.lawfirm.apps.support.api.EngagementDtoApi;
 import com.lawfirm.apps.support.api.EventsApi;
 import com.lawfirm.apps.support.api.FeeShareDto;
 import com.lawfirm.apps.utils.CreateLog;
@@ -129,7 +130,7 @@ public class EngagementController {
 
 //    @PermitAll
     @RequestMapping(value = "/manage-engagement", method = RequestMethod.POST, produces = {"application/json"})
-    public Response createEngagement(@RequestBody final EngagementApi object, Authentication authentication) {
+    public Response createEngagement(@RequestBody final EngagementDtoApi object, Authentication authentication) {
         try {
             Date now = new Date();
             String[] feeSahre = null;
@@ -290,9 +291,9 @@ public class EngagementController {
             }
             Double dmpPercent = 0.0;
             if (process) {
-                if (object.getDmp_percent() != null) {
-                    dmpPercent = object.getDmp_percent();
-                }
+//                if (object.getDmp_percent() != null) {
+                dmpPercent = Double.parseDouble(object.getDm_percent());
+//                }
                 log.info("process");
 
                 ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
@@ -380,7 +381,8 @@ public class EngagementController {
                     dataCaseDetails.setPanitera(object.getPanitera());
 //                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
                     dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
-                    dataCaseDetails.setDmPercent(dmpPercent.intValue());
+                    int IntValue = (int) dmpPercent.intValue();
+                    dataCaseDetails.setDmPercent(IntValue);
                     dataCaseDetails.setDmpPortion(dmpProtion);
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
                     dataCaseDetails.setEmployee(cekDMP);
@@ -621,11 +623,13 @@ public class EngagementController {
     }
 
     @RequestMapping(value = "/manage-engagement/{engagement_id}", method = RequestMethod.POST, produces = {"application/json"})
-    public Response updateEngagement(@RequestBody final EngagementApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
+    public Response updateEngagement(@RequestBody final EngagementDtoApi object, @PathVariable("engagement_id") Long engagement_id, Authentication authentication) {
         try {
             log.info("updateEngagement : " + object);
             Date now = new Date();
             Boolean process = true;
+            String[] feeSahre = null;
+            Object fee_share = null;
             String name = authentication.getName();
             log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
@@ -704,11 +708,38 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs.toString());
                 return rs;
             }
+            fee_share = Arrays.toString(object.getFee_share()).trim().replaceAll("['\":<>\\[\\]\\r\\n-]", "");
+            feeSahre = fee_share.toString().split(",");
+            Double jumlah = 0d;
+            Double fee_total = 0d;
+            for (String num : feeSahre) {
+                jumlah = jumlah + Double.parseDouble(num);
+
+            }
+            fee_total = jumlah + object.getDmp_fee();
+            if (fee_total > 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Update Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
+                process = false;
+                log.error("updateEngagement : " + rs.toString());
+                return rs;
+            }
+            if (fee_total < 100) {
+                log.error("msg : " + fee_total);
+                rs.setResponse_code("55");
+                rs.setInfo("failed");
+                rs.setResponse("Update Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
+                process = false;
+                log.error("updateEngagement : " + rs.toString());
+                return rs;
+            }
             Double dmpPercent = 0.0;
             if (process) {
-                if (object.getDmp_percent() != null) {
-                    dmpPercent = object.getDmp_percent();
-                }
+//                if (object.getDmp_percent() != null) {
+                dmpPercent = Double.parseDouble(object.getDm_percent());
+//                }
                 log.info("process");
 
                 ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
@@ -741,9 +772,10 @@ public class EngagementController {
                     editCaseDetails.setPanitera(object.getPanitera());
                     editCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
                     editCaseDetails.setDmpPortion(dmpProtion);
-                    if (object.getDmp_percent() != null) {
-                        editCaseDetails.setDmPercent(dmpPercent.intValue());
-                    }
+//                    if (object.getDmp_percent() != null) {
+                    int IntValue = (int) dmpPercent.intValue();
+                    editCaseDetails.setDmPercent(IntValue);
+//                    }
 
 //                    editCaseDetails.setEmployee(cekDMP);
                     editCaseDetails.setClient(dataClient);
@@ -934,33 +966,33 @@ public class EngagementController {
                 log.error("edit-teamMember : " + rs.toString());
                 return rs;
             }
-            feeSahre = fee_share.toString().split(",");
-            Double jumlah = 0d;
-            Double fee_total = 0d;
-            for (String num : feeSahre) {
-                jumlah = jumlah + Double.parseDouble(num);
-            }
-            fee_total = jumlah + object.getDmp_fee();
-            if (fee_total > 100) {
-                log.error("msg : " + fee_total);
-                rs.setResponse_code("55");
-                rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
-                process = false;
-                CreateLog.createJson(rs, "edit-teamMember");
-                log.error("edit-teamMember : " + rs.toString());
-                return rs;
-            }
-            if (fee_total < 100) {
-                log.error("msg : " + fee_total);
-                rs.setResponse_code("55");
-                rs.setInfo("failed");
-                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
-                process = false;
-                CreateLog.createJson(rs, "edit-teamMember");
-                log.error("edit-teamMember : " + rs.toString());
-                return rs;
-            }
+//            feeSahre = fee_share.toString().split(",");
+//            Double jumlah = 0d;
+//            Double fee_total = 0d;
+//            for (String num : feeSahre) {
+//                jumlah = jumlah + Double.parseDouble(num);
+//            }
+//            fee_total = jumlah + object.getDmp_fee();
+//            if (fee_total > 100) {
+//                log.error("msg : " + fee_total);
+//                rs.setResponse_code("55");
+//                rs.setInfo("failed");
+//                rs.setResponse("Create Engagement Failed, fee share total = " + fee_total + "% greater than 100%");//&gt;
+//                process = false;
+//                CreateLog.createJson(rs, "edit-teamMember");
+//                log.error("edit-teamMember : " + rs.toString());
+//                return rs;
+//            }
+//            if (fee_total < 100) {
+//                log.error("msg : " + fee_total);
+//                rs.setResponse_code("55");
+//                rs.setInfo("failed");
+//                rs.setResponse("Create Engagement Failed,fee share total = " + fee_total + "% less than 100%");//&lt;
+//                process = false;
+//                CreateLog.createJson(rs, "edit-teamMember");
+//                log.error("edit-teamMember : " + rs.toString());
+//                return rs;
+//            }
             TeamMember dataTeamMember = this.teamMemberService.findByEngId(object.getEngagement_id());
             if (dataTeamMember == null) {
                 rs.setResponse_code("55");
@@ -1909,10 +1941,17 @@ public class EngagementController {
                                 objMember.put("employee_id", "");
                                 objMember.put("fee_share", "");
                             } else {
-                                objMember.put("member_id", dataMember.getMemberId());
-                                objMember.put("member_name", dataMember.getEmployee().getName());
-                                objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
-                                objMember.put("fee_share", dataMember.getFeeShare());
+                                if ("dmp".equals(dataMember.getEmployee().getRoleName())) {
+                                    objMember.put("member_id", "");
+                                    objMember.put("member_name", "");
+                                    objMember.put("employee_id", "");
+                                    objMember.put("fee_share", "");
+                                } else {
+                                    objMember.put("member_id", dataMember.getMemberId());
+                                    objMember.put("member_name", dataMember.getEmployee().getName());
+                                    objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
+                                    objMember.put("fee_share", dataMember.getFeeShare());
+                                }
 
                             }
                             arrayM.put(objMember);
@@ -2782,10 +2821,11 @@ public class EngagementController {
                 rs.setResponse_code("55");
                 rs.setInfo("failed");
                 rs.setResponse("TeamMember Not Found By CASE ID : " + dataEngagement.getCaseID() + "Not Found");//&lt;
-                process = false;
                 CreateLog.createJson(rs, "update-fee-share");
+                process = false;
                 return rs;
             }
+
             if (process) {
                 Member member = null;
 //              dataTeam.setEngagement(dataEngagement);
