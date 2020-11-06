@@ -81,6 +81,14 @@ public class Employee implements Serializable {
     @Column(name = "user_pass")
     private String password;
 
+    @Column(name = "is_five_minutes", length = 4)
+    private String isFiveMinutes;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "time_five_minutes", nullable = true)
+    @Temporal(TemporalType.DATE)
+    private Date timeFiveMinutes;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
     @Column(name = "date_register", nullable = true)
     @Temporal(TemporalType.DATE)
@@ -181,6 +189,45 @@ public class Employee implements Serializable {
 //    }
     public Employee() {
     }
+
+    public Employee(Long idEmployee, String employeeId, String name, String nik, String email, String address, String npwp, String taxStatus, String userName, String roleName, String password, String isFiveMinutes, Date timeFiveMinutes, Date dateRegister, Date dateResign, Double salary, Double loanAmount, Double outStandingLoan, String gender, Boolean isActive, Boolean isDelete, Boolean isLogin, Date approved_date, String linkCv, String signTtd, String mobilePhone, String status, Date tgInput, Collection<Loan> loanCollection, Collection<Engagement> engagementCollection, Collection<Reimbursement> reimbursementCollection, Collection<Professional> professionalCollection, Collection<Financial> financialCollection, List<Employee> child_colect, Employee parentId) {
+        this.idEmployee = idEmployee;
+        this.employeeId = employeeId;
+        this.name = name;
+        this.nik = nik;
+        this.email = email;
+        this.address = address;
+        this.npwp = npwp;
+        this.taxStatus = taxStatus;
+        this.userName = userName;
+        this.roleName = roleName;
+        this.password = password;
+        this.isFiveMinutes = isFiveMinutes;
+        this.timeFiveMinutes = timeFiveMinutes;
+        this.dateRegister = dateRegister;
+        this.dateResign = dateResign;
+        this.salary = salary;
+        this.loanAmount = loanAmount;
+        this.outStandingLoan = outStandingLoan;
+        this.gender = gender;
+        this.isActive = isActive;
+        this.isDelete = isDelete;
+        this.isLogin = isLogin;
+        this.approved_date = approved_date;
+        this.linkCv = linkCv;
+        this.signTtd = signTtd;
+        this.mobilePhone = mobilePhone;
+        this.status = status;
+        this.tgInput = tgInput;
+        this.loanCollection = loanCollection;
+        this.engagementCollection = engagementCollection;
+        this.reimbursementCollection = reimbursementCollection;
+        this.professionalCollection = professionalCollection;
+        this.financialCollection = financialCollection;
+        this.child_colect = child_colect;
+        this.parentId = parentId;
+    }
+    
 
     public void addAccount(Account account) {
         account.setEmployee(this);
@@ -359,7 +406,21 @@ public class Employee implements Serializable {
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.status = status.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
 //    public Set<EmployeeRole> getRoleName() {
@@ -621,7 +682,21 @@ public class Employee implements Serializable {
     }
 
     public void setSignTtd(String signTtd) {
-        this.signTtd = signTtd;
+        this.signTtd = signTtd.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public String getGender() {
@@ -629,7 +704,21 @@ public class Employee implements Serializable {
     }
 
     public void setGender(String gender) {
-        this.gender = gender;
+        this.gender = gender.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
     }
 
     public Collection<Financial> getFinancialCollection() {
@@ -693,5 +782,34 @@ public class Employee implements Serializable {
         this.dateResign = dateResign;
     }
 
-    
+    public String getIsFiveMinutes() {
+        return isFiveMinutes;
+    }
+
+    public void setIsFiveMinutes(String isFiveMinutes) {
+        this.isFiveMinutes = isFiveMinutes.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
+                .replaceAll("<script>(.*?)</script>", "")
+                .replaceAll("(?i)<.*?javascript:.*?>.*?</.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?/>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>", "")
+                .replaceAll("(?i)<.*?\\s+on.*?>.*?</.*?>", "")
+                .replaceAll("vbscript", "")
+                .replaceAll("encode", "")
+                .replaceAll("decode", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", "")
+                .replaceAll("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", "")
+                .replaceAll("</script>", "")
+                .replaceAll("<script(.*?)>", "")
+                .replaceAll("eval\\((.*?)\\)", "")
+                .replaceAll("expression\\((.*?)\\)", "");
+    }
+
+    public Date getTimeFiveMinutes() {
+        return timeFiveMinutes;
+    }
+
+    public void setTimeFiveMinutes(Date timeFiveMinutes) {
+        this.timeFiveMinutes = timeFiveMinutes;
+    }
+
 }

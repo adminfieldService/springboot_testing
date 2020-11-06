@@ -203,7 +203,6 @@ public class EmployeeRepo implements EmployeeRepoIface {
             }
         }
     }
-    
 
 //    @Override
 //    public Employee findByEmployeeId(String paramString, Long Id) {
@@ -232,6 +231,31 @@ public class EmployeeRepo implements EmployeeRepoIface {
             Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
                     + " LOWER(e.employeeId) = :employeeId")
                     .setParameter("employeeId", paramString.toLowerCase())
+                    .getSingleResult();
+//            return listAcquire;
+            if (listAcquire != null) {
+                return listAcquire;
+            } else {
+                return data;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_employeeRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    public Employee findByEmail(String paramString) {
+        try {
+            Employee data = null;
+            Employee listAcquire = (Employee) entityManager.createQuery("SELECT e FROM Employee e WHERE "
+                    + " LOWER(e.email) = :email")
+                    .setParameter("email", paramString.toLowerCase())
                     .getSingleResult();
 //            return listAcquire;
             if (listAcquire != null) {

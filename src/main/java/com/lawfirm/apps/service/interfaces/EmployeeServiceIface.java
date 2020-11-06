@@ -41,6 +41,8 @@ public interface EmployeeServiceIface {
 
     Employee findByEmployeeId(String paramString);
 
+    Employee findByEmail(String paramString);
+
     List<Employee> listEmployeeId(String param);
 
     List<Employee> listEmployee();

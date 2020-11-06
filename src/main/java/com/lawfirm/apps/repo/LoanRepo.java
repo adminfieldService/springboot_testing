@@ -977,6 +977,85 @@ public class LoanRepo implements LoanRepoIface {
     }
 
     @Override
+    public List<Loan> cekLoanBStatusApprove(Object parameter) {
+        try {
+            String sql = "SELECT l FROM Loan l "
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " l.engagement.caseID = :caseID AND"
+                    + " (l.status <> :status AND "
+                    + "  l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "b");
+            query.setParameter("caseID", parameter);
+            query.setParameter("status", "a");
+            query.setParameter("status2", "s");
+            return query.getResultList();
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> geLoanBCaseId(Object param) {
+        try {
+            List<Loan> listAcquire = entityManager.createQuery("SELECT  l FROM Loan l "
+                    + " JOIN FETCH l.employee AS e "
+                    + " LEFT JOIN FETCH l.loantype AS t "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " t.typeLoan = :typeLoan AND "
+                    + " n.caseID = :caseID  ")
+                    .setParameter("typeLoan", "b")
+                    .setParameter("caseID", param)
+                    .getResultList();
+            return listAcquire;
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Loan> cekLoanAStatusApprove(Object parameter) {
+        try {
+            String sql = "SELECT FROM Loan l "
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " (l.status <> :status AND "
+                    + "  l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "a");
+            query.setParameter("status", "a");
+            query.setParameter("status2", "s");
+            return query.getResultList();
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public List<Loan> byName(Boolean isActive) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

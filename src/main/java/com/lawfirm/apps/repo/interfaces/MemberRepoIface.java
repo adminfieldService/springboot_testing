@@ -28,6 +28,8 @@ public interface MemberRepoIface {
 
     Member findById(String paramString);
 
+    List<Member> findByIdTeamNoDmp(Long paramLong);
+
     List<Member> findByIdTeam(Long paramLong);
 
     List<Member> findByCaseId(String param);
@@ -40,4 +42,6 @@ public interface MemberRepoIface {
     Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
 
     List<Member> listMemberDisburse(Object parameter);
+
+    Member memberDisburse(Object engagementId, Object idEmployee);
 }

@@ -408,6 +408,7 @@ public class EngagementController {
                         ObjectEngagement.setDmp_fee(object.getDmp_fee());
                         ObjectEngagement.setFee_share(object.getFee_share());
                         ObjectEngagement.setProfesional_fee_net(dataCaseDetails.getProfesionalFeeNet());
+
 //                        ObjectEngagement.setPanitera(object.getPanitera());
 //                        ObjectEngagement.setStrategy();
                         addTeamMember(ObjectEngagement);
@@ -631,10 +632,10 @@ public class EngagementController {
             String[] feeSahre = null;
             Object fee_share = null;
             String name = authentication.getName();
-            log.info("name : " + name);
+//            log.info("name : " + name);
             Employee entityEmp = employeeService.findByEmployee(name);
-            log.info("entityEmp : " + entityEmp);
-            log.info("engagement_id : " + engagement_id);
+//            log.info("entityEmp : " + entityEmp);
+//            log.info("engagement_id : " + engagement_id);
             if (entityEmp == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
@@ -680,8 +681,9 @@ public class EngagementController {
 //                return rs;
 //            }
 
-            Engagement editEngagement = this.engagementService.findById(engagement_id);
-            if (editEngagement == null) {
+//            Engagement editEngagement = this.engagementService.findById(engagement_id);
+            CaseDetails editCaseDetails = this.caseDetailsService.findById(engagement_id);
+            if (editCaseDetails == null) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
                 rs.setResponse("Engagement data Null");
@@ -690,19 +692,10 @@ public class EngagementController {
                 log.error("updateEngagement : " + rs.toString());
                 return rs;
             }
-//            if (!editEngagement.getStatus().contains("s")) {
-//                rs.setResponse_code("55");
-//                rs.setInfo("Failed");
-//                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
-//                process = false;
-//                CreateLog.createJson(rs, "updateEngagement");
-//                log.error("updateEngagement : " + rs.toString());
-//                return rs;
-//            }
-            if (editEngagement.getStatus().contains("closed")) {
+            if (editCaseDetails.getStatus().contains("closed")) {
                 rs.setResponse_code("55");
                 rs.setInfo("Failed");
-                rs.setResponse("Data engagement, Status : " + editEngagement.getStatus());
+                rs.setResponse("Data engagement, Status : " + editCaseDetails.getStatus());
                 process = false;
                 CreateLog.createJson(rs, "updateEngagement");
                 log.error("updateEngagement : " + rs.toString());
@@ -736,52 +729,37 @@ public class EngagementController {
                 return rs;
             }
             Double dmpPercent = 0.0;
+            Double profesionalFee = 0d;
             if (process) {
 //                if (object.getDmp_percent() != null) {
                 dmpPercent = Double.parseDouble(object.getDm_percent());
 //                }
                 log.info("process");
-
+                profesionalFee = object.getProfesional_fee();
                 ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
-//                Integer numberClient = 0;
                 String client_id = "CLIENT";
                 if (dataClient != null) {
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPercent) / 100;
                     log.info("dataClient : " + dataClient);
-                    Integer numberClient = clientDataService.generateCleintId(object.getNpwp());
-                    if (numberClient == 0) {
-                        numberClient = 1;
-                    } else {
-                        numberClient = numberClient + 1;
-                    }
-                    ClientData check = clientDataService.checkCI(client_id + Util.setNumber(numberClient.toString()));
-                    if (check == null) {
-                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    } else {
-                        numberClient = numberClient + 1;
-                        dataClient.setClientId(client_id + Util.setNumber(numberClient.toString()));
-                    }
-                    this.clientDataService.update(dataClient);
+                    Double dmpProtion = ((profesionalFee * (0.75)) * dmpPercent) / 100;
+                    log.info("dmpProtion : " + dmpProtion);
 
-//                  CaseDetails dataCaseDetails = new CaseDetails();
-                    CaseDetails editCaseDetails = this.caseDetailsService.findById(engagement_id);
-                    editCaseDetails.setProfesionalFee(object.getProfesional_fee());
+                    log.info("engagement_id : , editCaseDetails : " + engagement_id + " ," + editCaseDetails);
+
+                    log.info("profesionalFee : " + profesionalFee);
+                    editCaseDetails.setProfesionalFee(profesionalFee);
                     editCaseDetails.setCaseOverview(object.getCase_over_view());
                     editCaseDetails.setNote(object.getNotes());
                     editCaseDetails.setStrategy(object.getStrategy());
                     editCaseDetails.setPanitera(object.getPanitera());
                     editCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
                     editCaseDetails.setDmpPortion(dmpProtion);
-//                    if (object.getDmp_percent() != null) {
                     int IntValue = (int) dmpPercent.intValue();
                     editCaseDetails.setDmPercent(IntValue);
-//                    }
-
-//                    editCaseDetails.setEmployee(cekDMP);
                     editCaseDetails.setClient(dataClient);
                     editCaseDetails.setTahun_input(sdfYear.format(now));
                     editCaseDetails.setStatus("s");
                     editCaseDetails = this.caseDetailsService.update(editCaseDetails);
+
                     if (editCaseDetails != null) {
 //                        rs.setResponse_code("01");
 //                        rs.setInfo("success");
@@ -805,8 +783,12 @@ public class EngagementController {
 //                    if (object.getDmPercent() != null) {
 //                        dmPercent = object.getDmPercent();
 //                    }
-                    Double dmpProtion = ((object.getProfesional_fee() * (0.75)) * dmpPercent) / 100;
                     log.info("dataClient nulls");
+
+                    profesionalFee = object.getProfesional_fee();
+                    log.info("profesionalFee" + profesionalFee);
+                    Double dmpProtion = ((profesionalFee * (0.75)) * dmpPercent) / 100;
+
                     ClientData newClient = new ClientData();
                     newClient.setClientName(object.getClient_name());
                     newClient.setAddress(object.getAddress());
@@ -830,25 +812,26 @@ public class EngagementController {
 
                     CaseDetails dataCaseDetails = new CaseDetails();
 
-                    dataCaseDetails.setProfesionalFee(object.getProfesional_fee());
+                    dataCaseDetails.setProfesionalFee(profesionalFee);
                     dataCaseDetails.setCaseOverview(object.getCase_over_view());
                     dataCaseDetails.setNote(object.getNotes());
                     dataCaseDetails.setStrategy(object.getStrategy());
                     dataCaseDetails.setPanitera(object.getPanitera());
 //                    dataCaseDetails.setOperational_cost(object.getOperational_cost());
-                    dataCaseDetails.setProfesionalFeeNet(object.getProfesional_fee() * (0.75));
+                    dataCaseDetails.setProfesionalFeeNet(profesionalFee * (0.75));
                     dataCaseDetails.setDmpPortion(dmpProtion);
                     dataCaseDetails.setDmPercent(dmpPercent.intValue());
                     dataCaseDetails.setTahun_input(sdfYear.format(now));
 //                    dataCaseDetails.setEmployee(cekDMP);
                     dataCaseDetails.setStatus("s");
-                    newClient.addEngagement(dataCaseDetails);
+//                    newClient.addEngagement(dataCaseDetails);
                     ClientData dClient = clientDataService.create(newClient);
                     log.info("isi : " + dClient.getClientName());
 
                     if (dClient != null) {
                         EngagementApi ObjectEngagement = new EngagementApi();
-                        ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
+//                        ObjectEngagement.setEngagement_id(dataCaseDetails.getEngagementId());
+                        ObjectEngagement.setEngagement_id(engagement_id);
                         ObjectEngagement.setDescription(object.getDescription());
 //                        ObjectEngagement.setId_employee(cekDMP.getIdEmployee());
                         ObjectEngagement.setEmployee_id(object.getEmployee_id());
@@ -857,10 +840,22 @@ public class EngagementController {
                         ObjectEngagement.setFee_share(object.getFee_share());
                         ObjectEngagement.setProfesional_fee_net(dataCaseDetails.getProfesionalFeeNet());
                         ObjectEngagement.setMember_id(object.getMember_id());
+                        ObjectEngagement.setId_client(dClient.getIdClient());
 //                        ObjectEngagement.setPanitera(object.getPanitera());
 //                        ObjectEngagement.setStrategy();
 //                        addTeamMember(ObjectEngagement);
-                        editTeamMember(ObjectEngagement);
+                        editCaseDetails.setClient(dClient);
+                        CaseDetails update = this.caseDetailsService.update(editCaseDetails);
+                        if (update != null) {
+                            editTeamMember(ObjectEngagement);
+                            rs.setResponse_code("00");
+                            rs.setInfo("Success");
+                            rs.setResponse("Update Success");
+                            CreateLog.createJson(rs, "updateEngagement");
+                            log.info("updateEngagement : " + rs.toString());
+                            return rs;
+                        }
+
                     } else {
                         rs.setResponse_code("55");
                         rs.setInfo("failed");
@@ -874,7 +869,7 @@ public class EngagementController {
 
                 }
 
-                Engagement update = this.engagementService.update(editEngagement);
+                CaseDetails update = this.caseDetailsService.update(editCaseDetails);
                 if (update != null) {
                     rs.setResponse_code("00");
                     rs.setInfo("Success");
@@ -1082,7 +1077,7 @@ public class EngagementController {
             rs.setInfo("Error");
             rs.setResponse(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "edit-teamMember");
-            log.error("edit-teamMember : " + rs.toString());
+            log.error("edit-teamMember : " + ex.getMessage());
             return rs;
 
         }
@@ -1463,7 +1458,7 @@ public class EngagementController {
 //                        if (i != 0 || i == 1) {
                         if (id_team != null) {
 
-                            List<Member> entityMember = memberService.findByIdTeam(id_team);
+                            List<Member> entityMember = memberService.findByIdTeamNoDmp(id_team);
                             System.out.println("member : " + entityMember.size());
                             System.out.println("i : " + i);
                             for (int k = i; k < entityMember.size(); k++) {
@@ -1927,7 +1922,7 @@ public class EngagementController {
 //                    if (i != 0 || i == 1) {
                     if (id_team != null) {
 
-                        List<Member> entityMember = memberService.findByIdTeam(id_team);
+                        List<Member> entityMember = memberService.findByIdTeamNoDmp(id_team);
                         System.out.println("member : " + entityMember.size());
                         System.out.println("i : " + i);
                         for (int k = i; k < entityMember.size(); k++) {
@@ -1941,17 +1936,11 @@ public class EngagementController {
                                 objMember.put("employee_id", "");
                                 objMember.put("fee_share", "");
                             } else {
-                                if ("dmp".equals(dataMember.getEmployee().getRoleName())) {
-                                    objMember.put("member_id", "");
-                                    objMember.put("member_name", "");
-                                    objMember.put("employee_id", "");
-                                    objMember.put("fee_share", "");
-                                } else {
-                                    objMember.put("member_id", dataMember.getMemberId());
-                                    objMember.put("member_name", dataMember.getEmployee().getName());
-                                    objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
-                                    objMember.put("fee_share", dataMember.getFeeShare());
-                                }
+
+                                objMember.put("member_id", dataMember.getMemberId());
+                                objMember.put("member_name", dataMember.getEmployee().getName());
+                                objMember.put("employee_id", dataMember.getEmployee().getEmployeeId());
+                                objMember.put("fee_share", dataMember.getFeeShare());
 
                             }
                             arrayM.put(objMember);
@@ -2184,7 +2173,7 @@ public class EngagementController {
                     }
 
                     if (id_team != null) {
-                        List<Member> entityMember = memberService.findByIdTeam(id_team);
+                        List<Member> entityMember = memberService.findByIdTeamNoDmp(id_team);
                         System.out.println("member : " + entityMember.size());
 //                        System.out.println("i : " + i);
 

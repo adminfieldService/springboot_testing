@@ -195,4 +195,22 @@ public class LoanService implements LoanServiceIface {
         return loanRepo.chekLoan(typeLoan, idEmployee, tanggalPengajuan);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> cekLoanBStatusApprove(Object parameter) {
+        return loanRepo.cekLoanBStatusApprove(parameter);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> cekLoanAStatusApprove(Object parameter) {
+        return loanRepo.cekLoanAStatusApprove(parameter);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Loan> geLoanBCaseId(Object parameter) {
+        return loanRepo.geLoanBCaseId(parameter);
+    }
+
 }

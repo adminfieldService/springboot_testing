@@ -16,5 +16,5 @@ import lombok.*;
 public class DisbursementCaseIdDto {
 
     private String case_id;
-    private long employee_id;
+    private long id_employee;
 }

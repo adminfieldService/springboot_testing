@@ -91,4 +91,16 @@ public class ReimbursementService implements ReimbursementServiceIface {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Reimbursement> cekReimbusementStatusApprove(Object parameter) {
+        return reimbursementRepo.cekReimbusementStatusApprove(parameter);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Reimbursement> getReimbusementByCseId(Object parameter) {
+        return reimbursementRepo.getReimbusementByCseId(parameter);
+    }
+
 }

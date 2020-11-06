@@ -28,6 +28,8 @@ public interface MemberServiceIface {
 
     Member findById(String paramString);
 
+    List<Member> findByIdTeamNoDmp(Long paramLong);
+
     List<Member> findByIdTeam(Long paramLong);
 
     List<Member> findByCaseId(String param);
@@ -37,7 +39,9 @@ public interface MemberServiceIface {
     Integer updateFeeMember(Long teamMemberId, Long idEmployee, Double feeShare);
 
     Member findBy(Long idTeamMember, String employeeId);
-    
-     List<Member> listMemberDisburse(Object parameter);
+
+    List<Member> listMemberDisburse(Object parameter);
+
+    Member memberDisburse(Object engagementId, Object idEmployee);
 
 }

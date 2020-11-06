@@ -44,5 +44,6 @@ public class EngagementApi {
     protected String employee_name[] = null;
     protected Double fee_share[] = null;
     protected String member_id[] = null;
+    protected Long id_client;
 
 }

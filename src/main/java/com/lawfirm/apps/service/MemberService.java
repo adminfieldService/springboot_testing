@@ -62,6 +62,12 @@ public class MemberService implements MemberServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Member> findByIdTeamNoDmp(Long paramLong) {
+        return memberRepo.findByIdTeamNoDmp(paramLong);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Member> findByIdTeam(Long paramLong) {
         return memberRepo.findByIdTeam(paramLong);
     }
@@ -94,6 +100,12 @@ public class MemberService implements MemberServiceIface {
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
     public List<Member> listMemberDisburse(Object parameter) {
         return memberRepo.listMemberDisburse(parameter);
+    }
+
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Member memberDisburse(Object engagementId, Object idEmployee) {
+        return memberRepo.memberDisburse(engagementId, idEmployee);
     }
 
 }

@@ -68,8 +68,14 @@ public interface LoanServiceIface {
     List<Loan> generateLoanId(String param1, String param2, String param3);
 
     List<Loan> generateLoanIdB(String param1, String param2, String param3);
-    
+
     Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan);
 
     EntityManager getEntityManager();
+
+    List<Loan> cekLoanBStatusApprove(Object parameter);
+
+    List<Loan> cekLoanAStatusApprove(Object parameter);
+
+    List<Loan> geLoanBCaseId(Object param);
 }

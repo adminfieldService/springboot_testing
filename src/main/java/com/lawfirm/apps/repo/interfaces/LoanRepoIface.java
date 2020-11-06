@@ -73,4 +73,10 @@ public interface LoanRepoIface {
     Loan chekLoan(String typeLoan, Long idEmployee, Date tanggalPengajuan);
 
     EntityManager getEntityManager();
+
+    List<Loan> cekLoanBStatusApprove(Object parameter);
+
+    List<Loan> cekLoanAStatusApprove(Object parameter);
+
+    List<Loan> geLoanBCaseId(Object param);
 }

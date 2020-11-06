@@ -26,7 +26,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Reimbursement create(Reimbursement entity) {
@@ -215,7 +215,7 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
                         + " JOIN FETCH r.employee AS e "
                         + " RIGHT JOIN FETCH l.engagement AS n "
                         + " WHERE "
-                        + " e.idEmployee = :idEmployee "    
+                        + " e.idEmployee = :idEmployee "
                         + " ORDER BY r.tgInput Desc")
                         .setParameter("idEmployee", empId)
                         .getResultList();
@@ -223,6 +223,62 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
 
             return listAcquire;
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Reimbursement> cekReimbusementStatusApprove(Object parameter) {
+        try {
+            String sql = "SELECT r FROM Reimbursement r "
+                    + " JOIN FETCH r.loan AS l "
+                    + " LEFT JOIN FETCH r.employee AS e "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " n.caseID = :caseID AND "
+                    + " (l.status <> :status AND "
+                    + "  l.status <> :status2 ) ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "b");
+            query.setParameter("caseID", parameter);
+            query.setParameter("status", "a");
+            query.setParameter("status2", "s");
+            return query.getResultList();
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public List<Reimbursement> getReimbusementByCseId(Object parameter) {
+        try {
+            String sql = "SELECT r FROM Reimbursement r "
+                    + " JOIN FETCH r.loan AS l "
+                    + " LEFT JOIN FETCH r.employee AS e "
+                    + " RIGHT JOIN FETCH l.engagement AS n "
+                    + " WHERE "
+                    + " l.loantype.typeLoan = :typeLoan AND "
+                    + " n.caseID = :caseID ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("typeLoan", "b");
+            query.setParameter("caseID", parameter);
+            return query.getResultList();
+        } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
             System.out.println("ERROR: " + ex.getMessage());

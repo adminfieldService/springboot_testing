@@ -130,6 +130,35 @@ public class MemberRepo implements MemberRepoIface {
     }
 
     @Override
+    public List<Member> findByIdTeamNoDmp(Long paramLong) {
+        try {
+            String sql = "SELECT m FROM Member m "
+                    + " JOIN FETCH m.teamMember AS t "
+                    + " JOIN FETCH m.employee AS e "
+                    + " WHERE "
+                    + " t.teamMemberId = :teamMemberId AND "
+                    + " e.roleName <> :roleName ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("teamMemberId", paramLong);
+            query.setParameter("roleName", "dmp");
+            if (query != null) {
+                return query.getResultList();
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
     public List<Member> findByIdTeam(Long paramLong) {
         try {
             String sql = "SELECT m FROM Member m "
@@ -288,6 +317,30 @@ public class MemberRepo implements MemberRepoIface {
             Query query = entityManager.createQuery(sql);
             query.setParameter("engagementId", parameter);
             return query.getResultList();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    public Member memberDisburse(Object engagementId, Object idEmployee) {
+        try {
+            String sql = "SELECT DISTINCT m FROM Member m "
+                    + " JOIN FETCH m.teamMember t "
+                    + " LEFT JOIN FETCH m.employee e "
+                    + " RIGHT JOIN FETCH t.engagement n "
+                    + " WHERE n.engagementId = :engagementId AND "
+                    + " e.idEmployee = :idEmployee";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("engagementId", engagementId);
+            query.setParameter("idEmployee", idEmployee);
+            return (Member) query.getSingleResult();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_memberRepo");

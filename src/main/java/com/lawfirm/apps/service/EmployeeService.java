@@ -171,4 +171,10 @@ public class EmployeeService implements EmployeeServiceIface {
         return employeeRepo.listEmployeeByRole(paramString);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public Employee findByEmail(String paramString) {
+         return employeeRepo.findByEmail(paramString);
+    }
+
 }

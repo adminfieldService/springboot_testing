@@ -38,4 +38,8 @@ public interface ReimbursementRepoIface {
     Integer count();
 
     EntityManager getEntityManager();
+
+    List<Reimbursement> cekReimbusementStatusApprove(Object parameter);
+
+    List<Reimbursement> getReimbusementByCseId(Object parameter);
 }

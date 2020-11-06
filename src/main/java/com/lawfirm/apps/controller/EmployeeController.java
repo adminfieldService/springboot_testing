@@ -709,7 +709,8 @@ public class EmployeeController { //LawfirmController
 
 //           Employee updateEmployee = employeeService.findById(id_employee);
             log.info("entityEmp.getIdEmployee()" + entityEmp.getIdEmployee());
-            Employee updateEmployee = employeeService.findById(object.getId_employee());
+            Employee dataEmployee = employeeService.findByEmail(object.getEmail());
+            Employee updateEmployee = employeeService.findById(dataEmployee.getIdEmployee());//object.getId_employee()
             log.info("updateEmployee" + updateEmployee);
             if (updateEmployee == null) {
                 rs.setResponse_code("55");
@@ -961,15 +962,15 @@ public class EmployeeController { //LawfirmController
 //                    return approvedByAdmin(obj, authentication);
             }
 
-            return rs;
+//            return rs;
         } catch (Exception ex) {
             // TODO Auto-generated catch block
             System.out.println("ERROR: " + ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "update-profile");
         }
-//        rs.setResponse_code("55");
-//        rs.setInfo("Data null");
-//        rs.setResponse("Create Employee Failed");
+        rs.setResponse_code("55");
+        rs.setInfo("Data null");
+        rs.setResponse("Update Employee Failed");
         return rs;
     }
 
