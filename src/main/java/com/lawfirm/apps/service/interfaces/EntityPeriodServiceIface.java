@@ -28,4 +28,6 @@ public interface EntityPeriodServiceIface {
     Double previousDisbursement(Integer number, Long userId, String taxYear);
 
     Double incomeTaxPaidOnPriorPeriod(Integer numberDisbursement, Long userId, String taxYear);
+
+    Double getPreviousDisbursement(Integer number, Long userId, String taxYear);
 }

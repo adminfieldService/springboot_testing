@@ -1612,14 +1612,14 @@ public class DisbursementController {
                                     income_tax_paid_on_prior_period_team = 0d;
                                 }
                                 if (number_of_disbursement == 2) {
-                                    previous_disbursement_team = entityPeriodService.previousDisbursement(2, dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    previous_disbursement_team = entityPeriodService.getPreviousDisbursement(2, dataMember.getEmployee().getIdEmployee(), tax_year);
                                     if (previous_disbursement_team == null || previous_disbursement_team == 0d) {
                                         previous_disbursement_team = 0d;
                                     }
                                     income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team + 0d;
                                 }
                                 if (number_of_disbursement == 3) {
-                                    previous_disbursement_team = entityPeriodService.previousDisbursement(3, dataMember.getEmployee().getIdEmployee(), tax_year);
+                                    previous_disbursement_team = entityPeriodService.getPreviousDisbursement(3, dataMember.getEmployee().getIdEmployee(), tax_year);
                                     if (previous_disbursement_team == null || previous_disbursement_team == 0d) {
                                         previous_disbursement_team = 0d;
                                     } else if (previous_disbursement_team.equals(amount_portion_team)) {
@@ -1686,7 +1686,7 @@ public class DisbursementController {
                                     log.info("1, dataMember.getEmployee().getIdEmployee() : tax_year" + dataMember.getEmployee().getIdEmployee() + ":" + tax_year);
                                     Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(1, dataMember.getEmployee().getIdEmployee(), tax_year);
                                     if (incomeTaxPaidOnPriorPeriod != null || incomeTaxPaidOnPriorPeriod == 0d) {
-                                        income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                        income_tax_paid_on_prior_period_team = Math.abs(incomeTaxPaidOnPriorPeriod);
                                     } else {
                                         income_tax_paid_on_prior_period_team = 0d;
                                     }
@@ -1697,20 +1697,13 @@ public class DisbursementController {
                                     log.info("3, dataMember.getEmployee().getIdEmployee() : tax_year" + dataMember.getEmployee().getIdEmployee() + ":" + tax_year);
                                     Double incomeTaxPaidOnPriorPeriod = entityPeriodService.incomeTaxPaidOnPriorPeriod(3, dataMember.getEmployee().getIdEmployee(), tax_year);
                                     if (incomeTaxPaidOnPriorPeriod != null || incomeTaxPaidOnPriorPeriod == 0d) {
-                                        income_tax_paid_on_prior_period_team = incomeTaxPaidOnPriorPeriod;
+                                        income_tax_paid_on_prior_period_team = Math.abs(incomeTaxPaidOnPriorPeriod);
                                     } else {
                                         income_tax_paid_on_prior_period_team = 0d;
                                     }
                                 }
 
                                 log.info("income_tax_paid_on_prior_period_team : " + income_tax_paid_on_prior_period_team);
-//                                if (Math.max(income_tax_paid_on_prior_period_team, 0) == 0d) {
-//                                    taxable_income_team = (0 - jabatan_per_tahun_team - ptkp);
-//                                    log.info("taxable_income_team : " + taxable_income_team);
-//                                } else {
-//                                    taxable_income_team = (0 - total_income_fortax_purpose_team - jabatan_per_tahun_team - ptkp);
-//                                    log.info("taxable_income_team 2 : " + taxable_income_team);
-//                                }
 
                                 objMember.put("income_tax_paid_on_prior_period_team", String.format("%.0f", Math.max(income_tax_paid_on_prior_period_team, 0)));
                                 if (Math.max(income_tax_paid_on_prior_period_team, 0) == 0) {
@@ -1718,7 +1711,6 @@ public class DisbursementController {
                                 } else {
                                     net_income_tax_deducted_team = (income_tax_team + income_tax_paid_on_prior_period_team);
                                 }
-                                
 
                                 if (number_of_disbursement == 1) {
 
@@ -1824,7 +1816,7 @@ public class DisbursementController {
                     }
                     obj.put("members", arrayM);
 //                    array.put(obj);
-                    log.info("disbursementbyCaseId : " + obj.toString());
+//                    log.info("disbursementbyCaseId : " + obj.toString());
                     return ResponseEntity.ok(obj.toString());
                 }
             }

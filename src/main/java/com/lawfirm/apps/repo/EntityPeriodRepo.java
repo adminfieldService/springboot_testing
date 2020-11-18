@@ -209,8 +209,14 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
             Query query = null;
             if (numberDisbursement == 1) {
 //                log.info(" >> " + numberDisbursement + ":" + userId + ":" + taxYear);
-                String sql = "SELECT COALESCE(SUM(p.incomeTaxPaidOnPriorPeriod ),0) FROM EntityPeriod p "
-                        + " WHERE "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                String sql = "SELECT COALESCE(SUM(p.incomeTaxPaidOnPriorPeriod ),0) FROM EntityPeriod p "
+//                        + " WHERE "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                        + " p.numberDisbursement = :numberDisbursement AND "
+//                        + " p.idEmployee = :idEmployee AND "
+//                        + " p.taxYear = :taxYear AND "
+//                        + " p.status = :status ";
+                String sql = "SELECT p.incomeTaxPaidOnPriorPeriod FROM EntityPeriod p "
+                        + " WHERE "
                         + " p.numberDisbursement = :numberDisbursement AND "
                         + " p.idEmployee = :idEmployee AND "
                         + " p.taxYear = :taxYear AND "
@@ -218,7 +224,7 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
                 query = entityManager.createQuery(sql);
                 log.info(" sql >> " + sql);
 //                log.info(" query >> " + query);
-                query.setParameter("numberDisbursement", numberDisbursement);
+                query.setParameter("numberDisbursement", 1);
                 query.setParameter("idEmployee", userId);
                 query.setParameter("taxYear", taxYear);
                 query.setParameter("status", "1");
@@ -241,6 +247,53 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
 //                log.info("isi" + query.getSingleResult().toString());
 //                return 0d;
 //            }
+        } catch (NumberFormatException ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
+    @Override
+    public Double getPreviousDisbursement(Integer number, Long userId, String taxYear) {
+        try {
+            Query query = null;
+            if (number == 2) {
+                String sql = "SELECT COALESCE(SUM(p.prevDisbursement),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                        + " WHERE "
+                        + " p.idEmployee = :idEmployee AND "
+                        + " p.taxYear = :taxYear AND"
+                        + " p.numberDisbursement = :numberDisbursement AND"
+                        + " p.status = :status ";
+                query = entityManager.createQuery(sql);
+                query.setParameter("idEmployee", userId);
+                query.setParameter("taxYear", taxYear);
+                query.setParameter("numberDisbursement", 1);
+                query.setParameter("status", "1");
+                log.info("isi" + String.format("%.0f", query.getSingleResult()));
+
+            }
+            if (number == 3) {
+                String sql = "SELECT COALESCE(SUM(p.prevDisbursement),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                        + " WHERE "
+                        + " p.idEmployee = :idEmployee AND "
+                        + " p.taxYear = :taxYear AND"
+                        + " p.numberDisbursement = :numberDisbursement AND"
+                        + " p.status = :status ";
+                query = entityManager.createQuery(sql);
+                query.setParameter("idEmployee", userId);
+                query.setParameter("taxYear", taxYear);
+                query.setParameter("numberDisbursement", 2);
+                query.setParameter("status", "1");
+                log.info("isi" + String.format("%.0f", query.getSingleResult()));
+
+            }
+            return Double.parseDouble(query.getSingleResult().toString());
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
