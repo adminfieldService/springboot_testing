@@ -201,7 +201,6 @@ public class LoanController {
                     Date tgl_pengajuan = null;
                     if (object.getRepayment_date() != null) {
                         isi_tgl_repayment = dateFormat.format(object.getRepayment_date());
-
                         tgl_repayment = dateFormat.parse(isi_tgl_repayment);
                     }
 

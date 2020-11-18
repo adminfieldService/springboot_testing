@@ -105,7 +105,7 @@ public class DisbursementService implements DisbursementServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Disbursement disbursement(Integer number, String taxyear) {
+    public List<Disbursement> disbursement(Integer number, String taxyear) {
         return this.disbursementRepo.disbursement(number, taxyear);
     }
 

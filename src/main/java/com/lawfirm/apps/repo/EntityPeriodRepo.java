@@ -27,7 +27,7 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
 
     @PersistenceContext(unitName = Constants.JPA_UNIT_NAME_LF)
     private EntityManager entityManager;
-     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public EntityPeriod create(EntityPeriod entity) {
@@ -104,8 +104,9 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
     }
 
     @Override
-    public Double previousDisbursement(Long userId, String taxYear) {
+    public Double previousDisbursement(Integer number, Long userId, String taxYear) {
         try {
+
             String sql = "SELECT COALESCE(SUM(p.prevDisbursement),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
                     + " p.idEmployee = :idEmployee AND "
@@ -115,13 +116,39 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
             query.setParameter("idEmployee", userId);
             query.setParameter("taxYear", taxYear);
             query.setParameter("status", "1");
-//            if (query != null) {
             log.info("isi" + String.format("%.0f", query.getSingleResult()));
             return Double.parseDouble(query.getSingleResult().toString());
-//            } else {
-//                log.info("isi" + query.getSingleResult().toString());
-//                return 0d;
+
+//            Query query = null;
+//            if (number == 2) {
+//                String sql = "SELECT COALESCE(SUM(p.prevDisbursement),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                        + " WHERE "
+//                        + " p.idEmployee = :idEmployee AND "
+//                        + " p.taxYear = :taxYear AND"
+//                        + " p.numberDisbursement = :numberDisbursement AND"
+//                        + " p.status = :status ";
+//                query = entityManager.createQuery(sql);
+//                query.setParameter("idEmployee", userId);
+//                query.setParameter("taxYear", taxYear);
+//                query.setParameter("numberDisbursement", 1);
+//                query.setParameter("status", "1");
+//                log.info("isi" + String.format("%.0f", query.getSingleResult()));
+//
 //            }
+//            if (number == 3) {
+//                String sql = "SELECT COALESCE(SUM(p.prevDisbursement),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                        + " WHERE "
+//                        + " p.idEmployee = :idEmployee AND "
+//                        + " p.taxYear = :taxYear AND"
+//                        + " p.status = :status ";
+//                query = entityManager.createQuery(sql);
+//                query.setParameter("idEmployee", userId);
+//                query.setParameter("taxYear", taxYear);
+//                query.setParameter("status", "1");
+//                log.info("isi" + String.format("%.0f", query.getSingleResult()));
+//
+//            }
+//            return Double.parseDouble(query.getSingleResult().toString());
         } catch (NumberFormatException ex) {
             logger.error(ex.getMessage());
             CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
@@ -140,14 +167,23 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
             String sql = "SELECT p FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                     + " WHERE "
                     + " p.idEmployee = :idEmployee AND "
-                    + " p.taxYear = :taxYear AND "
                     + " p.caseId = :caseId AND "
+                    + " p.taxYear = :taxYear AND "
                     + " p.status = :status ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("idEmployee", userId);
             query.setParameter("caseId", caseId);
             query.setParameter("taxYear", taxYear);
             query.setParameter("status", "1");
+//    String sql = "SELECT p FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+//                    + " WHERE "
+//                    + " p.idEmployee = :idEmployee AND "   
+//                    + " p.taxYear = :taxYear AND "
+//                    + " p.status = :status ";
+//            Query query = entityManager.createQuery(sql);
+//            query.setParameter("idEmployee", userId);
+//            query.setParameter("taxYear", taxYear);
+//            query.setParameter("status", "1");
 //            if (query != null) {
             log.info("isi" + query.getSingleResult());
             return (EntityPeriod) query.getSingleResult();
@@ -172,21 +208,24 @@ public class EntityPeriodRepo implements EntityPeriodRepoIface {
         try {
             Query query = null;
             if (numberDisbursement == 1) {
-                String sql = "SELECT COALESCE(SUM(p.income_tax_paid_on_prior_period),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
-                        + " WHERE "
-                        + " p.numberDisbursement = :numberDisbursement"
+//                log.info(" >> " + numberDisbursement + ":" + userId + ":" + taxYear);
+                String sql = "SELECT COALESCE(SUM(p.incomeTaxPaidOnPriorPeriod ),0) FROM EntityPeriod p "
+                        + " WHERE "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                        + " p.numberDisbursement = :numberDisbursement AND "
                         + " p.idEmployee = :idEmployee AND "
-                        + " p.taxYear = :taxYear AND"
+                        + " p.taxYear = :taxYear AND "
                         + " p.status = :status ";
                 query = entityManager.createQuery(sql);
+                log.info(" sql >> " + sql);
+//                log.info(" query >> " + query);
                 query.setParameter("numberDisbursement", numberDisbursement);
                 query.setParameter("idEmployee", userId);
                 query.setParameter("taxYear", taxYear);
                 query.setParameter("status", "1");
             }
             if (numberDisbursement == 3) {
-                String sql = "SELECT COALESCE(SUM(p.income_tax_paid_on_prior_period),0) FROM EntityPeriod p"//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
-                        + " WHERE "
+                String sql = "SELECT COALESCE(SUM(p.incomeTaxPaidOnPriorPeriod),0) FROM EntityPeriod p "
+                        + " WHERE "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
                         + " p.idEmployee = :idEmployee AND "
                         + " p.taxYear = :taxYear AND "
                         + " p.status = :status ";

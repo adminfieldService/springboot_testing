@@ -49,8 +49,8 @@ public class EntityPeriodService implements EntityPeriodServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Double previousDisbursement(Long userId, String taxYear) {
-        return entityPeriodRepo.previousDisbursement(userId, taxYear);
+    public Double previousDisbursement(Integer number, Long userId, String taxYear) {
+        return entityPeriodRepo.previousDisbursement(number, userId, taxYear);
     }
 
     @Override

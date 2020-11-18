@@ -250,21 +250,25 @@ public class Util {
 
         return kata1;
     }
+//=IFERROR((IF(J20<=50000000;J20*Taxrate1;IF(AND(J20>50000000;J20<=250000000);(Taxrate1*50000000)+((J20-50000000)*Taxrate2);IF(AND(J20>250000000;J20<=500000000);(Taxrate1*50000000)+(Taxrate2*200000000)+((J20-250000000)*Taxrate3);IF(J20>500000000;(Taxrate1*50000000)+(Taxrate2*200000000)+(Taxrate3*250000000)+((J20-500000000)*Taxrate4))))));0)
 
     public static Double hitungPajak(final Double input) {
         Double hasil = 0d;
         if (input <= 50000000) {
-            hasil = (input * 5) / 100;
+            hasil = (input * 0.05);
         }
 
         if (input >= 50000001 && input <= 250000000) {
-            hasil = (input * 15) / 100;
+//            hasil = (input * 15) / 100;
+            hasil = (0.05 * 50000000) + ((input - 50000000) * 0.15);
         }
         if (input >= 250000001 && input <= 500000000) {
-            hasil = (input * 25) / 100;
+//            hasil = (input * 25) / 100;
+            hasil = (0.05 * 50000000) + (0.15 * 200000000) + ((input - 250000000) * 0.25);
         }
         if (input >= 500000001) {
-            hasil = (input * 35) / 100;
+//            hasil = (input * 35) / 100;
+            hasil = (0.05 * 50000000) + (0.15 * 200000000) + (0.25 * 250000000) + ((0.15 - 500000000) * 0.35);
         }
 
         return hasil;

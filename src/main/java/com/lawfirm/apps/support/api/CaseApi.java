@@ -5,6 +5,8 @@
  */
 package com.lawfirm.apps.support.api;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,4 +19,6 @@ import lombok.ToString;
 public class CaseApi {
 
     protected Long engagement_id = null;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    protected Date cut_off_date = null;
 }

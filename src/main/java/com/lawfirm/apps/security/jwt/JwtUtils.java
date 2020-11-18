@@ -25,7 +25,8 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     static final String JWT_SECRET = "lawfirmSecretKey";//lawfirmSecretKey
-    static final Integer JWT_ExpirationMs = 86400000;//1440 minutes --> 24 H
+//    static final Integer JWT_ExpirationMs = 86400000;//1440 minutes --> 24 H
+    static final Integer JWT_ExpirationMs = 3600000;//60 minutes --> 1 H
 
     public String generateJwtToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();

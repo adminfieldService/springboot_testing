@@ -25,7 +25,7 @@ public interface EntityPeriodServiceIface {
 
     EntityPeriod findBy(Long userId, String caseId, String taxYear);
 
-    Double previousDisbursement(Long userId, String taxYear);
+    Double previousDisbursement(Integer number, Long userId, String taxYear);
 
     Double incomeTaxPaidOnPriorPeriod(Integer numberDisbursement, Long userId, String taxYear);
 }

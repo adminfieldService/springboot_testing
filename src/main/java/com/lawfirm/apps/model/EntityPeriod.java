@@ -51,7 +51,7 @@ public class EntityPeriod implements Serializable {
     private Double prevDisbursement;
 
     @Column(name = "income_tax_paid_on_prior_period")
-    private Double income_tax_paid_on_prior_period;
+    private Double incomeTaxPaidOnPriorPeriod;
 
     @Column(name = "id_employee")
     private Long idEmployee;
@@ -71,7 +71,7 @@ public class EntityPeriod implements Serializable {
     public EntityPeriod() {
     }
 
-    public EntityPeriod(String Id, String caseId, String disburseId, String taxYear, String bulanDisburse, Integer numberDisbursement, Double prevDisbursement, Double income_tax_paid_on_prior_period, Long idEmployee, String employeeId, String status) {
+    public EntityPeriod(String Id, String caseId, String disburseId, String taxYear, String bulanDisburse, Integer numberDisbursement, Double prevDisbursement, Double incomeTaxPaidOnPriorPeriod, Long idEmployee, String employeeId, String status) {
         this.Id = Id;
         this.caseId = caseId;
         this.disburseId = disburseId;
@@ -79,7 +79,7 @@ public class EntityPeriod implements Serializable {
         this.bulanDisburse = bulanDisburse;
         this.numberDisbursement = numberDisbursement;
         this.prevDisbursement = prevDisbursement;
-        this.income_tax_paid_on_prior_period = income_tax_paid_on_prior_period;
+        this.incomeTaxPaidOnPriorPeriod = incomeTaxPaidOnPriorPeriod;
         this.idEmployee = idEmployee;
         this.employeeId = employeeId;
         this.status = status;
@@ -141,12 +141,12 @@ public class EntityPeriod implements Serializable {
         this.prevDisbursement = prevDisbursement;
     }
 
-    public Double getIncome_tax_paid_on_prior_period() {
-        return income_tax_paid_on_prior_period;
+    public Double getIncomeTaxPaidOnPriorPeriod() {
+        return incomeTaxPaidOnPriorPeriod;
     }
 
-    public void setIncome_tax_paid_on_prior_period(Double income_tax_paid_on_prior_period) {
-        this.income_tax_paid_on_prior_period = income_tax_paid_on_prior_period;
+    public void setIncomeTaxPaidOnPriorPeriod(Double incomeTaxPaidOnPriorPeriod) {
+        this.incomeTaxPaidOnPriorPeriod = incomeTaxPaidOnPriorPeriod;
     }
 
     public Long getIdEmployee() {

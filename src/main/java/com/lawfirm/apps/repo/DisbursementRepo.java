@@ -500,9 +500,9 @@ public class DisbursementRepo implements DisbursementRepoIface {
     }
 
     @Override
-    public Disbursement disbursement(Integer number, String param) {
+    public List<Disbursement> disbursement(Integer number, String param) {
         try {
-            Disbursement listAcquire = (Disbursement) entityManager.createQuery("SELECT d FROM Disbursement d "
+            List<Disbursement> listAcquire =  entityManager.createQuery("SELECT d FROM Disbursement d "
                     + " WHERE "
                     + " d.tahunInput = :tahunInput AND "
                     + " d.numberOfDisbursement = :numberOfDisbursement AND "
@@ -510,7 +510,7 @@ public class DisbursementRepo implements DisbursementRepoIface {
                     .setParameter("tahunInput", param)
                     .setParameter("numberOfDisbursement", number)
                     .setParameter("isActive", "1")
-                    .getSingleResult();
+                    .getResultList();
             return listAcquire;
         } catch (Exception ex) {
             logger.error(ex.getMessage());

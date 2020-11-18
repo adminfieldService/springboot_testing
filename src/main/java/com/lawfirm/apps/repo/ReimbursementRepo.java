@@ -244,8 +244,8 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
                     + " WHERE "
                     + " l.loantype.typeLoan = :typeLoan AND "
                     + " n.caseID = :caseID AND "
-                    + " (l.status <> :status AND "
-                    + "  l.status <> :status2 ) ";
+                    + " (l.status = :status AND "
+                    + "  l.status = :status2 ) ";
             Query query = entityManager.createQuery(sql);
             query.setParameter("typeLoan", "b");
             query.setParameter("caseID", parameter);

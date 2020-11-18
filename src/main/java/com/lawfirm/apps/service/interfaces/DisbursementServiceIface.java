@@ -48,5 +48,5 @@ public interface DisbursementServiceIface {
     
     Disbursement disbursementFindbyEngegmentId(Long engagementId);
 
-    Disbursement disbursement(Integer number, String param);
+    List<Disbursement> disbursement(Integer number, String param);
 }

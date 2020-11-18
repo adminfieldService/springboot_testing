@@ -47,7 +47,7 @@ public interface DisbursementRepoIface {
 
     Disbursement disbursementFindbyEngegmentId(Long engagementId);
 
-    Disbursement disbursement(Integer number, String param);
+  List<Disbursement> disbursement(Integer number, String param);
 //    List<Loan> disbursementbyCaseId(String param);
     //    Disbursement disbursementbyCaseId(String param);
 

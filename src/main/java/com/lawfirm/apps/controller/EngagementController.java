@@ -736,10 +736,22 @@ public class EngagementController {
 //                }
                 log.info("process");
                 profesionalFee = object.getProfesional_fee();
-                ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
+//                ClientData dataClient = clientDataService.findBydataClient(object.getClient_name(), object.getAddress(), object.getNpwp());
+                Long idClient = 0l;
+                if (editCaseDetails.getClient() != null) {
+                    idClient = editCaseDetails.getClient().getIdClient();
+                }
+                log.info("idClient : " + idClient);
+                ClientData dataClient = clientDataService.findById(idClient);
                 String client_id = "CLIENT";
                 if (dataClient != null) {
                     log.info("dataClient : " + dataClient);
+                    dataClient.setClientName(object.getClient_name());
+                    dataClient.setAddress(object.getAddress());
+                    dataClient.setNpwp(object.getNpwp());
+                    dataClient.setPic(object.getPic());
+                    this.clientDataService.update(dataClient);
+
                     Double dmpProtion = ((profesionalFee * (0.75)) * dmpPercent) / 100;
                     log.info("dmpProtion : " + dmpProtion);
 
