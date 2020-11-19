@@ -49,6 +49,9 @@ public class EntityPeriod implements Serializable {
 
     @Column(name = "prev_disbursement")
     private Double prevDisbursement;
+    
+    @Column(name = "amount_portion")
+    private Double amountPortion;
 
     @Column(name = "income_tax_paid_on_prior_period")
     private Double incomeTaxPaidOnPriorPeriod;
@@ -71,7 +74,7 @@ public class EntityPeriod implements Serializable {
     public EntityPeriod() {
     }
 
-    public EntityPeriod(String Id, String caseId, String disburseId, String taxYear, String bulanDisburse, Integer numberDisbursement, Double prevDisbursement, Double incomeTaxPaidOnPriorPeriod, Long idEmployee, String employeeId, String status) {
+    public EntityPeriod(String Id, String caseId, String disburseId, String taxYear, String bulanDisburse, Integer numberDisbursement, Double prevDisbursement, Double amountPortion, Double incomeTaxPaidOnPriorPeriod, Long idEmployee, String employeeId, String status) {
         this.Id = Id;
         this.caseId = caseId;
         this.disburseId = disburseId;
@@ -79,11 +82,14 @@ public class EntityPeriod implements Serializable {
         this.bulanDisburse = bulanDisburse;
         this.numberDisbursement = numberDisbursement;
         this.prevDisbursement = prevDisbursement;
+        this.amountPortion = amountPortion;
         this.incomeTaxPaidOnPriorPeriod = incomeTaxPaidOnPriorPeriod;
         this.idEmployee = idEmployee;
         this.employeeId = employeeId;
         this.status = status;
     }
+
+   
 
     public String getId() {
         return Id;
@@ -172,5 +178,14 @@ public class EntityPeriod implements Serializable {
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
+
+    public Double getAmountPortion() {
+        return amountPortion;
+    }
+
+    public void setAmountPortion(Double amountPortion) {
+        this.amountPortion = amountPortion;
+    }
+    
 
 }

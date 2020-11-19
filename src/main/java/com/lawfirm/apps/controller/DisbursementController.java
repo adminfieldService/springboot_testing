@@ -2215,9 +2215,6 @@ public class DisbursementController {
                                             if (previous_disbursement_team == null || previous_disbursement_team == 0d) {
                                                 previous_disbursement_team = 0d;
                                             }
-//                                            else if (previous_disbursement_team.equals(amount_portion_team)) {
-//                                                previous_disbursement_team = 0d;
-//                                            }
                                             income_tax_paid_on_prior_period_team = income_tax_paid_on_prior_period_team++;
 //                                            objMember.put("previous_disbursement_team", String.format("%.0f", previous_disbursement_team));
                                         }

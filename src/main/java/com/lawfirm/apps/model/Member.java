@@ -57,6 +57,7 @@ public class Member implements Serializable {
     public void onCreate() {
         tgInput = new Date();
         this.setMemberId(UUID.randomUUID().toString());
+        this.status ="0";
     }
 
     public Member() {

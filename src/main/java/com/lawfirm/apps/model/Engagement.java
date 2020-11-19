@@ -83,6 +83,11 @@ public class Engagement implements Serializable {
     @Temporal(TemporalType.DATE)
     protected Date disburseDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Jakarta")
+    @Column(name = "cut_off_date", nullable = true)
+    @Temporal(TemporalType.DATE)
+    protected Date cutOffDate;
+
     @Column(name = "disburse_by", length = 40)
     protected String disburseBy;
 //   
@@ -147,7 +152,7 @@ public class Engagement implements Serializable {
     public Engagement() {
     }
 
-    public Engagement(Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
+    public Engagement(Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, Date cutOffDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
         this.engagementId = engagementId;
         this.isActive = isActive;
         this.approvedBy = approvedBy;
@@ -156,6 +161,7 @@ public class Engagement implements Serializable {
         this.approved_date = approved_date;
         this.closed_date = closed_date;
         this.disburseDate = disburseDate;
+        this.cutOffDate = cutOffDate;
         this.disburseBy = disburseBy;
         this.signature = signature;
         this.invoiceNumber = invoiceNumber;
@@ -172,6 +178,8 @@ public class Engagement implements Serializable {
         this.tahun_input = tahun_input;
         this.caseID = caseID;
     }
+
+   
 
     public String getApprovedBy() {
         return approvedBy;
@@ -511,6 +519,15 @@ public class Engagement implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    public Date getCutOffDate() {
+        return cutOffDate;
+    }
+
+    public void setCutOffDate(Date cutOffDate) {
+        this.cutOffDate = cutOffDate;
+    }
+
+    
     @Override
     public String toString() {
         return "com.lawfirm.apps.model.Engagement[engagementId=" + this.engagementId + " ]";

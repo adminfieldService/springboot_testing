@@ -30,4 +30,6 @@ public interface EntityPeriodRepoIface {
     Double incomeTaxPaidOnPriorPeriod(Integer numberDisbursement, Long userId, String taxYear);
 
     Double getPreviousDisbursement(Integer number, Long userId, String taxYear);
+
+    EntityPeriod getPrevDisbursement(Integer number, Long userId, String taxYear);
 }

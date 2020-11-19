@@ -86,9 +86,8 @@ public class CaseDetails extends Engagement implements Serializable {
     public CaseDetails() {
     }
 
-    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
-        super(engagementId, isActive, approvedBy, closedBy, created_date, approved_date, closed_date, disburseDate, disburseBy, signature, invoiceNumber, status, dmpPortion, dmPercent, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, disbursementCollection, tahun_input, caseID);
-        this.caseID = caseID;
+    public CaseDetails(Double profesionalFee, Double profesionalFeeNet, String caseOverview, String note, String targetAchievement, String strategy, String panitera, Date event_date, String event_time, Collection<CaseDocument> caseDocumentCollection, Collection<Professional> professionalCollection, List<Events> evenList, Long engagementId, String isActive, String approvedBy, String closedBy, Date created_date, Date approved_date, Date closed_date, Date disburseDate, Date cutOffDate, String disburseBy, String signature, String invoiceNumber, String status, Double dmpPortion, Integer dmPercent, ClientData client, Employee employee, Collection<TeamMember> teamMemberCollection, Collection<EngagementHistory> engagementHistoryCollection, Collection<Financial> financialCollection, Collection<Loan> loanCollection, Collection<Disbursement> disbursementCollection, String tahun_input, String caseID) {
+        super(engagementId, isActive, approvedBy, closedBy, created_date, approved_date, closed_date, disburseDate, cutOffDate, disburseBy, signature, invoiceNumber, status, dmpPortion, dmPercent, client, employee, teamMemberCollection, engagementHistoryCollection, financialCollection, loanCollection, disbursementCollection, tahun_input, caseID);
         this.profesionalFee = profesionalFee;
         this.profesionalFeeNet = profesionalFeeNet;
         this.caseOverview = caseOverview;
@@ -103,7 +102,6 @@ public class CaseDetails extends Engagement implements Serializable {
         this.evenList = evenList;
     }
 
-    
     public Double getProfesionalFee() {
         return profesionalFee;
     }
@@ -294,10 +292,12 @@ public class CaseDetails extends Engagement implements Serializable {
         this.engagementId = engagementId;
     }
 
+    @Override
     public String getCaseID() {
         return caseID;
     }
 
+    @Override
     public void setCaseID(String caseID) {
         this.caseID = caseID.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -316,18 +316,22 @@ public class CaseDetails extends Engagement implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    @Override
     public String getIsActive() {
         return isActive;
     }
 
+    @Override
     public void setIsActive(String isActive) {
         this.isActive = isActive;
     }
 
+    @Override
     public String getApprovedBy() {
         return approvedBy;
     }
 
+    @Override
     public void setApprovedBy(String approvedBy) {
         this.approvedBy = approvedBy.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -346,10 +350,12 @@ public class CaseDetails extends Engagement implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    @Override
     public String getStatus() {
         return status;
     }
 
+    @Override
     public void setStatus(String status) {
         this.status = status.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -368,26 +374,33 @@ public class CaseDetails extends Engagement implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    @Override
     public ClientData getClient() {
         return client;
     }
 
+    @Override
     public void setClient(ClientData client) {
         this.client = client;
     }
 
+    @Override
     public Date getApproved_date() {
         return approved_date;
     }
+
+    @Override
 
     public void setApproved_date(Date approved_date) {
         this.approved_date = approved_date;
     }
 
+    @Override
     public String getSignature() {
         return signature;
     }
 
+    @Override
     public void setSignature(String signature) {
         this.signature = signature.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -406,18 +419,22 @@ public class CaseDetails extends Engagement implements Serializable {
                 .replaceAll("expression\\((.*?)\\)", "");
     }
 
+    @Override
     public Date getCreated_date() {
         return created_date;
     }
 
+    @Override
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
 
+    @Override
     public String getInvoiceNumber() {
         return invoiceNumber;
     }
 
+    @Override
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -439,6 +456,7 @@ public class CaseDetails extends Engagement implements Serializable {
     /**
      * @return the financialCollection
      */
+    @Override
     public Collection<Financial> getFinancialCollection() {
         return financialCollection;
     }
@@ -446,22 +464,27 @@ public class CaseDetails extends Engagement implements Serializable {
     /**
      * @param financialCollection the financialCollection to set
      */
+    @Override
     public void setFinancialCollection(Collection<Financial> financialCollection) {
         this.financialCollection = financialCollection;
     }
 
+    @Override
     public Collection<Loan> getLoanCollection() {
         return loanCollection;
     }
 
+    @Override
     public void setLoanCollection(Collection<Loan> loanCollection) {
         this.loanCollection = loanCollection;
     }
 
+    @Override
     public String getTahun_input() {
         return tahun_input;
     }
 
+    @Override
     public void setTahun_input(String tahun_input) {
         this.tahun_input = tahun_input.replaceAll("(?i)<script.*?>.*?</script.*?>", "")
                 .replaceAll("<script>(.*?)</script>", "")
@@ -511,44 +534,64 @@ public class CaseDetails extends Engagement implements Serializable {
         this.dmPercent = dmPercent;
     }
 
+    @Override
     public Collection<Disbursement> getDisbursementCollection() {
         return disbursementCollection;
     }
 
+    @Override
     public void setDisbursementCollection(Collection<Disbursement> disbursementCollection) {
         this.disbursementCollection = disbursementCollection;
     }
 
+    @Override
     public String getClosedBy() {
         return closedBy;
     }
 
+    @Override
     public void setClosedBy(String closedBy) {
         this.closedBy = closedBy;
     }
 
+    @Override
     public Date getClosed_date() {
         return closed_date;
     }
 
+    @Override
     public void setClosed_date(Date closed_date) {
         this.closed_date = closed_date;
     }
 
+    @Override
     public Date getDisburseDate() {
         return disburseDate;
     }
 
+    @Override
     public void setDisburseDate(Date disburseDate) {
         this.disburseDate = disburseDate;
     }
 
+    @Override
     public String getDisburseBy() {
         return disburseBy;
     }
 
+    @Override
     public void setDisburseBy(String disburseBy) {
         this.disburseBy = disburseBy;
+    }
+
+    @Override
+    public Date getCutOffDate() {
+        return cutOffDate;
+    }
+
+    @Override
+    public void setCutOffDate(Date cutOffDate) {
+        this.cutOffDate = cutOffDate;
     }
 
     @Override
