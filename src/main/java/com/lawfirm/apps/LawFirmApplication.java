@@ -29,20 +29,38 @@ public class LawFirmApplication extends SpringBootServletInitializer {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/auth").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/employee").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/engagement").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/loan").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/reimbursement").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/reimbursements").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/case").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/disburse").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/disbursement").allowedOrigins("http://localhost:8080");
-                registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/auth").allowedOrigins("*");
+                registry.addMapping("/employee").allowedOrigins("*");
+                registry.addMapping("/engagement").allowedOrigins("*");
+                registry.addMapping("/loan").allowedOrigins("*");
+                registry.addMapping("/reimbursement").allowedOrigins("*");
+                registry.addMapping("/reimbursements").allowedOrigins("*");
+                registry.addMapping("/case").allowedOrigins("*");
+                registry.addMapping("/disburse").allowedOrigins("*");
+                registry.addMapping("/disbursement").allowedOrigins("*");
+                registry.addMapping("/**").allowedOrigins("*");
 
             }
         };
     }
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/auth").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/employee").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/engagement").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/loan").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/reimbursement").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/reimbursements").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/case").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/disburse").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/disbursement").allowedOrigins("http://localhost:8080");
+//                registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+//
+//            }
+//        };
+//    }
 
 //        @Bean
 //    	public MultipartConfigElement multipartConfigElement() {

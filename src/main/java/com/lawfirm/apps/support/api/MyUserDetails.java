@@ -25,6 +25,7 @@ public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
     private boolean active;
+    private boolean islogin;
     private String employeeId;
     private String roleName;
     private Double loanLimit;
@@ -41,7 +42,8 @@ public class MyUserDetails implements UserDetails {
         this.employeeId = user.getEmployeeId();
         this.roleName = user.getRoleName();
         this.loanLimit = user.getLoanAmount();
-         //new fields addition
+        this.islogin = user.getIsLogin();
+        //new fields addition
         //        this.company = user.getCompany();
         //        this.department = user.getDepartment();
         this.authorities = Arrays.stream(user.getRoleName().split(","))
@@ -123,8 +125,5 @@ public class MyUserDetails implements UserDetails {
     public void setLoanLimit(Double loanLimit) {
         this.loanLimit = loanLimit;
     }
-
-   
-    
 
 }

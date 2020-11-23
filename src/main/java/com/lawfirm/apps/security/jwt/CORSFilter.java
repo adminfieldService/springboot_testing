@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @author newbiecihuy
  */
 @Component
-@Order(1) // You can choose the value yourself
+@Order(2) // You can choose the value yourself
 public class CORSFilter implements Filter {
 
     @Override

@@ -31,7 +31,7 @@ public interface OutStandingLoanARepoIface {
 
     OutStandingLoanA findByIdLoan(String outstandingAUUId);
 
-    Double sumLoanA(Long paramLong);
+    OutStandingLoanA sumLoanA(Long userId, String taxtYear, int number);
 
 //    List<OutStandingLoanB> findByCaseId(Long paramLong);
     OutStandingLoanA findByCaseId(String param);

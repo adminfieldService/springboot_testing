@@ -68,8 +68,8 @@ public class OutStandingLoanAService implements OutStandingLoanAServiceIface {
 
     @Override
     @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
-    public Double sumLoanA(Long paramLong) {
-        return outStandingLoanARepo.sumLoanA(paramLong);
+    public OutStandingLoanA sumLoanA(Long userId, String taxtYear, int number) {
+        return outStandingLoanARepo.sumLoanA(userId, taxtYear, number);
     }
 
     @Override

@@ -42,8 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author newbiecihuy
  */
-//@CrossOrigin(origins = "*", maxAge = 3600)
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "http://lawfirmweb.tandatanganku.com", allowedHeaders = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 //@Slf4j
@@ -93,12 +93,11 @@ public class AuthController {
             HttpHeaders responseHeaders = new HttpHeaders();
 
 //            Employee cekEmp = empRepository.chekUserName(authenticationRequest.getUsername());
-//            
 //            Authentication authenticate = authenticationManager.authenticate(
 //                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), "lawfirm" + cekEmp.getEmail() + authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
 //            );
-            log.info("getUname : " + authenticationRequest.getUsername());
-            log.info("getPassword : " + authenticationRequest.getPassword());
+//            log.info("getUname : " + authenticationRequest.getUsername());
+//            log.info("getPassword : " + authenticationRequest.getPassword());
             Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())// encoder.encode(authenticationRequest.getPassword())
             );
@@ -127,7 +126,7 @@ public class AuthController {
             List<String> roles = new ArrayList<>();
             userDetails.getAuthorities().forEach((a) -> roles.add(a.getAuthority()));
             response.setRoles(roles);
-            log.error("info : " + responseHeaders + HttpStatus.OK);
+//            log.info("info : " + responseHeaders + HttpStatus.OK);
             return new ResponseEntity(response, responseHeaders, HttpStatus.OK);
 
         } catch (AuthenticationException ex) {

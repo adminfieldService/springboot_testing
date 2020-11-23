@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  */
 public class CaptureRequestWrapper extends HttpServletRequestWrapper {
 
-    private RansackXss ransackXss;
+    private final RansackXss ransackXss;
 
     public CaptureRequestWrapper(HttpServletRequest servletRequest, RansackXss ransackXss) {
         super(servletRequest);
@@ -47,6 +47,5 @@ public class CaptureRequestWrapper extends HttpServletRequestWrapper {
         String value = super.getHeader(name);
         return ransackXss.ransackXss(value);
     }
-
 
 }

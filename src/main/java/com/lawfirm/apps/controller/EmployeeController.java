@@ -55,7 +55,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -1813,9 +1816,19 @@ public class EmployeeController { //LawfirmController
     @RequestMapping(value = "/view/list-by-admin", method = RequestMethod.GET, produces = {"application/json"})
 //    @PreAuthorize("hasRole('sysadmin') or hasRole('admin')")
     @XxsFilter
-    public ResponseEntity<String> viewEmployeeByAdmin(ServletRequest request, Authentication authentication
-    ) {
+    public ResponseEntity<String> viewEmployeeByAdmin(ServletRequest request, Authentication authentication) {
         try {
+            int totalPages = 0;
+            int totalCount = 0;
+            String draw = "0";
+            String start = "0";
+            String length = "";
+            int recordsFiltered = 0;
+            String orderColumnIndex = "0";
+            String orderDir = "asc";
+            draw = request.getParameter("draw");
+            start = request.getParameter("start");
+            length = request.getParameter("length");
 
             String nama = authentication.getName();
             log.info("nama : " + nama);
@@ -1856,209 +1869,220 @@ public class EmployeeController { //LawfirmController
             Map<String, String[]> paramMap = request.getParameterMap();
 
             int max = employeeService.count();
-            int start = 0;
+//            int start = 0;
             String paramString = null;
             if (paramMap.containsKey("start")) {
-                start = Integer.parseInt(request.getParameter("start"));
+                start = request.getParameter("start");
             }
             if (paramMap.containsKey("paramString")) {
                 paramString = request.getParameter("paramString");
             }
             List<Employee> entityList = null;
-            if (start == 0) {
+            if (start == null) {
                 entityList = this.employeeService.listEmployee();
             } else {
-                entityList = this.employeeService.listEmployeePaging(paramString, max, start);
+                entityList = this.employeeService.listEmployeePaging(paramString, max, Integer.parseInt(start));
             }
 
             JSONArray array = new JSONArray();
-            for (int i = 0; i < entityList.size(); i++) {
-                JSONObject jsonobj = new JSONObject();
-                JSONObject jsonacc = new JSONObject();
-                Employee entity = (Employee) entityList.get(i);
-                if (entity.getIdEmployee() == null) {
-                    jsonobj.put("id_employee", "");
-                } else {
-                    jsonobj.put("id_employee", entity.getIdEmployee());
-                }
-                if (entity.getName() == null) {
-                    jsonobj.put("name", "");
-                } else {
-                    jsonobj.put("name", entity.getName());
-                }
-                if (entity.getUserName() == null) {
-                    jsonobj.put("user_name", "");
-                } else {
-                    jsonobj.put("user_name", entity.getUserName());
-                }
-                if (entity.getEmployeeId() == null) {
-                    jsonobj.put("employee_id", "");
-                } else {
-                    jsonobj.put("employee_id", entity.getEmployeeId());
-                }
-                if (entity.getAddress() == null) {
-                    jsonobj.put("address", "");
-                } else {
-                    jsonobj.put("address", entity.getAddress());
-                }
-                if (entity.getNik() == null) {
-                    jsonobj.put("nik", "");
-                } else {
-                    jsonobj.put("nik", entity.getNik());
-                }
-                if (entity.getMobilePhone() == null) {
-                    jsonobj.put("cellphone", "");
-                } else {
-                    jsonobj.put("cellphone", entity.getMobilePhone());
-                }
-                if (entity.getNpwp() == null) {
-                    jsonobj.put("npwp", "");
-                } else {
-                    jsonobj.put("npwp", entity.getNpwp());
-                }
-                if (entity.getRoleName() == null) {
-                    jsonobj.put("role", "");
-                } else {
-                    jsonobj.put("role", entity.getRoleName());
-                }
-                if (entity.getLoanAmount() == null) {
-                    jsonobj.put("loan_limit", 0);
-                } else {
-                    jsonobj.put("loan_limit", entity.getLoanAmount());
-                }
-                if (entity.getTaxStatus() == null) {
-                    jsonobj.put("tax_status", "");
-                } else {
-                    jsonobj.put("tax_status", entity.getTaxStatus());
-                }
-                if (entity.IsActive() == true) {
-                    jsonobj.put("is_active", true);
-                } else {
-                    jsonobj.put("is_active", false);
-                }
-                if (entity.getIsDelete() == false) {
-                    jsonobj.put("is_delete", false);
-                } else {
-                    jsonobj.put("is_delete", true);
-                }
-                if (entity.getStatus() == null) {
-                    jsonobj.put("status_employee", "");
-                } else {
-                    jsonobj.put("status_employee", entity.getStatus());
-                }
-                if (entity.getSalary() == null) {
-                    jsonobj.put("salary", "");
-                } else {
-                    jsonobj.put("salary", entity.getSalary());
-                }
-                if (entity.getDateRegister() == null) {
-                    jsonobj.put("join_date", "");
-                } else {
-                    jsonobj.put("join_date", dateFormat.format(entity.getDateRegister()));
-                }
-                if (entity.getLinkCv() == null) {
-                    jsonobj.put("doc_cv", "");
-                } else {
-                    jsonobj.put("doc_cv", entity.getLinkCv());
+            if (entityList != null) {
+                for (int i = 0; i < entityList.size(); i++) {
+                    JSONObject jsonobj = new JSONObject();
+                    JSONObject jsonacc = new JSONObject();
+                    Employee entity = (Employee) entityList.get(i);
+                    if (entity.getIdEmployee() == null) {
+                        jsonobj.put("id_employee", "");
+                    } else {
+                        jsonobj.put("id_employee", entity.getIdEmployee());
+                    }
+                    if (entity.getName() == null) {
+                        jsonobj.put("name", "");
+                    } else {
+                        jsonobj.put("name", entity.getName());
+                    }
+                    if (entity.getUserName() == null) {
+                        jsonobj.put("user_name", "");
+                    } else {
+                        jsonobj.put("user_name", entity.getUserName());
+                    }
+                    if (entity.getEmployeeId() == null) {
+                        jsonobj.put("employee_id", "");
+                    } else {
+                        jsonobj.put("employee_id", entity.getEmployeeId());
+                    }
+                    if (entity.getAddress() == null) {
+                        jsonobj.put("address", "");
+                    } else {
+                        jsonobj.put("address", entity.getAddress());
+                    }
+                    if (entity.getNik() == null) {
+                        jsonobj.put("nik", "");
+                    } else {
+                        jsonobj.put("nik", entity.getNik());
+                    }
+                    if (entity.getMobilePhone() == null) {
+                        jsonobj.put("cellphone", "");
+                    } else {
+                        jsonobj.put("cellphone", entity.getMobilePhone());
+                    }
+                    if (entity.getNpwp() == null) {
+                        jsonobj.put("npwp", "");
+                    } else {
+                        jsonobj.put("npwp", entity.getNpwp());
+                    }
+                    if (entity.getRoleName() == null) {
+                        jsonobj.put("role", "");
+                    } else {
+                        jsonobj.put("role", entity.getRoleName());
+                    }
+                    if (entity.getLoanAmount() == null) {
+                        jsonobj.put("loan_limit", 0);
+                    } else {
+                        jsonobj.put("loan_limit", entity.getLoanAmount());
+                    }
+                    if (entity.getTaxStatus() == null) {
+                        jsonobj.put("tax_status", "");
+                    } else {
+                        jsonobj.put("tax_status", entity.getTaxStatus());
+                    }
+                    if (entity.IsActive() == true) {
+                        jsonobj.put("is_active", true);
+                    } else {
+                        jsonobj.put("is_active", false);
+                    }
+                    if (entity.getIsDelete() == false) {
+                        jsonobj.put("is_delete", false);
+                    } else {
+                        jsonobj.put("is_delete", true);
+                    }
+                    if (entity.getStatus() == null) {
+                        jsonobj.put("status_employee", "");
+                    } else {
+                        jsonobj.put("status_employee", entity.getStatus());
+                    }
+                    if (entity.getSalary() == null) {
+                        jsonobj.put("salary", "");
+                    } else {
+                        jsonobj.put("salary", entity.getSalary());
+                    }
+                    if (entity.getDateRegister() == null) {
+                        jsonobj.put("join_date", "");
+                    } else {
+                        jsonobj.put("join_date", dateFormat.format(entity.getDateRegister()));
+                    }
+                    if (entity.getLinkCv() == null) {
+                        jsonobj.put("doc_cv", "");
+                    } else {
+                        jsonobj.put("doc_cv", entity.getLinkCv());
 //                    jsonobj.put("status_employee", "d");
-                }
-                if (entity.getGender().equalsIgnoreCase("m") || entity.getGender().equalsIgnoreCase("male")) {
-                    jsonobj.put("gender", "m");
-                } else {
-                    jsonobj.put("gender", "f");
-                }
-                if (entity.getParentId() == null) {
-                    jsonobj.put("approved by", "");
-                } else {
-                    jsonobj.put("approved by", entity.getParentId().getName());
-                }
-                if (entity.getIdEmployee() != null) {
-                    List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());
-                    for (int k = 0; k < listAccount.size(); k++) {
-                        Account enAccount = (Account) listAccount.get(k);
-                        if (enAccount.getTypeAccount().equalsIgnoreCase("payroll")) {
-                            if (enAccount.getBankName() == null) {
-                                jsonobj.put("bank_name_p", "");
-                            } else {
-                                jsonobj.put("bank_name_p", enAccount.getBankName());
-                            }
-                            if (enAccount.getAccountName() == null) {
-                                jsonobj.put("account_name_p", "");
-                            } else {
-                                jsonobj.put("account_name_p", enAccount.getAccountName());
-                            }
-                            if (enAccount.getIsActive() == true) {
-                                jsonobj.put("is_active_p", true);
-                            } else {
-                                jsonobj.put("is_active_p", false);
-                            }
-                            if (enAccount.getAccountNumber() == null) {
-                                jsonobj.put("account_number_p", "");
-                            } else {
+                    }
+                    if (entity.getGender().equalsIgnoreCase("m") || entity.getGender().equalsIgnoreCase("male")) {
+                        jsonobj.put("gender", "m");
+                    } else {
+                        jsonobj.put("gender", "f");
+                    }
+                    if (entity.getParentId() == null) {
+                        jsonobj.put("approved by", "");
+                    } else {
+                        jsonobj.put("approved by", entity.getParentId().getName());
+                    }
+                    if (entity.getIdEmployee() != null) {
+                        List<Account> listAccount = accountService.findByEmployee(entity.getIdEmployee().toString());
+                        for (int k = 0; k < listAccount.size(); k++) {
+                            Account enAccount = (Account) listAccount.get(k);
+                            if (enAccount.getTypeAccount().equalsIgnoreCase("payroll")) {
+                                if (enAccount.getBankName() == null) {
+                                    jsonobj.put("bank_name_p", "");
+                                } else {
+                                    jsonobj.put("bank_name_p", enAccount.getBankName());
+                                }
+                                if (enAccount.getAccountName() == null) {
+                                    jsonobj.put("account_name_p", "");
+                                } else {
+                                    jsonobj.put("account_name_p", enAccount.getAccountName());
+                                }
                                 if (enAccount.getIsActive() == true) {
+                                    jsonobj.put("is_active_p", true);
+                                } else {
+                                    jsonobj.put("is_active_p", false);
+                                }
+                                if (enAccount.getAccountNumber() == null) {
                                     jsonobj.put("account_number_p", "");
                                 } else {
-                                    jsonobj.put("account_number_p", enAccount.getAccountNumber());
+                                    if (enAccount.getIsActive() == true) {
+                                        jsonobj.put("account_number_p", "");
+                                    } else {
+                                        jsonobj.put("account_number_p", enAccount.getAccountNumber());
+                                    }
+                                }
+                                if (enAccount.getAccountNumberFinance() == null) {
+                                    jsonobj.put("account_number_finance_p", "");
+                                } else {
+                                    jsonobj.put("account_number_finance_p", enAccount.getAccountNumberFinance());
+                                }
+                                if (enAccount.getIsDelete() == true) {
+                                    jsonobj.put("is_active_p", false);
+                                    jsonobj.put("is_delete_p", true);
+                                }
+                                if (enAccount.getIsDelete() == false) {
+                                    jsonobj.put("is_active_p", true);
+                                    jsonobj.put("is_delete_p", false);
                                 }
                             }
-                            if (enAccount.getAccountNumberFinance() == null) {
-                                jsonobj.put("account_number_finance_p", "");
-                            } else {
-                                jsonobj.put("account_number_finance_p", enAccount.getAccountNumberFinance());
-                            }
-                            if (enAccount.getIsDelete() == true) {
-                                jsonobj.put("is_active_p", false);
-                                jsonobj.put("is_delete_p", true);
-                            }
-                            if (enAccount.getIsDelete() == false) {
-                                jsonobj.put("is_active_p", true);
-                                jsonobj.put("is_delete_p", false);
-                            }
-                        }
-                        if (enAccount.getTypeAccount().equalsIgnoreCase("loan")) {
-                            if (enAccount.getBankName() == null) {
-                                jsonobj.put("bank_name_l", "");
-                            } else {
-                                jsonobj.put("bank_name_l", enAccount.getBankName());
-                            }
-                            if (enAccount.getAccountName() == null) {
-                                jsonobj.put("account_name_l", "");
-                            } else {
-                                jsonobj.put("account_name_l", enAccount.getAccountName());
-                            }
-                            if (enAccount.getIsActive() == true) {
-                                jsonobj.put("is_active_l", true);
-                            } else {
-                                jsonobj.put("is_active_l", false);
-                            }
-
-                            if (enAccount.getAccountNumber() == null) {
-                                jsonobj.put("account_number_l", "");
-                            } else {
+                            if (enAccount.getTypeAccount().equalsIgnoreCase("loan")) {
+                                if (enAccount.getBankName() == null) {
+                                    jsonobj.put("bank_name_l", "");
+                                } else {
+                                    jsonobj.put("bank_name_l", enAccount.getBankName());
+                                }
+                                if (enAccount.getAccountName() == null) {
+                                    jsonobj.put("account_name_l", "");
+                                } else {
+                                    jsonobj.put("account_name_l", enAccount.getAccountName());
+                                }
                                 if (enAccount.getIsActive() == true) {
+                                    jsonobj.put("is_active_l", true);
+                                } else {
+                                    jsonobj.put("is_active_l", false);
+                                }
+
+                                if (enAccount.getAccountNumber() == null) {
                                     jsonobj.put("account_number_l", "");
                                 } else {
-                                    jsonobj.put("account_number_l", enAccount.getAccountNumber());
+                                    if (enAccount.getIsActive() == true) {
+                                        jsonobj.put("account_number_l", "");
+                                    } else {
+                                        jsonobj.put("account_number_l", enAccount.getAccountNumber());
+                                    }
                                 }
-                            }
-                            if (enAccount.getAccountNumberFinance() == null) {
-                                jsonobj.put("account_number_finance_l", "");
-                            } else {
-                                jsonobj.put("account_number_finance_l", enAccount.getAccountNumberFinance());
-                            }
-                            if (enAccount.getIsDelete() == true) {
-                                jsonobj.put("is_active_l", false);
-                                jsonobj.put("is_delete_l", true);
-                            }
-                            if (enAccount.getIsDelete() == false) {
-                                jsonobj.put("is_active_l", true);
-                                jsonobj.put("is_delete_l", false);
+                                if (enAccount.getAccountNumberFinance() == null) {
+                                    jsonobj.put("account_number_finance_l", "");
+                                } else {
+                                    jsonobj.put("account_number_finance_l", enAccount.getAccountNumberFinance());
+                                }
+                                if (enAccount.getIsDelete() == true) {
+                                    jsonobj.put("is_active_l", false);
+                                    jsonobj.put("is_delete_l", true);
+                                }
+                                if (enAccount.getIsDelete() == false) {
+                                    jsonobj.put("is_active_l", true);
+                                    jsonobj.put("is_delete_l", false);
+                                }
                             }
                         }
                     }
+                    array.put(jsonobj);
                 }
-                array.put(jsonobj);
             }
+            JSONObject jsonobj = new JSONObject();
+            jsonobj.put("draw", request.getParameter("draw"));
+            jsonobj.put("totalpages", totalPages);
+            jsonobj.put("length", length);
+            jsonobj.put("recordsTotal", entityList.size());
+            jsonobj.put("recordsFiltered", recordsFiltered);
+            jsonobj.put("rows", array);
+//            out.println(jsonobj);
+            log.debug("list-Employee : " + jsonobj.toString());
             return ResponseEntity.ok(array.toString());
         } catch (JSONException ex) {
             // TODO Auto-generated catch block
@@ -2842,7 +2866,7 @@ public class EmployeeController { //LawfirmController
     @RequestMapping(value = "/managed-employee/{id_employee}/download-cv", method = RequestMethod.GET, produces = {"application/json"})//produces = {"application/json"}
     @XxsFilter
     public ResponseEntity<?> downloadCv(ServletRequest request, HttpServletResponse response,
-            @PathVariable("id_employee") Long idEmployee, Authentication authentication) throws IOException {
+            @PathVariable("id_employee") @NotBlank Long idEmployee, Authentication authentication) throws IOException {
         try {
             Boolean process = true;
             JSONObject jsonobj = new JSONObject();

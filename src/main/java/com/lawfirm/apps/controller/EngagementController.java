@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jline.utils.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1522,8 +1524,19 @@ public class EngagementController {
 
     @RequestMapping(value = "/manage-engagement/list-of-engagement", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> litEngagement(Authentication authentication) {
+    public ResponseEntity<String> litEngagement(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         try {
+            int totalPages = 0;
+            int totalCount = 0;
+            String draw = "0";
+            String start = "0";
+            String length = "";
+            int recordsFiltered = 0;
+            String orderColumnIndex = "0";
+            String orderDir = "asc";
+            draw = request.getParameter("draw");
+            start = request.getParameter("start");
+            length = request.getParameter("length");
 
             String name = authentication.getName();
             log.info("name : " + name);
@@ -1541,6 +1554,7 @@ public class EngagementController {
 //            Employee entity = employeeService.findById(id_employee);
 //            if (entity != null) {
             String status = null;
+            Integer max = null;
             List<CaseDetails> listData = caseDetailsService.listCaseDetails(entity.getRoleName(), entity.getIdEmployee());
             JSONArray array = new JSONArray();
             Long id_team = 0l;
@@ -1710,8 +1724,17 @@ public class EngagementController {
                     }
                     array.put(obj);
                 }
+
             }
-            log.debug("list-engagement : " + array.toString());
+            JSONObject jsonobj = new JSONObject();
+            jsonobj.put("draw", request.getParameter("draw"));
+            jsonobj.put("totalpages", totalPages);
+            jsonobj.put("length", length);
+            jsonobj.put("recordsTotal", listData.size());
+            jsonobj.put("recordsFiltered", recordsFiltered);
+            jsonobj.put("rows", array);
+//            out.println(jsonobj);
+            log.debug("list-engagement : " + jsonobj.toString());
             return ResponseEntity.ok(array.toString());
 //            }
         } catch (JSONException ex) {

@@ -168,8 +168,33 @@ public class OutStandingLoanARepo implements OutStandingLoanARepoIface {
     }
 
     @Override
-    public Double sumLoanA(Long paramLong) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public OutStandingLoanA sumLoanA(Long userId, String taxYear, int number) {
+        try {
+            String sql = "SELECT o FROM OutStandingLoanA o "//  String sql = "SELECT COALESCE(SUM(l.loanAmount),0) FROM Loan l"
+                    + " WHERE "
+                    + " o.idEmployee = :idEmployee AND "
+                    + " o.numberDisbursement = :numberDisbursement AND "
+                    + " o.taxYear = :taxYear ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("idEmployee", userId);
+            query.setParameter("numberDisbursement", Long.valueOf(number));
+            query.setParameter("taxYear", taxYear);
+//            if (query != null) {
+            return (OutStandingLoanA) query.getSingleResult();
+//            } else {
+//                log.info("isi" + query.getSingleResult().toString());
+//                return 0d;
+//            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_loanRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
     }
 
     @Override

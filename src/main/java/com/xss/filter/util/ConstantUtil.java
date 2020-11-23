@@ -44,7 +44,6 @@ public class ConstantUtil {
             Pattern.compile("window.location", Pattern.CASE_INSENSITIVE),
             // Avoid window.location :... expressions
             Pattern.compile("document(.*?)", Pattern.CASE_INSENSITIVE)
-            
     ));
 
     public static final String EMPTY = "";

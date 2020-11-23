@@ -15,7 +15,6 @@ import com.lawfirm.apps.model.EntityPeriod;
 import com.lawfirm.apps.model.Loan;
 import com.lawfirm.apps.model.Member;
 import com.lawfirm.apps.model.OutStandingLoanA;
-import com.lawfirm.apps.model.OutStandingLoanB;
 import com.lawfirm.apps.model.Reimbursement;
 import com.lawfirm.apps.model.TeamMember;
 import com.lawfirm.apps.response.Response;
@@ -1129,7 +1128,7 @@ public class CaseController {
                                 outStandingLoanA.setCutOffDate(cutOffDate);
                                 outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
                                 outStandingLoanA.setNumberDisbursement(number.longValue());
-                                Double prevDisbursement = this.entityPeriodService.getPreviousDisbursement(2, dataMember.getEmployee().getIdEmployee(), sdfYear.format(now));
+                                Double prevDisbursement = this.entityPeriodService.getPreviousDisbursement(1, dataMember.getEmployee().getIdEmployee(), sdfYear.format(now));
                                 entityPeriod.setPrevDisbursement(prevDisbursement);
                                 entityPeriod.setAmountPortion(amount_portion_team);
                                 this.outStandingLoanAService.create(outStandingLoanA);
@@ -1161,8 +1160,9 @@ public class CaseController {
                                 outStandingLoanA.setCutOffDate(cutOffDate);
                                 outStandingLoanA.setLoanAmount(outstanding_loan_a_team);
                                 outStandingLoanA.setNumberDisbursement(number.longValue());
-                                EntityPeriod prevDisbursement = this.entityPeriodService.getPrevDisbursement(3, dataMember.getEmployee().getIdEmployee(), sdfYear.format(now));
-                                entityPeriod.setPrevDisbursement(prevDisbursement.getPrevDisbursement() + prevDisbursement.getPrevDisbursement());
+                                EntityPeriod prevDisbursement = this.entityPeriodService.getPrevDisbursement(2, dataMember.getEmployee().getIdEmployee(), sdfYear.format(now));
+                                entityPeriod.setAmountPortion(amount_portion_team);
+                                entityPeriod.setPrevDisbursement(prevDisbursement.getAmountPortion() + prevDisbursement.getPrevDisbursement());
                                 this.outStandingLoanAService.create(outStandingLoanA);
                             }
                             this.entityPeriodService.create(entityPeriod);
