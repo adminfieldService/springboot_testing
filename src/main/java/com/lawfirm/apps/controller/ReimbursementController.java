@@ -68,6 +68,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.lawfirm.apps.service.interfaces.OutStandingLoanBServiceIface;
 import java.text.ParseException;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.LoggerFactory;
 
@@ -373,7 +374,7 @@ public class ReimbursementController {
 
     @RequestMapping(value = "/reimbursements", method = RequestMethod.GET, produces = {"application/json"})//{id_loan}, consumes = {"multipart/form-data"}
     @XxsFilter
-    public ResponseEntity<String> listReimbursement(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> listReimbursement(Authentication authentication, ServletRequest request, HttpServletResponse response) {
         try {
             int totalPages = 0;
             int totalCount = 0;
@@ -415,8 +416,24 @@ public class ReimbursementController {
                 return new ResponseEntity(new CustomErrorType("55", "Error", "Cannot Access This feature"),
                         HttpStatus.NOT_FOUND);
             }
+            Map<String, String[]> paramMap = request.getParameterMap();
+            String status = null;
             Integer max = null;
-            List<Reimbursement> listReimbursement = reimbursementService.listReimbursement();
+            String paramString = null;
+
+            if (paramMap.containsKey("start")) {
+                start = request.getParameter("start");
+            }
+            if (paramMap.containsKey("paramString")) {
+                paramString = request.getParameter("paramString");
+            }
+            List<Reimbursement> listReimbursement = null;
+            if (start == null) {
+                listReimbursement = reimbursementService.listReimbursement();
+            } else {
+                listReimbursement = reimbursementService.listReimbursementPaging(max, Integer.parseInt(start));
+            }
+
             log.info("listReimbursement.size() : " + listReimbursement.size());
             JSONArray array = new JSONArray();
             if (listReimbursement != null) {

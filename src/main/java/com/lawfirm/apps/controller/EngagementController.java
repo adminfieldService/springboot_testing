@@ -44,8 +44,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jline.utils.Log;
@@ -1524,7 +1526,7 @@ public class EngagementController {
 
     @RequestMapping(value = "/manage-engagement/list-of-engagement", method = RequestMethod.GET, produces = {"application/json"})
     @XxsFilter
-    public ResponseEntity<String> litEngagement(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> litEngagement(Authentication authentication, ServletRequest request, HttpServletResponse response) {
         try {
             int totalPages = 0;
             int totalCount = 0;
@@ -1553,9 +1555,25 @@ public class EngagementController {
             }
 //            Employee entity = employeeService.findById(id_employee);
 //            if (entity != null) {
+            Map<String, String[]> paramMap = request.getParameterMap();
             String status = null;
             Integer max = null;
-            List<CaseDetails> listData = caseDetailsService.listCaseDetails(entity.getRoleName(), entity.getIdEmployee());
+//            int start = 0;
+            String paramString = null;
+            if (paramMap.containsKey("start")) {
+                start = request.getParameter("start");
+            }
+            if (paramMap.containsKey("paramString")) {
+                paramString = request.getParameter("paramString");
+            }
+
+            List<CaseDetails> listData = null;
+            if (start == null) {
+                listData = caseDetailsService.listCaseDetails(entity.getRoleName(), entity.getIdEmployee());
+            } else {
+                listData = caseDetailsService.listCaseDetailsPaging(entity.getRoleName(), entity.getIdEmployee(), max, Integer.parseInt(start));
+            }
+
             JSONArray array = new JSONArray();
             Long id_team = 0l;
             if (listData != null) {

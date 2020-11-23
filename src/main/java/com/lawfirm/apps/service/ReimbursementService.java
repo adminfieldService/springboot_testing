@@ -103,4 +103,10 @@ public class ReimbursementService implements ReimbursementServiceIface {
         return reimbursementRepo.getReimbusementByCseId(parameter);
     }
 
+    @Override
+    @Transactional(Constants.TRANSACTION_MANAGER_CHAINED)
+    public List<Reimbursement> listReimbursementPaging(int max, int start) {
+        return reimbursementRepo.listReimbursementPaging(max, start);
+    }
+
 }

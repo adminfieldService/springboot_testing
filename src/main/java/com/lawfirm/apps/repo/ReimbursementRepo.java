@@ -167,6 +167,31 @@ public class ReimbursementRepo implements ReimbursementRepoIface {
         }
     }
 
+    @Override
+    public List<Reimbursement> listReimbursementPaging(int max, int start) {
+        try {
+            List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r "
+                    + " JOIN FETCH r.loan AS l "
+                    + " LEFT JOIN FETCH r.employee AS e "
+                    + " RIGHT JOIN FETCH l.engagement AS n"
+                    + " WHERE r.loan IS Not Null"
+                    + " ORDER BY r.tgInput Desc")
+                    .setMaxResults(max)
+                    .setFirstResult(start)
+                    .getResultList();
+            return listAcquire;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            CreateLog.createJson(ex.getMessage(), "ERROR_reimbursementRepo");
+            System.out.println("ERROR: " + ex.getMessage());
+            return null;
+        } finally {
+            if ((entityManager != null) && (entityManager.isOpen())) {
+                entityManager.close();
+            }
+        }
+    }
+
 //        try {
 //            List<Reimbursement> listAcquire = entityManager.createQuery("SELECT r FROM Reimbursement r "
 //                    + " JOIN FETCH r.employee AS e "

@@ -31,6 +31,8 @@ public interface ReimbursementRepoIface {
 
     List<Reimbursement> listReimbursement();
 
+    List<Reimbursement> listReimbursementPaging(int max, int start);
+
     List<Reimbursement> listBy(String paramBy, Long empId);
 
     List<Reimbursement> byName(Boolean isActive);
